@@ -1,0 +1,102 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-dark" style="z-index: 1;">
+    <div class="container-fluid">
+        <a title="BlueLinked Eco System" class="navbar-brand" href="{{ path('home') }}">BLES</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar"
+                aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                {#                <li class="nav-item"> #}
+                {#                    <a class="nav-link" href="/">Home</a> #}
+                {#                </li> #}
+                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('task_view') }}">Tasks</a>
+                    </li>
+                {% endif %}
+                {% if is_granted("ROLE_CULTURE") %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('cultures_culture_view') }}">Cultures</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('cultures_system_view') }}">Systems</a>
+                    </li>
+                {% endif %}
+                {% if is_granted("ROLE_ORGANISM_VIEW") %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('cultures_organism_view') }}">Organisms</a>
+                    </li>
+                {% endif %}
+                {% if is_granted("ROLE_STORAGE_VIEW") %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('feeding_view') }}">Feeding</a>
+                    </li>
+                {% endif %}
+                {% if is_granted("ROLE_LOG_VIEW") %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('log_connector_view') }}">Log entries</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('logbook_view') }}">Logbook</a>
+                    </li>
+                {% endif %}
+                {% if is_granted("ROLE_STORAGE_VIEW") %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('storage_item_view') }}">Storage</a>
+                    </li>
+                {% endif %}
+                {% if is_granted("ROLE_INTERN") %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('intern_users') }}">Switch user</a>
+                    </li>
+                {% endif %}
+                {% if is_granted("ROLE_MONITORING") %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('monitoring_overview') }}">Monitoring</a>
+                    </li>
+                {% endif %}
+                {% if is_granted("ROLE_DATA") %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('data_view') }}">Data</a>
+                    </li>
+                {% endif %}
+                {% if is_granted("ROLE_INTERN_ACTIVE") %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('intern_active') }}">Interns</a>
+                    </li>
+                {% endif %}
+{#                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}#}
+{#                    <li class="nav-item">#}
+{#                        <a class="nav-link" href="{{ path('task_template_heroes', {template: 56}) }}">Heroes</a>#}
+{#                    </li>#}
+{#                {% endif %}#}
+            </ul>
+            <ul class="navbar-nav my-2 my-lg-0">
+                {% if app.environment == 'dev' %}
+                    <li class="nav-item">
+                        <a class="btn navbar-text bg-danger" href="#">dev</a> &nbsp;
+                    </li>
+                {% endif %}
+                {% if is_granted("ROLE_ADMIN") %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('register') }}">Register user</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('admin') }}">Admin</a>
+                    </li>
+                {% endif %}
+                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                    <span class="nav-item navbar-text mr-sm-2">Logged in as</span>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('user_profile') }}">{{ app.user.username }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('logout') }}">Logout</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

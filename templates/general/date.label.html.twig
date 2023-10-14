@@ -1,0 +1,5 @@
+{% if(datetime) %}
+    <span class="badge bg-light text-dark">{{ datetime|date('Y-m-d') }}</span>
+{% else %}
+    <span class="badge bg-light text-dark">-</span>
+{% endif %}
