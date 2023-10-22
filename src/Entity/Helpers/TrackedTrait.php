@@ -10,49 +10,39 @@ trait TrackedTrait
 {
     #[ORM\Column]
     #[ORM\JoinColumn(nullable: false)]
-    private ?DateTime $createdAt = null;
+    private ?DateTime $createdDate = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $createdBy = null;
+    private ?User $createdUser = null;
 
-    public function getCreatedBy(): ?User
+    public function getCreatedUser(): ?User
     {
-        return $this->createdBy;
+        return $this->createdUser;
     }
 
-    public function setCreatedBy(?User $createdBy): self
+    public function setCreatedUser(?User $createdUser): self
     {
-        $this->createdBy = $createdBy;
+        $this->createdUser = $createdUser;
 
         return $this;
     }
 
-    public function getCreatedAt(): ?DateTime
+    public function getCreatedDate(): ?DateTime
     {
-        return $this->createdAt;
+        return $this->createdDate;
     }
 
-    public function getChartTime(): int
+    public function setCreatedDate(DateTime $createdDate): self
     {
-        return $this->getCreatedAt()->getTimestamp() * 1000;
-    }
-
-    public function setCreatedAt(DateTime $createdAt): self
-    {
-        $this->createdAt = $createdAt;
+        $this->createdDate = $createdDate;
 
         return $this;
     }
 
-    public function getCode(): string
+    public function setCreatedAtNowNoSeconds(): self
     {
-        return date_format($this->createdAt, "ymd");
-    }
-
-    public function setCreatedAtTodayNoSeconds(): self
-    {
-        $this->setCreatedAt(DateTime::createFromFormat('Y-m-d H:i', date('Y-m-d H:i')));
+        $this->setCreatedDate(DateTime::createFromFormat('Y-m-d H:i', date('Y-m-d H:i')));
 
         return $this;
     }

@@ -2,6 +2,8 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Event\Event;
+use App\Entity\Event\EventSubscription;
 use App\Entity\Group;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action as AdminAction;
@@ -54,6 +56,10 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::section('Administration', 'fas fa-folder-open');
         yield MenuItem::linkToCrud('Users', 'fas fa-list', User::class);
         yield MenuItem::linkToCrud('Groups', 'fas fa-list', Group::class);
+
+        yield MenuItem::section('Events', 'fas fa-folder-open');
+        yield MenuItem::linkToCrud('Events', 'fas fa-list', Event::class);
+        yield MenuItem::linkToCrud('Event subscriptions', 'fas fa-list', EventSubscription::class);
     }
 
     public function configureCrud(): Crud
