@@ -1,0 +1,9 @@
+{% extends 'base/base.html.twig' %}
+
+{% set title %}Create Event{% endset %}
+
+{% block body %}
+    <a class="btn btn-primary" href="{{ path('event_event_index') }}">Back to list</a>
+
+    {{ form(form) }}
+{% endblock %}

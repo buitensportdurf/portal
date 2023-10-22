@@ -1,0 +1,37 @@
+{% extends 'base/base.html.twig' %}
+
+{% set title %}Show event {{ event }}{% endset %}
+
+{% block body %}
+    <a class="btn btn-primary" href="{{ path('event_event_index') }}">Back to list</a>
+
+    {% if is_granted('ROLE_EVENT_ADMIN') %}
+        <a class="btn btn-warning" href="{{ path('event_event_edit', {'id': event.id}) }}">Edit</a>
+        <a class="btn btn-danger" href="{{ path('event_event_delete', {'id': event.id}) }}">Delete</a>
+    {% endif %}
+
+    <table class="table">
+        <tbody>
+        <tr>
+            <th>Name</th>
+            <td>{{ event.name }}</td>
+        </tr>
+        <tr>
+            <th>Description</th>
+            <td>{{ event.description }}</td>
+        </tr>
+        <tr>
+            <th>StartDate</th>
+            <td>{{ event.startDate ? event.startDate|date('Y-m-d H:i') : '' }}</td>
+        </tr>
+        <tr>
+            <th>Deadline</th>
+            <td>{{ event.subscriptionDeadline ? event.subscriptionDeadline|date('Y-m-d H:i') : '' }}</td>
+        </tr>
+        <tr>
+            <th>Location</th>
+            <td>{{ event.location }}</td>
+        </tr>
+        </tbody>
+    </table>
+{% endblock %}

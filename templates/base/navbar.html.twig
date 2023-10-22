@@ -11,7 +11,10 @@
                 {#                <li class="nav-item"> #}
                 {#                    <a class="nav-link" href="/">Home</a> #}
                 {#                </li> #}
-                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                {% if is_granted("ROLE_USER") %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('event_event_index') }}">Events</a>
+                    </li>
                 {% endif %}
             </ul>
             <ul class="navbar-nav my-2 my-lg-0">

@@ -1,6 +1,6 @@
 {% extends 'base/base.html.twig' %}
 
-{% block title %}Login{% endblock %}
+{% set title %}Login{% endset %}
 
 {% block body %}
     <form action="{{ path('login') }}" method="post">
@@ -12,7 +12,7 @@
                 You are already logged in as {{ app.user }}, <a href="{{ path('logout') }}">Logout</a>
             </div>
         {% endif %}
-        <h1 class="h3 mb-3 font-weight-normal">Please login</h1>
+
         <label for="inputUsername">Username</label>
         <input type="text" value="{{ last_username }}" name="_username" id="inputUsername" class="form-control" required
                autofocus>
@@ -28,5 +28,6 @@
             </label>
         </div>
         <button class="btn btn-primary" type="submit">Login</button>
+        <a class="btn btn-info" href="{{ path('register') }}">Register</a>
     </form>
 {% endblock %}

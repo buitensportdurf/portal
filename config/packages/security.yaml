@@ -37,8 +37,12 @@ security:
     access_control:
          - { path: ^/admin, roles: ROLE_ADMIN }
          - { path: ^/profile, roles: ROLE_USER }
+         - { path: ^/event/event/(index|show), roles: ROLE_USER }
+         - { path: ^/event/event, roles: ROLE_EVENT_ADMIN }
 
     role_hierarchy:
+        ROLE_ADMIN:
+            - ROLE_EVENT_ADMIN
         ROLE_SUPER_ADMIN:
             - ROLE_ADMIN
 #            - ROLE_ALLOWED_TO_SWITCH

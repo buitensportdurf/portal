@@ -1,0 +1,10 @@
+{% extends 'base/base.html.twig' %}
+
+{% set title %}Edit Event {{ event }}{% endset %}
+
+{% block body %}
+    <a class="btn btn-primary" href="{{ path('event_event_index') }}">Back to list</a>
+    <a class="btn btn-danger" href="{{ path('event_event_delete', {'id': event.id}) }}">Delete</a>
+
+    {{ form(form) }}
+{% endblock %}
