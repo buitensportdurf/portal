@@ -2,7 +2,11 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Group;
 use App\Entity\User;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action as AdminAction;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -49,5 +53,45 @@ class DashboardController extends AbstractDashboardController
 
         yield MenuItem::section('Administration', 'fas fa-folder-open');
         yield MenuItem::linkToCrud('Users', 'fas fa-list', User::class);
+        yield MenuItem::linkToCrud('Groups', 'fas fa-list', Group::class);
+    }
+
+    public function configureCrud(): Crud
+    {
+        $crud = Crud::new();
+        $crud->showEntityActionsInlined();
+        return $crud;
+    }
+
+    public function configureActions(): Actions
+    {
+        return parent::configureActions()
+            ->add(Crud::PAGE_INDEX, AdminAction::DETAIL)
+            ->update(Crud::PAGE_EDIT, AdminAction::SAVE_AND_RETURN, function (AdminAction $action) {
+                return $action->setIcon('fa fa-save');
+            })
+            ->add(Crud::PAGE_EDIT, AdminAction::DELETE)
+            ->add(Crud::PAGE_EDIT, AdminAction::DETAIL)
+            ->update(Crud::PAGE_EDIT, AdminAction::DETAIL, function (AdminAction $action) {
+                return $action->setIcon('fa fa-info')->setLabel('Details');
+            })
+            ->update(Crud::PAGE_DETAIL, AdminAction::EDIT, function (AdminAction $action) {
+                return $action->setIcon('fa fa-edit');
+            })
+            ->update(Crud::PAGE_DETAIL, AdminAction::INDEX, function (AdminAction $action) {
+                return $action->setIcon('fa fa-arrow-left');
+            })
+            ->update(Crud::PAGE_INDEX, AdminAction::EDIT, function (AdminAction $action) {
+                return $action->setIcon('fa fa-edit');
+            })
+            ->update(Crud::PAGE_INDEX, AdminAction::NEW, function (AdminAction $action) {
+                return $action->setIcon('fa fa-plus');
+            })
+            ->update(Crud::PAGE_INDEX, AdminAction::DETAIL, function (AdminAction $action) {
+                return $action->setIcon('fa fa-info')->setLabel('Details');
+            })
+            ->update(Crud::PAGE_INDEX, AdminAction::DELETE, function (AdminAction $action) {
+                return $action->setIcon('fa fa-trash');
+            });
     }
 }

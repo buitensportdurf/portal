@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\User\RegistrationFormType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -38,7 +39,7 @@ class SecurityController extends AbstractController
     public function register(
         Request                     $request,
         UserPasswordHasherInterface $userPasswordHasher,
-        EntityManagerInterface      $entityManager,
+        UserRepository              $repository,
     ): Response
     {
         $user = new User();
@@ -54,10 +55,10 @@ class SecurityController extends AbstractController
                         $user,
                         $form->get('plainPassword')->getData()
                     )
-                );
+                )
+                    ->setEnabled(false);
 
-                $entityManager->persist($user);
-                $entityManager->flush();
+                $repository->add($user);
                 // do anything else you need here, like send an email
                 $this->addFlash('success', sprintf('Successfully registered user %s', $user->getUsername()));
 

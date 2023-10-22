@@ -5,7 +5,7 @@ security:
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         # used to reload user from session & other features (e.g. switch_user)
-        app_user_provider:
+        user_provider:
             entity:
                 class: App\Entity\User
                 property: username
@@ -15,7 +15,16 @@ security:
             security: false
         main:
             lazy: true
-            provider: app_user_provider
+            provider: user_provider
+            user_checker: App\Security\ActiveUserChecker
+            logout:
+                path: logout
+            form_login:
+                login_path: login
+                check_path: login
+            remember_me:
+                secret: '%kernel.secret%' # required
+                lifetime: 2419200 # 4 weeks in seconds
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -28,3 +37,8 @@ security:
     access_control:
          - { path: ^/admin, roles: ROLE_ADMIN }
          - { path: ^/profile, roles: ROLE_USER }
+
+    role_hierarchy:
+        ROLE_SUPER_ADMIN:
+            - ROLE_ADMIN
+#            - ROLE_ALLOWED_TO_SWITCH
