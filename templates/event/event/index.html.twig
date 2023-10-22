@@ -1,6 +1,6 @@
 {% extends 'base/base.html.twig' %}
 
-{% set title %}Event index{% endset %}
+{% set title %}Events{% endset %}
 
 {% block body %}
     {% if is_granted('ROLE_EVENT_ADMIN') %}
@@ -14,6 +14,7 @@
             <th>When</th>
             <th>Deadline</th>
             <th>Location</th>
+            <th>Subscribed</th>
             <th></th>
         </tr>
         </thead>
@@ -25,6 +26,11 @@
                 <td>{{ event.subscriptionDeadline ? event.subscriptionDeadline|date('Y-m-d') : '' }}</td>
                 <td>{{ event.location }}</td>
                 <td>
+                    {% if is_granted('ROLE_USER') and event.subscribed(app.user) %}
+                        <i class="fa fa-check"></i>
+                    {% endif %}
+                </td>
+                <td>
                     <a class="btn btn-info" href="{{ path('event_event_show', {'id': event.id}) }}">Show</a>
                     {% if is_granted('ROLE_EVENT_ADMIN') %}
                         <a class="btn btn-warning" href="{{ path('event_event_edit', {'id': event.id}) }}">Edit</a>
@@ -33,7 +39,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="7">No records found</td>
+                <td colspan="6">No records found</td>
             </tr>
         {% endfor %}
         </tbody>

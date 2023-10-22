@@ -40,7 +40,7 @@ trait TrackedTrait
         return $this;
     }
 
-    public function setCreatedAtNowNoSeconds(): self
+    public function setCreatedDateNowNoSeconds(): self
     {
         $this->setCreatedDate(DateTime::createFromFormat('Y-m-d H:i', date('Y-m-d H:i')));
 

@@ -20,4 +20,16 @@ class EventSubscriptionRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, EventSubscription::class);
     }
+
+    public function save(EventSubscription $eventSubscription): void
+    {
+        $this->_em->persist($eventSubscription);
+        $this->_em->flush();
+    }
+
+    public function delete(EventSubscription $subscription): void
+    {
+        $this->_em->remove($subscription);
+        $this->_em->flush();
+    }
 }

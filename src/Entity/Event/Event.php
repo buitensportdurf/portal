@@ -2,6 +2,7 @@
 
 namespace App\Entity\Event;
 
+use App\Entity\User;
 use App\Repository\Event\EventRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -30,6 +31,7 @@ class Event
     private ?string $location = null;
 
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: EventSubscription::class, orphanRemoval: true)]
+    /** @var Collection<EventSubscription> $eventSubscriptions */
     private Collection $eventSubscriptions;
 
     public function __construct()
@@ -135,5 +137,29 @@ class Event
         }
 
         return $this;
+    }
+
+    public function getAmountOfSubscriptions(): int
+    {
+        $amount = 0;
+        foreach ($this->eventSubscriptions as $eventSubscription) {
+            $amount += $eventSubscription->getAmount();
+        }
+        return $amount;
+    }
+
+    public function isSubscribed(User $user): bool
+    {
+        return $this->getSubscription($user) !== null;
+    }
+
+    public function getSubscription(User $user): ?EventSubscription
+    {
+        foreach ($this->eventSubscriptions as $eventSubscription) {
+            if ($eventSubscription->getCreatedUser() === $user) {
+                return $eventSubscription;
+            }
+        }
+        return null;
     }
 }

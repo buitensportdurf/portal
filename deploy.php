@@ -29,7 +29,7 @@ host('durf.loken.nl')
     ->set('branch', function () {
         return input()->getOption('branch') ?: 'master';
     })
-    ->set('deploy_path', '~/durf.loken.nl.nl');
+    ->set('deploy_path', '~/durf.loken.nl');
 
 set('console_options', function () {
     return '--no-interaction';
