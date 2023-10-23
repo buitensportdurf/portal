@@ -1,0 +1,7 @@
+framework:
+    mailer:
+        dsn: '%env(MAILER_DSN)%'
+        envelope:
+            sender: '%env(MAILER_FROM)%'
+        headers:
+            From: 'Buitensport Vereniging Durf <%env(MAILER_FROM)%>'
