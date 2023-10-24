@@ -7,6 +7,7 @@ use App\Service\EmailFactory;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -20,7 +21,7 @@ class TestMailCommand extends Command
 {
     public function __construct(
         private readonly MailerInterface $mailer,
-        private readonly UserRepository $userRepository,
+        private readonly UserRepository  $userRepository,
     )
     {
         parent::__construct();
@@ -28,8 +29,8 @@ class TestMailCommand extends Command
 
     protected function configure(): void
     {
-//        $this
-//            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
+        $this
+            ->addArgument('userId', InputArgument::REQUIRED, 'UserId of the user to send the test email to');
 //            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
 //        ;
     }
@@ -37,7 +38,7 @@ class TestMailCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $user = $this->userRepository->find(1);
+        $user = $this->userRepository->find($input->getArgument('userId'));
         $email = EmailFactory::signupEmail($user);
 
         //->cc('cc@example.com')

@@ -5,11 +5,13 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\User\RegistrationFormType;
 use App\Repository\UserRepository;
+use App\Service\EmailFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -40,6 +42,7 @@ class SecurityController extends AbstractController
         Request                     $request,
         UserPasswordHasherInterface $userPasswordHasher,
         UserRepository              $repository,
+        MailerInterface             $mailer
     ): Response
     {
         $user = new User();
@@ -50,16 +53,15 @@ class SecurityController extends AbstractController
             if ($form->get('plainPassword')->getData() !== $form->get('plainPasswordRepeated')->getData()) {
                 $this->addFlash('error', 'Password and password repeated must be the same');
             } else {
-                $user->setPassword(
-                    $userPasswordHasher->hashPassword(
-                        $user,
-                        $form->get('plainPassword')->getData()
-                    )
-                )
+                $user->setPassword($userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('plainPassword')->getData()
+                ))
                     ->setEnabled(false);
 
                 $repository->add($user);
-                // do anything else you need here, like send an email
+                $mailer->send(EmailFactory::signupEmail($user));
+
                 $this->addFlash('success', sprintf('Successfully registered user %s', $user->getUsername()));
 
                 return $this->redirectToRoute('register');
