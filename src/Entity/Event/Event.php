@@ -2,6 +2,7 @@
 
 namespace App\Entity\Event;
 
+use App\Entity\Image;
 use App\Entity\User;
 use App\Repository\Event\EventRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -33,6 +34,9 @@ class Event
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: EventSubscription::class, orphanRemoval: true)]
     /** @var Collection<EventSubscription> $eventSubscriptions */
     private Collection $eventSubscriptions;
+
+    #[ORM\ManyToOne(cascade: ['persist', 'remove'])]
+    private ?Image $image = null;
 
     public function __construct()
     {
@@ -161,5 +165,17 @@ class Event
             }
         }
         return null;
+    }
+
+    public function getImage(): ?Image
+    {
+        return $this->image;
+    }
+
+    public function setImage(?Image $image): static
+    {
+        $this->image = $image;
+
+        return $this;
     }
 }

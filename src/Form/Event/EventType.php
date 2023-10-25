@@ -3,6 +3,7 @@
 namespace App\Form\Event;
 
 use App\Entity\Event\Event;
+use App\Form\ImageType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -17,6 +18,7 @@ class EventType extends AbstractType
             ->add('description')
             ->add('subscriptionDeadline')
             ->add('location')
+            ->add('image', ImageType::class, ['required' => false])
         ;
     }
 

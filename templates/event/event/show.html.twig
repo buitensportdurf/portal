@@ -1,6 +1,6 @@
 {% extends 'base/base.html.twig' %}
 
-{% set title %}Show event {{ event }}{% endset %}
+{% set title %}Event {{ event }}{% endset %}
 
 {% block body %}
     <a class="btn btn-primary" href="{{ path('event_event_index') }}">Back to list</a>
@@ -19,6 +19,8 @@
         {% endif %}
     {% endif %}
 
+    <br>
+    {{ include('event/event/image.html.twig', {event: event}) }}
     <table class="table">
         <tbody>
         <tr>

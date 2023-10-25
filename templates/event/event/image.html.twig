@@ -1,0 +1,3 @@
+{% if event.image %}
+    <img height="100px" src="{{ vich_uploader_asset(event.image) }}" alt="{{ event.name }} image">
+{% endif %}
