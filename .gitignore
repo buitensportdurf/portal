@@ -13,3 +13,4 @@
 ###< symfony/phpunit-bridge ###
 
 release.json
+public/uploads

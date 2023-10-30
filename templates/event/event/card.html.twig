@@ -1,0 +1,45 @@
+{# @var event App\Entity\Event\Event #}
+{% set subscription = event.subscription(app.user) %}
+<div class="card">
+    <img class="card-img-top" src="{{ vich_uploader_asset(event.image) }}" alt="{{ event.name }} image">
+    <div class="card-body">
+        <h5 class="card-title">{{ event }}</h5>
+        <p class="card-text"><small class="text-muted">
+                Time: {{ event.startDate ? event.startDate|date('Y-m-d H:i') : '' }} <br>
+                Location: {{ event.location }}
+            </small></p>
+        <p class="card-text">{{ event.description }}</p>
+    </div>
+    <div class="list-group list-group-flush">
+        {% if subscription %}
+            <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
+               href="#">
+                <div class="ms-2 me-auto">
+                    Subscribed
+                </div>
+                <span class="badge bg-primary rounded-pill">{{ subscription.amount }}</span>
+            </a>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        {% if is_granted('ROLE_USER') %}
+            <div class="btn-group">
+                {% if not subscription or is_granted('ROLE_EVENT_ADMIN') %}
+                    <a class="btn btn-success"
+                       href="{{ path('event_subscription_subscribe', {'id': event.id}) }}">Subscribe</a>
+                {% endif %}
+                {% if subscription %}
+                    <a class="btn btn-info"
+                       href="{{ path('event_subscription_unsubscribe', {'id': subscription.id}) }}">Unsubscribe</a>
+                {% endif %}
+            </div>
+        {% endif %}
+        <div class="btn-group">
+            <a class="btn btn-info" href="{{ path('event_event_show', {'id': event.id}) }}">Details</a>
+            {% if is_granted('ROLE_EVENT_ADMIN') %}
+                <a class="btn btn-warning" href="{{ path('event_event_edit', {'id': event.id}) }}">Edit</a>
+                <a class="btn btn-danger" href="{{ path('event_event_delete', {'id': event.id}) }}">Delete</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
