@@ -7,6 +7,7 @@ use App\Form\ConfirmationType;
 use App\Form\Event\EventType;
 use App\Repository\Event\EventRepository;
 use App\Transformer\EventCalTransformer;
+use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
 use Eluceo\iCal\Domain\Entity\Calendar;
 use Eluceo\iCal\Presentation\Factory\CalendarFactory;
@@ -31,6 +32,7 @@ class EventController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $event = new Event();
+        $event->setDuration(new DateInterval('PT0S'));
         $form = $this->createForm(EventType::class, $event);
         $form->add('Save', SubmitType::class);
         $form->handleRequest($request);

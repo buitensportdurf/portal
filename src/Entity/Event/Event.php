@@ -16,7 +16,7 @@ class Event
     #[ORM\Id, ORM\GeneratedValue, ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeInterface $startDate = null;
 
     #[ORM\Column(length: 255)]
@@ -25,7 +25,7 @@ class Event
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeInterface $subscriptionDeadline = null;
 
     #[ORM\Column(length: 255)]
@@ -37,6 +37,9 @@ class Event
 
     #[ORM\ManyToOne(cascade: ['persist', 'remove'])]
     private ?Image $image = null;
+
+    #[ORM\Column]
+    private ?\DateInterval $duration = null;
 
     public function __construct()
     {
@@ -178,6 +181,18 @@ class Event
     public function setImage(?Image $image): static
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getDuration(): ?\DateInterval
+    {
+        return $this->duration;
+    }
+
+    public function setDuration(\DateInterval $duration): static
+    {
+        $this->duration = $duration;
 
         return $this;
     }
