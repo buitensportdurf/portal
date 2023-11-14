@@ -23,8 +23,8 @@ class EventCalTransformer
         $icalEvent = new IcalEvent();
         $icalEvent
             ->setOccurrence(new TimeSpan(
-                new DateTime($event->getStartDate(), false),
-                new DateTime($event->getStartDate()->add($event->getDuration()), false)
+                new DateTime($event->getStartDate(), true),
+                new DateTime($event->getStartDate()->add($event->getDuration()), true)
             ))
             ->setUrl(new Uri($this->urlGenerator->generate(
                 'event_event_show', ['id' => $event->getId()],
