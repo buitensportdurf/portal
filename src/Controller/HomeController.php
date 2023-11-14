@@ -11,9 +11,9 @@ class HomeController extends AbstractController
     #[Route('/', name: 'home')]
     public function home(): Response
     {
-//        return $this->redirectToRoute('user_profile');
-        return $this->render('general/simple.html.twig', [
-            'text' => 'Welcome!'
-        ]);
+        return $this->redirectToRoute('event_event_index');
+//        return $this->render('general/simple.html.twig', [
+//            'text' => 'Welcome!'
+//        ]);
     }
 }
