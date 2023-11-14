@@ -6,7 +6,10 @@ use App\Repository\Event\TagRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
+#[UniqueEntity(fields: ['name'], message: 'There is already a tag with this name')]
 #[ORM\Entity(repositoryClass: TagRepository::class)]
 class Tag
 {
@@ -16,6 +19,8 @@ class Tag
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Please enter a name')]
+    #[Assert\Regex(pattern: '/^[a-z0-9_]+$/', message: 'Only lowercase letters, numbers and underscores are allowed')]
     private ?string $name = null;
 
     #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'tags')]
@@ -28,7 +33,7 @@ class Tag
 
     public function __toString(): string
     {
-        return $this->name ?? '';
+        return ucfirst(str_replace('_', ' ', $this->name));
     }
 
     public function getId(): ?int
