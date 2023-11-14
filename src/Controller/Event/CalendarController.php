@@ -36,32 +36,32 @@ class CalendarController extends AbstractController
     #[Route('/all/cal.ics', name: '_all')]
     public function cal(): Response
     {
-        return $this->getCalendarResponse($this->eventRepository->findAll());
+        return $this->getCalendarResponse($this->eventRepository->findAll(), 'all');
     }
 
     #[Route('/user/{user}/cal.ics', name: '_user')]
     public function user(User $user): Response
     {
-        return $this->getCalendarResponse($this->eventRepository->findEventsByUser($user));
+        return $this->getCalendarResponse($this->eventRepository->findEventsByUser($user), 'user');
     }
 
     #[Route('/tag/{tag}/cal.ics', name: '_tag')]
     public function tag(string $tag): Response
     {
-        return $this->getCalendarResponse($this->eventRepository->findEventsByTag($tag));
+        return $this->getCalendarResponse($this->eventRepository->findEventsByTag($tag), 'tag_' . $tag);
     }
 
     /**
      * @param array<Event> $events
      * @return Response
      */
-    private function getCalendarResponse(array $events): Response
+    private function getCalendarResponse(array $events, string $name): Response
     {
         $calendar = new Calendar();
         foreach ($events as $event) {
             $calendar->addEvent($this->eventCalTransformer->transform($event));
         }
-        $calendar->setProductIdentifier('buitensport_durf_events')
+        $calendar->setProductIdentifier('buitensport_durf_events_' . $name)
             ->setPublishedTTL(new DateInterval('PT1H'));
 
         $componentFactory = new CalendarFactory();
