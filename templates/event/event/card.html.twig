@@ -7,6 +7,9 @@
     <div class="card-body">
         <h5 class="card-title">{{ event }}</h5>
         <p class="card-text"><small class="text-muted">
+                {% for tag in event.tags %}
+                    <span class="badge bg-primary">{{ tag }}</span>
+                {% endfor %}<br>
                 Time: {{ event.startDate ? event.startDate|date('Y-m-d H:i') : '' }} <br>
                 Location: {{ event.location }} <br>
                 Duration: {{ event.duration|date('%d day(s) %h hour(s) %i minute(s)') }}

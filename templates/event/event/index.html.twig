@@ -1,12 +1,24 @@
 {% extends 'base/base.html.twig' %}
 
-{% set title %}Events{% endset %}
+{% set title %}All events{% endset %}
 
 {% block body %}
-    {% if is_granted('ROLE_EVENT_ADMIN') %}
-        <a class="btn btn-success" href="{{ path('event_event_new') }}">Create new</a>
-    {% endif %}
-    <a class="btn btn-primary" href="{{ path('event_event_cal') }}">Calendar</a>
+    <div class="btn-group">
+        {% if is_granted('ROLE_EVENT_ADMIN') %}
+            <a class="btn btn-success" href="{{ path('event_event_new') }}">Create new</a>
+        {% endif %}
+        <a class="btn btn-primary" href="{{ path('event_event_cal') }}">Calendar</a>
+    </div>
+    <h5>Tags</h5>
+    <div class="btn-group">
+        {% for tagOption in tags %}
+            {% if tagOption == tag %}
+                <a class="btn btn-success" href="{{ path('event_event_index') }}">{{ tagOption }}</a>
+            {% else %}
+                <a class="btn btn-primary" href="{{ path('event_event_index', {tag: tagOption}) }}">{{ tagOption }}</a>
+            {% endif %}
+        {% endfor %}
+    </div>
 
     <div class="row row-cols-1 row-cols-md-3 g-3">
         {% for event in events %}

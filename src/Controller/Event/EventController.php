@@ -6,6 +6,7 @@ use App\Entity\Event\Event;
 use App\Form\ConfirmationType;
 use App\Form\Event\EventType;
 use App\Repository\Event\EventRepository;
+use App\Repository\Event\TagRepository;
 use App\Transformer\EventCalTransformer;
 use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,10 +22,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class EventController extends AbstractController
 {
     #[Route('/index', name: '_index')]
-    public function index(EventRepository $eventRepository): Response
+    public function index(Request $request, EventRepository $eventRepository, TagRepository $tagRepository): Response
     {
+        $tag = $request->query->get('tag');
+
         return $this->render('event/event/index.html.twig', [
-            'events' => $eventRepository->findAll(),
+            'events' => $eventRepository->findEventsByTag($tag),
+            'tags' => $tagRepository->findAll(),
+            'tag' => $tag,
         ]);
     }
 

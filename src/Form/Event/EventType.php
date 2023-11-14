@@ -3,7 +3,9 @@
 namespace App\Form\Event;
 
 use App\Entity\Event\Event;
+use App\Entity\Event\Tag;
 use App\Form\ImageType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -14,6 +16,14 @@ class EventType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('name')
+            ->add('description')
+            ->add('location')
+            ->add('tags', EntityType::class, [
+                'class' => Tag::class,
+                'multiple' => true,
+                'expanded' => true,
+            ])
             ->add('startDate')
             ->add('duration', DateIntervalType::class, [
                 'widget' => 'integer',
@@ -23,10 +33,7 @@ class EventType extends AbstractType
                 'with_hours' => true,
                 'with_minutes' => true,
             ])
-            ->add('name')
-            ->add('description')
             ->add('subscriptionDeadline')
-            ->add('location')
             ->add('image', ImageType::class, ['required' => false]);
     }
 

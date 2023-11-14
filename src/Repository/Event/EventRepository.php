@@ -21,4 +21,20 @@ EventRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Event::class);
     }
+
+    public function findEventsByTag(?string $tag): array
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('e')
+            ->from($this->_entityName, 'e')
+            ->addOrderBy('e.startDate', 'ASC');
+
+        if ($tag) {
+            $qb->join('e.tags', 't')
+                ->where('t.name = :tag')
+                ->setParameter('tag', $tag);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }
