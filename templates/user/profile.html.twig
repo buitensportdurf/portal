@@ -5,7 +5,8 @@
 {% block body %}
     <div class="row">
         <div class="col-sm">
-            username: {{ app.user.username }} <br/>
+            <b>Id:</b> {{ app.user.id }} <br/>
+            <b>Username:</b> {{ app.user.username }} <br/>
 {#            {% if is_granted('ROLE_API') %}#}
 {#                Your api key: {{ app.user.apiKey }} <a class="btn btn-primary" href="{{ path('user_apikey_generate') }}">Regenerate</a> <br/>#}
 {#            {% endif %}#}

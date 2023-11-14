@@ -4,6 +4,7 @@ namespace App\Controller\Event;
 
 
 use App\Entity\Event\Event;
+use App\Entity\User;
 use App\Repository\Event\EventRepository;
 use App\Repository\Event\TagRepository;
 use App\Transformer\EventCalTransformer;
@@ -36,6 +37,12 @@ class CalendarController extends AbstractController
     public function cal(): Response
     {
         return $this->getCalendarResponse($this->eventRepository->findAll());
+    }
+
+    #[Route('/user/{user}/cal.ics', name: '_user')]
+    public function user(User $user): Response
+    {
+        return $this->getCalendarResponse($this->eventRepository->findEventsByUser($user));
     }
 
     #[Route('/tag/{tag}/cal.ics', name: '_tag')]

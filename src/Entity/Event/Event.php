@@ -5,6 +5,8 @@ namespace App\Entity\Event;
 use App\Entity\Image;
 use App\Entity\User;
 use App\Repository\Event\EventRepository;
+use DateInterval;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -17,7 +19,7 @@ class Event
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeInterface $startDate = null;
+    private ?DateTimeInterface $startDate = null;
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
@@ -26,7 +28,7 @@ class Event
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeInterface $subscriptionDeadline = null;
+    private ?DateTimeInterface $subscriptionDeadline = null;
 
     #[ORM\Column(length: 255)]
     private ?string $location = null;
@@ -39,7 +41,7 @@ class Event
     private ?Image $image = null;
 
     #[ORM\Column]
-    private ?\DateInterval $duration = null;
+    private ?DateInterval $duration = null;
 
     #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'events')]
     private Collection $tags;
@@ -60,12 +62,12 @@ class Event
         return $this->id;
     }
 
-    public function getStartDate(): ?\DateTimeInterface
+    public function getStartDate(): ?DateTimeInterface
     {
         return $this->startDate;
     }
 
-    public function setStartDate(\DateTimeInterface $startDate): static
+    public function setStartDate(DateTimeInterface $startDate): static
     {
         $this->startDate = $startDate;
 
@@ -96,12 +98,12 @@ class Event
         return $this;
     }
 
-    public function getSubscriptionDeadline(): ?\DateTimeInterface
+    public function getSubscriptionDeadline(): ?DateTimeInterface
     {
         return $this->subscriptionDeadline;
     }
 
-    public function setSubscriptionDeadline(\DateTimeInterface $subscriptionDeadline): static
+    public function setSubscriptionDeadline(DateTimeInterface $subscriptionDeadline): static
     {
         $this->subscriptionDeadline = $subscriptionDeadline;
 
@@ -189,12 +191,12 @@ class Event
         return $this;
     }
 
-    public function getDuration(): ?\DateInterval
+    public function getDuration(): ?DateInterval
     {
         return $this->duration;
     }
 
-    public function setDuration(\DateInterval $duration): static
+    public function setDuration(DateInterval $duration): static
     {
         $this->duration = $duration;
 

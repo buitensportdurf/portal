@@ -5,6 +5,7 @@
 {% block body %}
     <h5>Generic</h5>
     <a class="btn btn-primary" href="{{ path('event_calendar_all') }}">All events</a>
+    <a class="btn btn-primary" href="{{ path('event_calendar_user', {user: app.user.id}) }}">Your events</a>
     <h5>By tag</h5>
     {% for tag in tags %}
         <a class="btn btn-primary" href="{{ path('event_calendar_tag', {tag: tag.name}) }}">{{ tag }}</a>

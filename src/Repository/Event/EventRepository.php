@@ -3,6 +3,7 @@
 namespace App\Repository\Event;
 
 use App\Entity\Event\Event;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -34,6 +35,20 @@ EventRepository extends ServiceEntityRepository
                 ->where('t.name = :tag')
                 ->setParameter('tag', $tag);
         }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findEventsByUser(User $user)
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('e')
+            ->from($this->_entityName, 'e')
+            ->addOrderBy('e.startDate', 'ASC')
+            ->join('e.eventSubscriptions', 's')
+            ->join('s.createdUser', 'u')
+            ->where('u.id = :user')
+            ->setParameter('user', $user->getId()->toBinary());
 
         return $qb->getQuery()->getResult();
     }
