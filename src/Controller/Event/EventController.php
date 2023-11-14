@@ -7,11 +7,8 @@ use App\Form\ConfirmationType;
 use App\Form\Event\EventType;
 use App\Repository\Event\EventRepository;
 use App\Repository\Event\TagRepository;
-use App\Transformer\EventCalTransformer;
 use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
-use Eluceo\iCal\Domain\Entity\Calendar;
-use Eluceo\iCal\Presentation\Factory\CalendarFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
@@ -99,25 +96,6 @@ class EventController extends AbstractController
         return $this->render('general/confirmation.form.html.twig', [
             'message' => sprintf('Are you sure you want to delete event "%s"', $event),
             'form' => $form->createView(),
-        ]);
-    }
-
-    #[Route('/cal.ics', name: '_cal')]
-    public function cal(EventCalTransformer $transformer, EventRepository $eventRepository): Response
-    {
-        $calendar = new Calendar();
-        foreach ($eventRepository->findAll() as $event) {
-            $calendar->addEvent($transformer($event));
-        }
-        $calendar->setProductIdentifier('buitensport_durf_events')
-            ->setPublishedTTL(new DateInterval('PT1H'));
-
-        $componentFactory = new CalendarFactory();
-        $calendarComponent = $componentFactory->createCalendar($calendar);
-
-        return new Response($calendarComponent, 200, [
-            'Content-Type' => 'text/calendar; charset=utf-8',
-            'Content-Disposition' => 'attachment; filename="cal.ics"',
         ]);
     }
 }

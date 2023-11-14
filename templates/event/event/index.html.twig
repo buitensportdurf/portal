@@ -7,7 +7,7 @@
         {% if is_granted('ROLE_EVENT_ADMIN') %}
             <a class="btn btn-success" href="{{ path('event_event_new') }}">Create new</a>
         {% endif %}
-        <a class="btn btn-primary" href="{{ path('event_event_cal') }}">Calendar</a>
+        <a class="btn btn-primary" href="{{ path('event_calendar_index') }}">Calendars</a>
     </div>
     <h5>Tags</h5>
     <div class="btn-group">

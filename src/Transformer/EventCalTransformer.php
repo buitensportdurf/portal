@@ -18,7 +18,7 @@ class EventCalTransformer
     {
     }
 
-    public function __invoke(Event $event): IcalEvent
+    public function transform(Event $event): IcalEvent
     {
         $icalEvent = new IcalEvent();
         $icalEvent

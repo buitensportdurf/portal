@@ -1,0 +1,12 @@
+{% extends 'base/base.html.twig' %}
+
+{% set title %}All event calendars{% endset %}
+
+{% block body %}
+    <h5>All</h5>
+    <a class="btn btn-primary" href="{{ path('event_calendar_all') }}">All events</a>
+    <h5>By tag</h5>
+    {% for tag in tags %}
+        <a class="btn btn-primary" href="{{ path('event_calendar_tag', {tag: tag}) }}">{{ tag }}</a>
+    {% endfor %}
+{% endblock %}
