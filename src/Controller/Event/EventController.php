@@ -104,6 +104,7 @@ class EventController extends AbstractController
         foreach ($eventRepository->findAll() as $event) {
             $calendar->addEvent($transformer($event));
         }
+        $calendar->setProductIdentifier('Buitensport Durf events');
 
         $componentFactory = new CalendarFactory();
         $calendarComponent = $componentFactory->createCalendar($calendar);
