@@ -8,14 +8,9 @@
 
         <div class="collapse navbar-collapse" id="navbar">
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                {#                <li class="nav-item"> #}
-                {#                    <a class="nav-link" href="/">Home</a> #}
-                {#                </li> #}
-                {% if is_granted("ROLE_USER") %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('event_event_index') }}">Events</a>
-                    </li>
-                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('event_event_index') }}">Events</a>
+                </li>
             </ul>
             <ul class="navbar-nav my-2 my-lg-0">
                 {% if app.environment == 'dev' %}

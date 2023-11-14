@@ -157,8 +157,11 @@ class Event
         return $this->getSubscription($user) !== null;
     }
 
-    public function getSubscription(User $user): ?EventSubscription
+    public function getSubscription(?User $user): ?EventSubscription
     {
+        if ($user === null) {
+            return null;
+        }
         foreach ($this->eventSubscriptions as $eventSubscription) {
             if ($eventSubscription->getCreatedUser() === $user) {
                 return $eventSubscription;

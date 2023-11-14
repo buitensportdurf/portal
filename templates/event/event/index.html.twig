@@ -6,6 +6,7 @@
     {% if is_granted('ROLE_EVENT_ADMIN') %}
         <a class="btn btn-success" href="{{ path('event_event_new') }}">Create new</a>
     {% endif %}
+    <a class="btn btn-primary" href="{{ path('event_event_cal') }}">Calendar</a>
 
     <div class="row row-cols-1 row-cols-md-3 g-3">
         {% for event in events %}
