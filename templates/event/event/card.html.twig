@@ -1,7 +1,9 @@
 {# @var event App\Entity\Event\Event #}
 {% set subscription = event.subscription(app.user) %}
 <div class="card">
-    <img class="card-img-top" src="{{ vich_uploader_asset(event.image) }}" alt="{{ event.name }} image">
+    {% if event.image %}
+        <img class="card-img-top" src="{{ vich_uploader_asset(event.image) }}" alt="{{ event.name }} image">
+    {% endif %}
     <div class="card-body">
         <h5 class="card-title">{{ event }}</h5>
         <p class="card-text"><small class="text-muted">
@@ -38,7 +40,6 @@
             <a class="btn btn-info" href="{{ path('event_event_show', {'id': event.id}) }}">Details</a>
             {% if is_granted('ROLE_EVENT_ADMIN') %}
                 <a class="btn btn-warning" href="{{ path('event_event_edit', {'id': event.id}) }}">Edit</a>
-                <a class="btn btn-danger" href="{{ path('event_event_delete', {'id': event.id}) }}">Delete</a>
             {% endif %}
         </div>
     </div>
