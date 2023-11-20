@@ -15,15 +15,17 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Event[]    findAll()
  * @method Event[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class
-EventRepository extends ServiceEntityRepository
+class EventRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Event::class);
     }
 
-    public function findEventsByTag(?string $tag): array
+    /**
+     * @return array<Event>
+     */
+    public function findByTag(?string $tag): array
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('e')
@@ -39,7 +41,10 @@ EventRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function findEventsByUser(User $user)
+    /**
+     * @return array<Event>
+     */
+    public function findSubscribedByUser(User $user): array
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('e')

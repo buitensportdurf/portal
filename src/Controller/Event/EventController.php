@@ -24,7 +24,7 @@ class EventController extends AbstractController
         $tag = $request->query->get('tag');
 
         return $this->render('event/event/index.html.twig', [
-            'events' => $eventRepository->findEventsByTag($tag),
+            'events' => $eventRepository->findByTag($tag),
             'tags' => $tagRepository->findAll(),
             'tag' => $tag,
         ]);

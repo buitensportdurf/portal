@@ -15,32 +15,10 @@ class EventType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('name')
-            ->add('description')
-            ->add('location')
-            ->add('tags', EntityType::class, [
-                'class' => Tag::class,
-                'multiple' => true,
-                'expanded' => true,
-            ])
-            ->add('startDate')
-            ->add('duration', DateIntervalType::class, [
-                'widget' => 'integer',
-                'with_years' => false,
-                'with_months' => false,
-                'with_days' => true,
-                'with_hours' => true,
-                'with_minutes' => true,
-            ])
-            ->add('subscriptionDeadline')
-            ->add('image', ImageType::class, ['required' => false]);
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
+    public function getParent()
     {
-        $resolver->setDefaults([
-            'data_class' => Event::class,
-        ]);
+        return BaseEventType::class;
     }
 }
