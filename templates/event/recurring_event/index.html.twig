@@ -1,0 +1,17 @@
+{% extends 'base/base.html.twig' %}
+
+{% set title %}All events{% endset %}
+
+{% block body %}
+    <div class="btn-group">
+        {% if is_granted('ROLE_EVENT_ADMIN') %}
+            <a class="btn btn-success" href="{{ path('event_recurring_event_new') }}">Create new</a>
+        {% endif %}
+    </div>
+
+    <div class="list-group">
+        {% for event in recurringEvents %}
+            <a class="list-group-item list-group-item-action" href="{{ path('event_recurring_event_edit', {'id': event.id}) }}">{{ event }}</a>
+        {% endfor %}
+    </div>
+{% endblock %}

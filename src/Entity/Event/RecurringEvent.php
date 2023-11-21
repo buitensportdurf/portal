@@ -2,12 +2,14 @@
 
 namespace App\Entity\Event;
 
-use App\Repository\Event\EventRepository;
+use App\Repository\Event\RecurringEventRepository;
+use App\Service\TimeIntervalService;
+use DateInterval;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: EventRepository::class)]
+#[ORM\Entity(repositoryClass: RecurringEventRepository::class)]
 class RecurringEvent extends BaseEvent
 {
     #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'recurringEvents')]
@@ -16,10 +18,26 @@ class RecurringEvent extends BaseEvent
     #[ORM\OneToMany(mappedBy: 'recurringEvent', targetEntity: Event::class)]
     private Collection $events;
 
+    #[ORM\Column]
+    private ?string $recurrenceRule = null;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
         $this->events = new ArrayCollection();
+    }
+
+    public function getRecurringDate(int $index): \DateTimeInterface
+    {
+        try {
+            return TimeIntervalService::addIntervalNTimes(
+                $this->getStartDate(),
+                DateInterval::createFromDateString($this->getRecurrenceRule()),
+                $index
+            );
+        } catch (\Exception) {
+            return $this->getStartDate();
+        }
     }
 
     /**
@@ -72,6 +90,18 @@ class RecurringEvent extends BaseEvent
                 $event->setRecurringEvent(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRecurrenceRule(): ?string
+    {
+        return $this->recurrenceRule;
+    }
+
+    public function setRecurrenceRule(string $recurrenceRule): static
+    {
+        $this->recurrenceRule = $recurrenceRule;
 
         return $this;
     }

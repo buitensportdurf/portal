@@ -1,0 +1,15 @@
+{% extends 'base/base.html.twig' %}
+
+{% set title %}Edit Recurring Event {{ recurringEvent }}{% endset %}
+
+{% block body %}
+    <a class="btn btn-primary" href="{{ path('event_recurring_event_index') }}">Back to list</a>
+    <a class="btn btn-danger" href="{{ path('event_recurring_event_delete', {'id': recurringEvent.id}) }}">Delete</a>
+
+    <br><br>
+    {% for i in 0..5 %}
+    {{ recurringEvent.recurringDate(i)|date('r') }}<br>
+    {% endfor %}
+
+    {{ form(form) }}
+{% endblock %}

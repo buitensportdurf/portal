@@ -9,7 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-abstract class BaseEventType extends AbstractType
+class BaseEventType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

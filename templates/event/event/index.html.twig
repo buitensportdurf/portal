@@ -6,6 +6,7 @@
     <div class="btn-group">
         {% if is_granted('ROLE_EVENT_ADMIN') %}
             <a class="btn btn-success" href="{{ path('event_event_new') }}">Create new</a>
+            <a class="btn btn-primary" href="{{ path('event_recurring_event_index') }}">Recurring events</a>
         {% endif %}
         <a class="btn btn-primary" href="{{ path('event_calendar_index') }}">Calendars</a>
     </div>
