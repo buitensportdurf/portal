@@ -8,6 +8,8 @@ use DateInterval;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: RecurringEventRepository::class)]
 class RecurringEvent extends BaseEvent
@@ -19,6 +21,7 @@ class RecurringEvent extends BaseEvent
     private Collection $events;
 
     #[ORM\Column]
+    #[Assert\Callback(callback: [self::class, 'validateRecurrenceRule'])]
     private ?string $recurrenceRule = null;
 
     public function __construct()
@@ -37,6 +40,21 @@ class RecurringEvent extends BaseEvent
             );
         } catch (\Exception) {
             return $this->getStartDate();
+        }
+    }
+
+    public static function validateRecurrenceRule(
+        mixed $value,
+        ExecutionContextInterface $context,
+        mixed $payload
+    ): void
+    {
+        try {
+            DateInterval::createFromDateString($value);
+        } catch (\Exception) {
+            $context->buildViolation('Invalid recurrence rule')
+                ->atPath('recurrenceRule')
+                ->addViolation();
         }
     }
 
