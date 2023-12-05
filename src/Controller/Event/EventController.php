@@ -52,7 +52,7 @@ class EventController extends AbstractController
         ]);
     }
 
-    #[Route('/show/{id}', name: '_show')]
+    #[Route('/{id}/show', name: '_show')]
     public function show(Event $event): Response
     {
         return $this->render('event/event/show.html.twig', [
@@ -60,7 +60,7 @@ class EventController extends AbstractController
         ]);
     }
 
-    #[Route('/edit/{id}', name: '_edit')]
+    #[Route('/{id}/edit', name: '_edit')]
     public function edit(Request $request, Event $event, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(EventType::class, $event);

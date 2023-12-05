@@ -35,7 +35,7 @@ class RecurringEvent extends BaseEvent
         try {
             return TimeIntervalService::addIntervalNTimes(
                 $this->getStartDate(),
-                DateInterval::createFromDateString($this->getRecurrenceRule()),
+                $this->getRecurrenceInterval(),
                 $index
             );
         } catch (\Exception) {
@@ -43,18 +43,33 @@ class RecurringEvent extends BaseEvent
         }
     }
 
+    public function createNextEvent(): Event
+    {
+        $lastEvent = $this->getEvents()->last();
+        $lastDate = $lastEvent ? $lastEvent->getStartDate() : $this->getStartDate();
+        $event = new Event();
+        $event
+            ->copyFrom($this)
+            ->setStartDate($lastDate->add($this->getRecurrenceInterval()))
+        ;
+        $this->addEvent($event);
+
+        return $event;
+    }
+
     public static function validateRecurrenceRule(
-        mixed $value,
+        mixed                     $value,
         ExecutionContextInterface $context,
-        mixed $payload
+        mixed                     $payload
     ): void
     {
         try {
             DateInterval::createFromDateString($value);
         } catch (\Exception) {
             $context->buildViolation('Invalid recurrence rule')
-                ->atPath('recurrenceRule')
-                ->addViolation();
+                    ->atPath('recurrenceRule')
+                    ->addViolation()
+            ;
         }
     }
 
@@ -112,6 +127,12 @@ class RecurringEvent extends BaseEvent
         return $this;
     }
 
+    public function getFutureEvents(): Collection
+    {
+        $now = new \DateTimeImmutable();
+        return $this->getEvents()->filter(fn(Event $event) => $event->getStartDate() > $now);
+    }
+
     public function getRecurrenceRule(): ?string
     {
         return $this->recurrenceRule;
@@ -122,5 +143,10 @@ class RecurringEvent extends BaseEvent
         $this->recurrenceRule = $recurrenceRule;
 
         return $this;
+    }
+
+    public function getRecurrenceInterval(): false|DateInterval
+    {
+        return DateInterval::createFromDateString($this->getRecurrenceRule());
     }
 }

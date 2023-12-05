@@ -42,6 +42,21 @@ class BaseEvent
         return $this->name;
     }
 
+    public function copyFrom(self $event): self
+    {
+        $this
+            ->setStartDate($event->getStartDate())
+            ->setName($event->getName())
+            ->setDescription($event->getDescription())
+            ->setSubscriptionDeadline($event->getSubscriptionDeadline())
+            ->setLocation($event->getLocation())
+            ->setImage($event->getImage())
+            ->setDuration($event->getDuration())
+        ;
+
+        return $this;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

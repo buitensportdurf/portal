@@ -17,6 +17,10 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/event/recurring_event', name: 'event_recurring_event')]
 class RecurringEventController extends AbstractController
 {
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+    ) {}
+
     #[Route('/index', name: '_index')]
     public function index(RecurringEventRepository $eventRepository): Response
     {
@@ -47,11 +51,10 @@ class RecurringEventController extends AbstractController
         ]);
     }
 
-    #[Route('/edit/{id}', name: '_edit')]
+    #[Route('/{id}/edit', name: '_edit')]
     public function edit(
-        Request $request,
+        Request        $request,
         RecurringEvent $recurringEvent,
-        EntityManagerInterface $entityManager,
     ): Response
     {
         $form = $this->createForm(RecurringEventType::class, $recurringEvent);
@@ -59,8 +62,11 @@ class RecurringEventController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $this->deleteFutureEvents($recurringEvent);
+            $newEventCount = $this->createNewEvents($recurringEvent);
+            $this->em->flush();
 
+            $this->addFlash('success', sprintf('Updated event "%s" and created %d new events', $recurringEvent, $newEventCount));
             return $this->redirectToRoute('event_recurring_event_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -70,7 +76,7 @@ class RecurringEventController extends AbstractController
         ]);
     }
 
-    #[Route('/show/{id}', name: '_show')]
+    #[Route('/{id}/show', name: '_show')]
     public function show(RecurringEvent $recurringEvent): Response
     {
         return $this->render('event/recurring_event/show.html.twig', [
@@ -85,6 +91,7 @@ class RecurringEventController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->deleteFutureEvents($recurringEvent);
             $entityManager->remove($recurringEvent);
             $entityManager->flush();
 
@@ -96,5 +103,24 @@ class RecurringEventController extends AbstractController
             'message' => sprintf('Are you sure you want to delete event "%s"', $recurringEvent),
             'form' => $form->createView(),
         ]);
+    }
+
+    private function deleteFutureEvents(RecurringEvent $recurringEvent): void
+    {
+        foreach ($recurringEvent->getFutureEvents() as $event) {
+            $this->em->remove($event);
+            $recurringEvent->removeEvent($event);
+        }
+    }
+
+    private function createNewEvents(RecurringEvent $recurringEvent): int
+    {
+        $newEventCount = 0;
+        do {
+            $event = $recurringEvent->createNextEvent();
+            $this->em->persist($event);
+            $newEventCount++;
+        } while ($event->getStartDate() < new \DateTimeImmutable('+1 year'));
+        return $newEventCount;
     }
 }
