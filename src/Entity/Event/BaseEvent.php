@@ -4,20 +4,20 @@ namespace App\Entity\Event;
 
 use App\Entity\Image;
 use DateInterval;
-use DateTimeInterface;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\MappedSuperclass]
-class BaseEvent
+abstract class BaseEvent
 {
     #[ORM\Id, ORM\GeneratedValue, ORM\Column]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?DateTimeInterface $startDate = null;
+    private ?DateTimeImmutable $startDate;
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
@@ -26,7 +26,7 @@ class BaseEvent
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?DateTimeInterface $subscriptionDeadline = null;
+    private ?DateTimeImmutable $subscriptionDeadline = null;
 
     #[ORM\Column(length: 255)]
     private ?string $location = null;
@@ -37,6 +37,12 @@ class BaseEvent
     #[ORM\Column]
     private ?DateInterval $duration = null;
 
+    public function __construct()
+    {
+        $this->startDate = new DateTimeImmutable();
+        $this->tags = new ArrayCollection();
+    }
+
     public function __toString(): string
     {
         return $this->name;
@@ -45,13 +51,17 @@ class BaseEvent
     public function copyFrom(self $event): self
     {
         $this
-            ->setStartDate($event->getStartDate())
             ->setName($event->getName())
             ->setDescription($event->getDescription())
             ->setSubscriptionDeadline($event->getSubscriptionDeadline())
             ->setLocation($event->getLocation())
             ->setImage($event->getImage())
             ->setDuration($event->getDuration())
+            ->setTags($event->getTags())
+            ->setStartDate($this->getStartDate()->setTime(
+                $event->getStartDate()->format('H'),
+                $event->getStartDate()->format('i')
+            ))
         ;
 
         return $this;
@@ -62,12 +72,17 @@ class BaseEvent
         return $this->id;
     }
 
-    public function getStartDate(): ?DateTimeInterface
+    public abstract function getTags(): Collection;
+    public abstract function setTags(Collection $tags): static;
+    public abstract function addTag(Tag $tag): static;
+    public abstract function removeTag(Tag $tag): static;
+
+    public function getStartDate(): ?DateTimeImmutable
     {
         return $this->startDate;
     }
 
-    public function setStartDate(DateTimeInterface $startDate): static
+    public function setStartDate(DateTimeImmutable $startDate): static
     {
         $this->startDate = $startDate;
 
@@ -98,12 +113,12 @@ class BaseEvent
         return $this;
     }
 
-    public function getSubscriptionDeadline(): ?DateTimeInterface
+    public function getSubscriptionDeadline(): ?DateTimeImmutable
     {
         return $this->subscriptionDeadline;
     }
 
-    public function setSubscriptionDeadline(DateTimeInterface $subscriptionDeadline): static
+    public function setSubscriptionDeadline(DateTimeImmutable $subscriptionDeadline): static
     {
         $this->subscriptionDeadline = $subscriptionDeadline;
 

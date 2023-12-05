@@ -26,6 +26,7 @@ class RecurringEvent extends BaseEvent
 
     public function __construct()
     {
+        parent::__construct();
         $this->tags = new ArrayCollection();
         $this->events = new ArrayCollection();
     }
@@ -47,6 +48,10 @@ class RecurringEvent extends BaseEvent
     {
         $lastEvent = $this->getEvents()->last();
         $lastDate = $lastEvent ? $lastEvent->getStartDate() : $this->getStartDate();
+        $prevLastDate = $lastDate;
+        if ($lastDate < new \DateTimeImmutable()) {
+            $lastDate = (new \DateTimeImmutable())->setTime($prevLastDate->format('H'), $prevLastDate->format('i'));
+        }
         $event = new Event();
         $event
             ->copyFrom($this)
@@ -97,6 +102,13 @@ class RecurringEvent extends BaseEvent
         return $this;
     }
 
+    public function setTags(Collection $tags): static
+    {
+        $this->tags = $tags;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Event>
      */
@@ -127,6 +139,9 @@ class RecurringEvent extends BaseEvent
         return $this;
     }
 
+    /**
+     * @return Collection<int, Event>
+     */
     public function getFutureEvents(): Collection
     {
         $now = new \DateTimeImmutable();

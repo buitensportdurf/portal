@@ -11,9 +11,10 @@
                 {% for tag in event.tags %}
                     <span class="badge bg-primary">{{ tag }}</span>
                 {% endfor %}<br>
-                Time: {{ event.startDate ? event.startDate|date('Y-m-d H:i') : '' }} <br>
-                Location: {{ event.location }} <br>
-                Duration: {{ event.duration|date('%d day(s) %h hour(s) %i minute(s)') }}
+                Start: {{ event.startDate ? event.startDate|date('Y-m-d H:i') : '' }} <br>
+                End: {{ event.startDate ? (event.startDate.add(event.duration))|date('Y-m-d H:i') : '' }} <br>
+                Duration: {{ event.duration|time_duration }} <br>
+                Location: {{ event.location }}
             </small></p>
         <p class="card-text">{{ event.description }}</p>
     </div>

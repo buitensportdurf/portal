@@ -21,6 +21,9 @@
         <div class="btn-group">
             <a class="btn btn-warning" href="{{ path('event_event_edit', {'id': event.id}) }}">Edit</a>
             <a class="btn btn-danger" href="{{ path('event_event_delete', {'id': event.id}) }}">Delete</a>
+            {% if event.recurringEvent %}
+                <a class="btn btn-info" href="{{ path('event_recurring_event_show', {'id': event.recurringEvent.id}) }}">Parent</a>
+            {% endif %}
         </div>
     {% endif %}
 

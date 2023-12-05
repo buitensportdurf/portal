@@ -57,16 +57,26 @@ class RecurringEventController extends AbstractController
         RecurringEvent $recurringEvent,
     ): Response
     {
+        $currentRecurrenceRule = $recurringEvent->getRecurrenceRule();
         $form = $this->createForm(RecurringEventType::class, $recurringEvent);
         $form->add('Save', SubmitType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->deleteFutureEvents($recurringEvent);
-            $newEventCount = $this->createNewEvents($recurringEvent);
+            $newRecurrenceRule = $recurringEvent->getRecurrenceRule();
+            if ($currentRecurrenceRule !== $newRecurrenceRule) {
+                $oldEventCount = $this->deleteFutureEvents($recurringEvent);
+                $newEventCount = $this->createNewEvents($recurringEvent);
+                $this->addFlash('success', sprintf('Recurrence rule changed, deleted %d old events and created %d new events', $oldEventCount, $newEventCount));
+            } else {
+                foreach ($recurringEvent->getFutureEvents() as $event) {
+                    $event->copyFrom($recurringEvent);
+                    $this->em->persist($event);
+                }
+            }
             $this->em->flush();
 
-            $this->addFlash('success', sprintf('Updated event "%s" and created %d new events', $recurringEvent, $newEventCount));
+            $this->addFlash('success', sprintf('Updated event "%s"', $recurringEvent));
             return $this->redirectToRoute('event_recurring_event_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -105,22 +115,47 @@ class RecurringEventController extends AbstractController
         ]);
     }
 
-    private function deleteFutureEvents(RecurringEvent $recurringEvent): void
+    #[Route('/{id}/delete_events', name: '_delete_events')]
+    public function deleteEvents(RecurringEvent $recurringEvent): Response
     {
+        $count = $this->deleteFutureEvents($recurringEvent);
+        $this->em->flush();
+        $this->addFlash('success', sprintf('Deleted %d events', $count));
+
+        return $this->redirectToRoute('event_recurring_event_index');
+    }
+
+    #[Route('/{id}/create_events', name: '_create_events')]
+    public function createEvents(RecurringEvent $recurringEvent): Response
+    {
+        $count = $this->createNewEvents($recurringEvent);
+        $this->em->flush();
+        $this->addFlash('success', sprintf('Created %d events', $count));
+
+        return $this->redirectToRoute('event_recurring_event_index');
+    }
+
+    private function deleteFutureEvents(RecurringEvent $recurringEvent): int
+    {
+        $deletedEventCount = 0;
         foreach ($recurringEvent->getFutureEvents() as $event) {
             $this->em->remove($event);
             $recurringEvent->removeEvent($event);
+            $deletedEventCount++;
         }
+        return $deletedEventCount;
     }
 
     private function createNewEvents(RecurringEvent $recurringEvent): int
     {
         $newEventCount = 0;
-        do {
-            $event = $recurringEvent->createNextEvent();
+        $nextYear = new \DateTimeImmutable('+1 year');
+        while ($event = $recurringEvent->createNextEvent() and $event->getStartDate() < $nextYear) {
             $this->em->persist($event);
             $newEventCount++;
-        } while ($event->getStartDate() < new \DateTimeImmutable('+1 year'));
+        }
+        // We need to remove the last event, because it is and should not persist
+        $recurringEvent->removeEvent($event);
         return $newEventCount;
     }
 }

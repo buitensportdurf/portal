@@ -9,9 +9,16 @@
         {% endif %}
     </div>
 
-    <div class="list-group">
+    <ul class="list-group">
         {% for event in recurringEvents %}
-            <a class="list-group-item list-group-item-action" href="{{ path('event_recurring_event_edit', {'id': event.id}) }}">{{ event }}</a>
+            <li class="list-group-item">
+                {% if is_granted('ROLE_EVENT_ADMIN') %}
+                    <a class="btn btn-warning" href="{{ path('event_recurring_event_edit', {'id': event.id}) }}">Edit</a>
+                    <a class="btn btn-success" href="{{ path('event_recurring_event_create_events', {'id': event.id}) }}">Create events</a>
+                    <a class="btn btn-danger" href="{{ path('event_recurring_event_delete_events', {'id': event.id}) }}">Delete events</a>
+                {% endif %}
+                {{ event }}
+            </li>
         {% endfor %}
-    </div>
+    </ul>
 {% endblock %}

@@ -23,6 +23,7 @@ class Event extends BaseEvent
 
     public function __construct()
     {
+        parent::__construct();
         $this->eventSubscriptions = new ArrayCollection();
         $this->tags = new ArrayCollection();
     }
@@ -104,6 +105,13 @@ class Event extends BaseEvent
     public function removeTag(Tag $tag): static
     {
         $this->tags->removeElement($tag);
+
+        return $this;
+    }
+
+    public function setTags(Collection $tags): static
+    {
+        $this->tags = $tags;
 
         return $this;
     }
