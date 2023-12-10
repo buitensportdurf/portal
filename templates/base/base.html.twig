@@ -38,20 +38,7 @@
 </div>
 
 {# body blocks #}
-{% block bodyraw %}
-    <div class="container">
-        <div class="row">
-            <div class="col-sm mx-auto">
-                {% if title is defined %}<h3>{{ title }}</h3>{% endif %}
-                {% block body %}{% endblock %}
-            </div>
-            {% if block('body2') is defined %}
-                <div class="col-sm mx-auto">
-                    {{ block('body2') }}
-                </div>
-            {% endif %}
-        </div>
-    </div>
+{% block content %}
 {% endblock %}
 
 {# javascript block #}

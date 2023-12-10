@@ -5,6 +5,7 @@ namespace App\Controller\Event;
 use App\Entity\Event\RecurringEvent;
 use App\Form\ConfirmationType;
 use App\Form\Event\RecurringEventType;
+use App\Repository\Event\EventRepository;
 use App\Repository\Event\RecurringEventRepository;
 use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,19 +19,21 @@ use Symfony\Component\Routing\Annotation\Route;
 class RecurringEventController extends AbstractController
 {
     public function __construct(
-        private readonly EntityManagerInterface $em,
+        private readonly EntityManagerInterface   $em,
+        private readonly RecurringEventRepository $repository,
+        private readonly EventRepository          $eventRepository,
     ) {}
 
     #[Route('/index', name: '_index')]
-    public function index(RecurringEventRepository $eventRepository): Response
+    public function index(): Response
     {
         return $this->render('event/recurring_event/index.html.twig', [
-            'recurringEvents' => $eventRepository->findAll(),
+            'recurringEvents' => $this->repository->findAll(),
         ]);
     }
 
     #[Route('/new', name: '_new')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request): Response
     {
         $recurringEvent = new RecurringEvent();
         $recurringEvent->setDuration(new DateInterval('PT0S'));
@@ -39,8 +42,8 @@ class RecurringEventController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($recurringEvent);
-            $entityManager->flush();
+            $this->em->persist($recurringEvent);
+            $this->em->flush();
 
             return $this->redirectToRoute('event_recurring_event_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -95,15 +98,15 @@ class RecurringEventController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: '_delete')]
-    public function delete(Request $request, RecurringEvent $recurringEvent, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, RecurringEvent $recurringEvent): Response
     {
         $form = $this->createForm(ConfirmationType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->deleteFutureEvents($recurringEvent);
-            $entityManager->remove($recurringEvent);
-            $entityManager->flush();
+            $this->em->remove($recurringEvent);
+            $this->em->flush();
 
             $this->addFlash('success', sprintf('Deleted event "%s"', $recurringEvent));
             return $this->redirectToRoute('event_recurring_event_index');

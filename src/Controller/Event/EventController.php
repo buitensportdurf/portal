@@ -80,14 +80,13 @@ class EventController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: '_delete')]
-    public function delete(Request $request, Event $event, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Event $event, EventRepository $repository): Response
     {
         $form = $this->createForm(ConfirmationType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->remove($event);
-            $entityManager->flush();
+            $repository->remove($event);
 
             $this->addFlash('success', sprintf('Deleted event "%s"', $event));
             return $this->redirectToRoute('event_event_index');

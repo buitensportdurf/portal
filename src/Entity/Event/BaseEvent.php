@@ -31,7 +31,7 @@ abstract class BaseEvent
     #[ORM\Column(length: 255)]
     private ?string $location = null;
 
-    #[ORM\ManyToOne(cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(cascade: ['persist'])]
     private ?Image $image = null;
 
     #[ORM\Column]
@@ -40,7 +40,7 @@ abstract class BaseEvent
     public function __construct()
     {
         $this->startDate = new DateTimeImmutable();
-        $this->tags = new ArrayCollection();
+        $this->setTags(new ArrayCollection());
     }
 
     public function __toString(): string

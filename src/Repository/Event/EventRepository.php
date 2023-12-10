@@ -29,13 +29,15 @@ class EventRepository extends ServiceEntityRepository
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('e')
-            ->from($this->_entityName, 'e')
-            ->addOrderBy('e.startDate', 'ASC');
+           ->from($this->_entityName, 'e')
+           ->addOrderBy('e.startDate', 'ASC')
+        ;
 
         if ($tag) {
             $qb->join('e.tags', 't')
-                ->where('t.name = :tag')
-                ->setParameter('tag', $tag);
+               ->where('t.name = :tag')
+               ->setParameter('tag', $tag)
+            ;
         }
 
         return $qb->getQuery()->getResult();
@@ -48,13 +50,26 @@ class EventRepository extends ServiceEntityRepository
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('e')
-            ->from($this->_entityName, 'e')
-            ->addOrderBy('e.startDate', 'ASC')
-            ->join('e.eventSubscriptions', 's')
-            ->join('s.createdUser', 'u')
-            ->where('u.id = :user')
-            ->setParameter('user', $user->getId()->toBinary());
+           ->from($this->_entityName, 'e')
+           ->addOrderBy('e.startDate', 'ASC')
+           ->join('e.eventSubscriptions', 's')
+           ->join('s.createdUser', 'u')
+           ->where('u.id = :user')
+           ->setParameter('user', $user->getId()->toBinary())
+        ;
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function remove(Event $event): void
+    {
+        // Check if image needs to be deleted
+        $image = $event->getImage();
+        if ($image && $event->getRecurringEvent()?->getImage() !== $image
+            && count($this->findBy(['image' => $image])) === 1) {
+            $this->_em->remove($image);
+        }
+        $this->_em->remove($event);
+        $this->_em->flush();
     }
 }
