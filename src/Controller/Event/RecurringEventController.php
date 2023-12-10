@@ -21,7 +21,6 @@ class RecurringEventController extends AbstractController
     public function __construct(
         private readonly EntityManagerInterface   $em,
         private readonly RecurringEventRepository $repository,
-        private readonly EventRepository          $eventRepository,
     ) {}
 
     #[Route('/index', name: '_index')]
@@ -80,7 +79,7 @@ class RecurringEventController extends AbstractController
             $this->em->flush();
 
             $this->addFlash('success', sprintf('Updated event "%s"', $recurringEvent));
-            return $this->redirectToRoute('event_recurring_event_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('event_recurring_event_show', ['id' => $recurringEvent->getId()]);
         }
 
         return $this->render('event/recurring_event/edit.html.twig', [
@@ -125,7 +124,7 @@ class RecurringEventController extends AbstractController
         $this->em->flush();
         $this->addFlash('success', sprintf('Deleted %d events', $count));
 
-        return $this->redirectToRoute('event_recurring_event_index');
+        return $this->redirectToRoute('event_recurring_event_show', ['id' => $recurringEvent->getId()]);
     }
 
     #[Route('/{id}/create_events', name: '_create_events')]
@@ -135,7 +134,7 @@ class RecurringEventController extends AbstractController
         $this->em->flush();
         $this->addFlash('success', sprintf('Created %d events', $count));
 
-        return $this->redirectToRoute('event_recurring_event_index');
+        return $this->redirectToRoute('event_recurring_event_show', ['id' => $recurringEvent->getId()]);
     }
 
     private function deleteFutureEvents(RecurringEvent $recurringEvent): int

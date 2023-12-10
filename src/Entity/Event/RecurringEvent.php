@@ -148,6 +148,12 @@ class RecurringEvent extends BaseEvent
         return $this->getEvents()->filter(fn(Event $event) => $event->getStartDate() > $now);
     }
 
+    public function getPastEvents(): Collection
+    {
+        $now = new \DateTimeImmutable();
+        return $this->getEvents()->filter(fn(Event $event) => $event->getStartDate() < $now);
+    }
+
     public function getRecurrenceRule(): ?string
     {
         return $this->recurrenceRule;
