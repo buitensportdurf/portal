@@ -1,20 +1,23 @@
 {% extends 'email/base.html.twig' %}
 
+{% set title %}Welcome {{ user.name }}!{% endset %}
+
 {% block body %}
-<h3>Welcome {{ user.name }}!</h3>
+    <p>
+        You have signed up to the Buitensport Durf vereniging member portal. Your account is disabled for now.
+        Please get in touch with the board to activate your account.
+    </p>
+    <p>You have used the username: <code>{{ user.username }}</code></p>
+    <p>And the following email: <code>{{ user.email }}</code></p>
 
-<p>
-    You signed up with the username "{{ user.username }}" and the following email:
-</p>
-<p><code>{{ user.email }}</code></p>
+    <p>
+        You can log in
+        <a class="btn btn-primary btn-sm" href="{{ url('login') }}">Here</a>
+        once your account is enabled
+    </p>
 
-<p>
-    You can log in
-    <a href="{{ url('login') }}">Here</a>
-</p>
-
-{#<p>#}
-{#    <a href="#">Click here to activate your account</a>#}
-{#    (this link is valid until {{ expiration_date|date('F jS') }})#}
-{#</p>#}
+    {# <p> #}
+    {#    <a href="#">Click here to activate your account</a> #}
+    {#    (this link is valid until {{ expiration_date|date('F jS') }}) #}
+    {# </p> #}
 {% endblock %}
