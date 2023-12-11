@@ -31,6 +31,9 @@ class Tag
     #[ORM\ManyToMany(targetEntity: RecurringEvent::class, mappedBy: 'tags')]
     private Collection $recurringEvents;
 
+    #[ORM\Column]
+    private ?bool $defaultHide = false;
+
     public function __construct()
     {
         $this->events = new ArrayCollection();
@@ -109,6 +112,18 @@ class Tag
         if ($this->recurringEvents->removeElement($recurringEvent)) {
             $recurringEvent->removeTag($this);
         }
+
+        return $this;
+    }
+
+    public function isDefaultHide(): bool
+    {
+        return $this->defaultHide ?? false;
+    }
+
+    public function setDefaultHide(bool $defaultHide): static
+    {
+        $this->defaultHide = $defaultHide;
 
         return $this;
     }

@@ -4,6 +4,9 @@ namespace App\Controller\Admin;
 
 use App\Entity\Event\Tag;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class TagCrudController extends AbstractCrudController
 {
@@ -12,14 +15,10 @@ class TagCrudController extends AbstractCrudController
         return Tag::class;
     }
 
-    /*
     public function configureFields(string $pageName): iterable
     {
-        return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
-        ];
+        yield IdField::new('id')->onlyOnIndex();
+        yield TextField::new('name');
+        yield BooleanField::new('defaultHide');
     }
-    */
 }
