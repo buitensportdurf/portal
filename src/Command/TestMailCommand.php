@@ -29,7 +29,7 @@ class TestMailCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('userId', InputArgument::REQUIRED, 'UserId of the user to send the test email to');
+            ->addArgument('username', InputArgument::REQUIRED, 'Username of the user to send the test email to');
 //            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
 //        ;
     }
@@ -37,7 +37,7 @@ class TestMailCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $user = $this->userRepository->find($input->getArgument('userId'));
+        $user = $this->userRepository->findOneBy(['username' => $input->getArgument('username')]);
         $email = EmailFactory::signupEmail($user);
 
         //->cc('cc@example.com')
