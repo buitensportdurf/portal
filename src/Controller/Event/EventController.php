@@ -93,7 +93,7 @@ class EventController extends AbstractController
         }
 
         return $this->render('general/confirmation.form.html.twig', [
-            'message' => sprintf('Are you sure you want to delete event "%s"', $event),
+            'message' => sprintf('Are you sure you want to delete event "%s"?', $event),
             'form' => $form->createView(),
         ]);
     }
