@@ -1,0 +1,23 @@
+{% extends 'base/single.column.html.twig' %}
+
+{% set title %}All events{% endset %}
+
+{% block body %}
+    <div class="btn-group">
+        {% if is_granted('ROLE_EVENT_ADMIN') %}
+            <a class="btn btn-success" href="{{ path('event_recurring_event_new') }}">Create new</a>
+        {% endif %}
+    </div>
+
+    <ul class="list-group">
+        {% for recurringEvent in recurringEvents %}
+            <li class="list-group-item">
+                {% if is_granted('ROLE_EVENT_ADMIN') %}
+                    <a class="btn btn-info" href="{{ path('event_recurring_event_show', {'id': recurringEvent.id}) }}">Show</a>
+                    <a class="btn btn-warning" href="{{ path('event_recurring_event_edit', {'id': recurringEvent.id}) }}">Edit</a>
+                {% endif %}
+                {{ recurringEvent }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

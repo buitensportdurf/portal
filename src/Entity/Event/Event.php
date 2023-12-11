@@ -2,124 +2,30 @@
 
 namespace App\Entity\Event;
 
-use App\Entity\Image;
 use App\Entity\User;
 use App\Repository\Event\EventRepository;
-use DateInterval;
-use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
-class Event
+class Event extends BaseEvent
 {
-    #[ORM\Id, ORM\GeneratedValue, ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?DateTimeInterface $startDate = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $name = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $description = null;
-
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?DateTimeInterface $subscriptionDeadline = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $location = null;
-
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: EventSubscription::class, orphanRemoval: true)]
     /** @var Collection<EventSubscription> $eventSubscriptions */
     private Collection $eventSubscriptions;
 
-    #[ORM\ManyToOne(cascade: ['persist', 'remove'])]
-    private ?Image $image = null;
-
-    #[ORM\Column]
-    private ?DateInterval $duration = null;
-
     #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'events')]
     private Collection $tags;
 
+    #[ORM\ManyToOne(inversedBy: 'events')]
+    private ?RecurringEvent $recurringEvent = null;
+
     public function __construct()
     {
+        parent::__construct();
         $this->eventSubscriptions = new ArrayCollection();
         $this->tags = new ArrayCollection();
-    }
-
-    public function __toString(): string
-    {
-        return $this->name;
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getStartDate(): ?DateTimeInterface
-    {
-        return $this->startDate;
-    }
-
-    public function setStartDate(DateTimeInterface $startDate): static
-    {
-        $this->startDate = $startDate;
-
-        return $this;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(?string $description): static
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    public function getSubscriptionDeadline(): ?DateTimeInterface
-    {
-        return $this->subscriptionDeadline;
-    }
-
-    public function setSubscriptionDeadline(DateTimeInterface $subscriptionDeadline): static
-    {
-        $this->subscriptionDeadline = $subscriptionDeadline;
-
-        return $this;
-    }
-
-    public function getLocation(): ?string
-    {
-        return $this->location;
-    }
-
-    public function setLocation(string $location): static
-    {
-        $this->location = $location;
-
-        return $this;
     }
 
     /**
@@ -179,30 +85,6 @@ class Event
         return null;
     }
 
-    public function getImage(): ?Image
-    {
-        return $this->image;
-    }
-
-    public function setImage(?Image $image): static
-    {
-        $this->image = $image;
-
-        return $this;
-    }
-
-    public function getDuration(): ?DateInterval
-    {
-        return $this->duration;
-    }
-
-    public function setDuration(DateInterval $duration): static
-    {
-        $this->duration = $duration;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Tag>
      */
@@ -223,6 +105,25 @@ class Event
     public function removeTag(Tag $tag): static
     {
         $this->tags->removeElement($tag);
+
+        return $this;
+    }
+
+    public function setTags(Collection $tags): static
+    {
+        $this->tags = $tags;
+
+        return $this;
+    }
+
+    public function getRecurringEvent(): ?RecurringEvent
+    {
+        return $this->recurringEvent;
+    }
+
+    public function setRecurringEvent(?RecurringEvent $recurringEvent): static
+    {
+        $this->recurringEvent = $recurringEvent;
 
         return $this;
     }
