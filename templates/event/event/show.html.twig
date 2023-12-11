@@ -41,6 +41,10 @@
                         <td>{{ event.recurringEvent.recurrenceRule }}</td>
                     </tr>
                 {% endif %}
+                <tr>
+                    <th>Description</th>
+                    <td>{{ event.description|nl2br }}</td>
+                </tr>
                 {% if is_granted('ROLE_USER') %}
                     <tr>
                         <th>Subscribers</th>
