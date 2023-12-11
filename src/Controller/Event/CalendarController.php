@@ -42,13 +42,13 @@ class CalendarController extends AbstractController
     #[Route('/user/{user}/cal.ics', name: '_user')]
     public function user(User $user): Response
     {
-        return $this->getCalendarResponse($this->eventRepository->findEventsByUser($user), 'user');
+        return $this->getCalendarResponse($this->eventRepository->findSubscribedByUser($user), 'user');
     }
 
     #[Route('/tag/{tag}/cal.ics', name: '_tag')]
     public function tag(string $tag): Response
     {
-        return $this->getCalendarResponse($this->eventRepository->findEventsByTag($tag), 'tag_' . $tag);
+        return $this->getCalendarResponse($this->eventRepository->findByTag($tag), 'tag_' . $tag);
     }
 
     /**

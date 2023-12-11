@@ -13,6 +13,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: TagRepository::class)]
 class Tag
 {
+    public const ID_RECURRING = 1;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -26,9 +28,13 @@ class Tag
     #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'tags')]
     private Collection $events;
 
+    #[ORM\ManyToMany(targetEntity: RecurringEvent::class, mappedBy: 'tags')]
+    private Collection $recurringEvents;
+
     public function __construct()
     {
         $this->events = new ArrayCollection();
+        $this->recurringEvents = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -75,6 +81,33 @@ class Tag
     {
         if ($this->events->removeElement($event)) {
             $event->removeTag($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, RecurringEvent>
+     */
+    public function getRecurringEvents(): Collection
+    {
+        return $this->recurringEvents;
+    }
+
+    public function addRecurringEvent(RecurringEvent $recurringEvent): static
+    {
+        if (!$this->recurringEvents->contains($recurringEvent)) {
+            $this->recurringEvents->add($recurringEvent);
+            $recurringEvent->addTag($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRecurringEvent(RecurringEvent $recurringEvent): static
+    {
+        if ($this->recurringEvents->removeElement($recurringEvent)) {
+            $recurringEvent->removeTag($this);
         }
 
         return $this;

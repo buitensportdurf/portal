@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% if title is defined %}{{ title }}{% else %}Durf ledenportaal{% endif %}</title>
-    <link rel="shortcut icon" type="image/jpg" href="/favicon.png">
+    <link rel="shortcut icon" type="image/jpg" href="/favicon.svg">
     <script src="https://kit.fontawesome.com/3471b6556e.js" crossorigin="anonymous"></script>
 
     {% block css %}
@@ -38,20 +38,7 @@
 </div>
 
 {# body blocks #}
-{% block bodyraw %}
-    <div class="container">
-        <div class="row">
-            <div class="col-sm mx-auto">
-                {% if title is defined %}<h3>{{ title }}</h3>{% endif %}
-                {% block body %}{% endblock %}
-            </div>
-            {% if block('body2') is defined %}
-                <div class="col-sm mx-auto">
-                    {{ block('body2') }}
-                </div>
-            {% endif %}
-        </div>
-    </div>
+{% block content %}
 {% endblock %}
 
 {# javascript block #}

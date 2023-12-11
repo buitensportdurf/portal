@@ -4,29 +4,31 @@
     {% if event.image %}
         <img class="card-img-top" src="{{ vich_uploader_asset(event.image) }}" alt="{{ event.name }} image">
     {% endif %}
+
     <div class="card-body">
         <h5 class="card-title">{{ event }}</h5>
         <p class="card-text"><small class="text-muted">
                 {% for tag in event.tags %}
                     <span class="badge bg-primary">{{ tag }}</span>
                 {% endfor %}<br>
-                Time: {{ event.startDate ? event.startDate|date('Y-m-d H:i') : '' }} <br>
-                Location: {{ event.location }} <br>
-                Duration: {{ event.duration|date('%d day(s) %h hour(s) %i minute(s)') }}
+                Start: {{ event.startDate ? event.startDate|date('Y-m-d H:i') : '' }} <br>
+                End: {{ event.startDate ? (event.startDate.add(event.duration))|date('Y-m-d H:i') : '' }} <br>
+                Duration: {{ event.duration|time_duration }} <br>
+                Location: {{ event.location }}
             </small></p>
         <p class="card-text">{{ event.description }}</p>
     </div>
+
     <div class="list-group list-group-flush">
         {% if subscription %}
             <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
                href="#">
-                <div class="ms-2 me-auto">
-                    Subscribed
-                </div>
+                <div class="ms-2 me-auto">Subscribed</div>
                 <span class="badge bg-primary rounded-pill">{{ subscription.amount }}</span>
             </a>
         {% endif %}
     </div>
+
     <div class="card-body">
         {% if is_granted('ROLE_USER') %}
             <div class="btn-group">

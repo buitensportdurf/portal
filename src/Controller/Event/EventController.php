@@ -24,7 +24,7 @@ class EventController extends AbstractController
         $tag = $request->query->get('tag');
 
         return $this->render('event/event/index.html.twig', [
-            'events' => $eventRepository->findEventsByTag($tag),
+            'events' => $eventRepository->findByTag($tag),
             'tags' => $tagRepository->findAll(),
             'tag' => $tag,
         ]);
@@ -52,7 +52,7 @@ class EventController extends AbstractController
         ]);
     }
 
-    #[Route('/show/{id}', name: '_show')]
+    #[Route('/{id}/show', name: '_show')]
     public function show(Event $event): Response
     {
         return $this->render('event/event/show.html.twig', [
@@ -60,7 +60,7 @@ class EventController extends AbstractController
         ]);
     }
 
-    #[Route('/edit/{id}', name: '_edit')]
+    #[Route('/{id}/edit', name: '_edit')]
     public function edit(Request $request, Event $event, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(EventType::class, $event);
@@ -80,21 +80,20 @@ class EventController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: '_delete')]
-    public function delete(Request $request, Event $event, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Event $event, EventRepository $repository): Response
     {
         $form = $this->createForm(ConfirmationType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->remove($event);
-            $entityManager->flush();
+            $repository->remove($event);
 
             $this->addFlash('success', sprintf('Deleted event "%s"', $event));
             return $this->redirectToRoute('event_event_index');
         }
 
         return $this->render('general/confirmation.form.html.twig', [
-            'message' => sprintf('Are you sure you want to delete event "%s"', $event),
+            'message' => sprintf('Are you sure you want to delete event "%s"?', $event),
             'form' => $form->createView(),
         ]);
     }
