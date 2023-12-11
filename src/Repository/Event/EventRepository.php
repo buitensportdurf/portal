@@ -37,20 +37,23 @@ class EventRepository extends ServiceEntityRepository
         ;
 
         $andX = $qb->expr()->andX();
-        $hiddenTags = array_diff($hiddenTags, [$tag]);
-        foreach ($hiddenTags as $hiddenTag) {
-            $key = 'hiddenTag' . $hiddenTag->getId();
-            $andX->add(":$key NOT MEMBER OF e.tags");
-            $qb->setParameter($key, $hiddenTag);
-        }
 
         if ($tag) {
             $andX->add('t = :tag');
             $qb->setParameter('tag', $tag);
         } else {
+            foreach ($hiddenTags as $hiddenTag) {
+                $key = 'hiddenTag' . $hiddenTag->getId();
+                $andX->add(":$key NOT MEMBER OF e.tags");
+                $qb->setParameter($key, $hiddenTag);
+            }
+        }
+        if ($andX->count() > 0) {
+            $qb->orWhere($andX);
+        }
+        if (!$tag && !empty($hiddenTags)) {
             $qb->orWhere('e.tags IS EMPTY');
         }
-        $qb->orWhere($andX);
 
         return $qb->getQuery()->getResult();
     }
