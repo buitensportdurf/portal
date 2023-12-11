@@ -7,6 +7,7 @@ use App\Form\ConfirmationType;
 use App\Form\Event\RecurringEventType;
 use App\Repository\Event\EventRepository;
 use App\Repository\Event\RecurringEventRepository;
+use App\Service\EventService;
 use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,6 +22,7 @@ class RecurringEventController extends AbstractController
     public function __construct(
         private readonly EntityManagerInterface   $em,
         private readonly RecurringEventRepository $repository,
+        private readonly EventService             $eventService,
     ) {}
 
     #[Route('/index', name: '_index')]
@@ -67,8 +69,8 @@ class RecurringEventController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $newRecurrenceRule = $recurringEvent->getRecurrenceRule();
             if ($currentRecurrenceRule !== $newRecurrenceRule) {
-                $oldEventCount = $this->deleteFutureEvents($recurringEvent);
-                $newEventCount = $this->createNewEvents($recurringEvent);
+                $oldEventCount = $this->eventService->deleteFutureEvents($recurringEvent);
+                $newEventCount = $this->eventService->createNewEvents($recurringEvent);
                 $this->addFlash('success', sprintf('Recurrence rule changed, deleted %d old events and created %d new events', $oldEventCount, $newEventCount));
             } else {
                 foreach ($recurringEvent->getFutureEvents() as $event) {
@@ -103,7 +105,7 @@ class RecurringEventController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->deleteFutureEvents($recurringEvent);
+            $this->eventService->deleteFutureEvents($recurringEvent);
             $this->em->remove($recurringEvent);
             $this->em->flush();
 
@@ -120,7 +122,7 @@ class RecurringEventController extends AbstractController
     #[Route('/{id}/delete_events', name: '_delete_events')]
     public function deleteEvents(RecurringEvent $recurringEvent): Response
     {
-        $count = $this->deleteFutureEvents($recurringEvent);
+        $count = $this->eventService->deleteFutureEvents($recurringEvent);
         $this->em->flush();
         $this->addFlash('success', sprintf('Deleted %d events', $count));
 
@@ -130,34 +132,10 @@ class RecurringEventController extends AbstractController
     #[Route('/{id}/create_events', name: '_create_events')]
     public function createEvents(RecurringEvent $recurringEvent): Response
     {
-        $count = $this->createNewEvents($recurringEvent);
+        $count = $this->eventService->createNewEvents($recurringEvent);
         $this->em->flush();
         $this->addFlash('success', sprintf('Created %d events', $count));
 
         return $this->redirectToRoute('event_recurring_event_show', ['id' => $recurringEvent->getId()]);
-    }
-
-    private function deleteFutureEvents(RecurringEvent $recurringEvent): int
-    {
-        $deletedEventCount = 0;
-        foreach ($recurringEvent->getFutureEvents() as $event) {
-            $this->em->remove($event);
-            $recurringEvent->removeEvent($event);
-            $deletedEventCount++;
-        }
-        return $deletedEventCount;
-    }
-
-    private function createNewEvents(RecurringEvent $recurringEvent): int
-    {
-        $newEventCount = 0;
-        $nextYear = new \DateTimeImmutable('+1 year');
-        while ($event = $recurringEvent->createNextEvent() and $event->getStartDate() < $nextYear) {
-            $this->em->persist($event);
-            $newEventCount++;
-        }
-        // We need to remove the last event, because it is and should not persist
-        $recurringEvent->removeEvent($event);
-        return $newEventCount;
     }
 }
