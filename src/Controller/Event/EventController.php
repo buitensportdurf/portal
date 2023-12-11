@@ -19,12 +19,17 @@ use Symfony\Component\Routing\Annotation\Route;
 class EventController extends AbstractController
 {
     #[Route('/index', name: '_index')]
-    public function index(Request $request, EventRepository $eventRepository, TagRepository $tagRepository): Response
+    public function index(
+        Request $request,
+        EventRepository $eventRepository,
+        TagRepository $tagRepository
+    ): Response
     {
-        $tag = $request->query->get('tag');
+        $tagName = $request->query->get('tag');
+        $tag = $tagRepository->findOneBy(['name' => $tagName]);
 
         return $this->render('event/event/index.html.twig', [
-            'events' => $eventRepository->findByTag($tag),
+            'events' => $eventRepository->findByTag($tag, $tagRepository->findIsDefaultHide()),
             'tags' => $tagRepository->findAll(),
             'tag' => $tag,
         ]);

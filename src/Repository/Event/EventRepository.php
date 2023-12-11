@@ -3,6 +3,7 @@
 namespace App\Repository\Event;
 
 use App\Entity\Event\Event;
+use App\Entity\Event\Tag;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -23,22 +24,33 @@ class EventRepository extends ServiceEntityRepository
     }
 
     /**
+     * @argument array<string> $hiddenTags
      * @return array<Event>
      */
-    public function findByTag(?string $tag): array
+    public function findByTag(?Tag $tag, array $hiddenTags = []): array
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('e')
            ->from($this->_entityName, 'e')
+           ->leftJoin('e.tags', 't')
            ->addOrderBy('e.startDate', 'ASC')
         ;
 
-        if ($tag) {
-            $qb->join('e.tags', 't')
-               ->where('t.name = :tag')
-               ->setParameter('tag', $tag)
-            ;
+        $andX = $qb->expr()->andX();
+        $hiddenTags = array_diff($hiddenTags, [$tag]);
+        foreach ($hiddenTags as $hiddenTag) {
+            $key = 'hiddenTag' . $hiddenTag->getId();
+            $andX->add(":$key NOT MEMBER OF e.tags");
+            $qb->setParameter($key, $hiddenTag);
         }
+
+        if ($tag) {
+            $andX->add('t = :tag');
+            $qb->setParameter('tag', $tag);
+        } else {
+            $qb->orWhere('e.tags IS EMPTY');
+        }
+        $qb->orWhere($andX);
 
         return $qb->getQuery()->getResult();
     }

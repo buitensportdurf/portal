@@ -13,10 +13,10 @@
     <h5>Tags</h5>
     <div class="btn-group">
         {% for tagOption in tags %}
-            {% if tagOption.name == tag %}
+            {% if tagOption == tag %}
                 <a class="btn btn-success" href="{{ path('event_event_index') }}">{{ tagOption }}</a>
             {% else %}
-                <a class="btn btn-primary" href="{{ path('event_event_index', {tag: tagOption.name}) }}">{{ tagOption }}</a>
+                <a class="btn btn-{% if tagOption.defaultHide %}danger{% else %}primary{% endif %}" href="{{ path('event_event_index', {tag: tagOption.name}) }}">{{ tagOption }}</a>
             {% endif %}
         {% endfor %}
     </div>
