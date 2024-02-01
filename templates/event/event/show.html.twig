@@ -49,10 +49,9 @@
                     <tr>
                         <th>Subscribers</th>
                         <td>
-                            <div class="list-group">
+                            <ul class="list-group">
                                 {% for subscription in event.eventSubscriptions %}
-                                    <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-start {% if subscription.createdUser is same as(app.user) %}list-group-item-success{% endif %}"
-                                       href="#">
+                                    <li class="list-group-item d-flex justify-content-between align-items-start {% if subscription.createdUser is same as(app.user) %}list-group-item-success{% endif %}">
                                         <div class="ms-2 me-auto">
                                             {{ subscription.createdUser }}
                                         </div>
@@ -60,9 +59,9 @@
                                             <div class="ms-2 me-auto">{{ subscription.note|nl2br }}</div>
                                         {% endif %}
                                         <span class="badge bg-primary rounded-pill">{{ subscription.amount }}</span>
-                                    </a>
+                                    </li>
                                 {% endfor %}
-                            </div>
+                            </ul>
                         </td>
                     </tr>
                 {% endif %}
