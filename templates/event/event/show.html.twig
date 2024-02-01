@@ -56,6 +56,9 @@
                                         <div class="ms-2 me-auto">
                                             {{ subscription.createdUser }}
                                         </div>
+                                        {% if subscription.note %}
+                                            <div class="ms-2 me-auto">{{ subscription.note|nl2br }}</div>
+                                        {% endif %}
                                         <span class="badge bg-primary rounded-pill">{{ subscription.amount }}</span>
                                     </a>
                                 {% endfor %}
