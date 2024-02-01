@@ -33,26 +33,32 @@ class EventRepository extends ServiceEntityRepository
         $qb->select('e')
            ->from($this->_entityName, 'e')
            ->leftJoin('e.tags', 't')
+           ->where('e.startDate >= :now')
+           ->setParameter('now', new \DateTimeImmutable())
            ->addOrderBy('e.startDate', 'ASC')
         ;
 
-        $andX = $qb->expr()->andX();
+        $tagAnd = $qb->expr()->andX();
+        $totalTagOr = $qb->expr()->orX();
 
         if ($tag) {
-            $andX->add('t = :tag');
+            $tagAnd->add('t = :tag');
             $qb->setParameter('tag', $tag);
         } else {
             foreach ($hiddenTags as $hiddenTag) {
                 $key = 'hiddenTag' . $hiddenTag->getId();
-                $andX->add(":$key NOT MEMBER OF e.tags");
+                $tagAnd->add(":$key NOT MEMBER OF e.tags");
                 $qb->setParameter($key, $hiddenTag);
             }
         }
-        if ($andX->count() > 0) {
-            $qb->orWhere($andX);
+        if ($tagAnd->count() > 0) {
+            $totalTagOr->add($tagAnd);
         }
         if (!$tag && !empty($hiddenTags)) {
-            $qb->orWhere('e.tags IS EMPTY');
+            $totalTagOr->add('e.tags IS EMPTY');
+        }
+        if ($totalTagOr->count() > 0) {
+            $qb->andWhere($totalTagOr);
         }
 
         return $qb->getQuery()->getResult();
@@ -87,4 +93,18 @@ class EventRepository extends ServiceEntityRepository
         $this->_em->remove($event);
         $this->_em->flush();
     }
+
+    public function findPast(): array
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('e')
+           ->from($this->_entityName, 'e')
+           ->where('e.startDate < :now')
+           ->setParameter('now', new \DateTimeImmutable())
+           ->addOrderBy('e.startDate', 'DESC')
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
+
 }

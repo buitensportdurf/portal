@@ -35,6 +35,14 @@ class EventController extends AbstractController
         ]);
     }
 
+    #[Route('/past', name: '_past')]
+    public function past(EventRepository $eventRepository): Response
+    {
+        return $this->render('event/event/past.html.twig', [
+            'events' => $eventRepository->findPast(),
+        ]);
+    }
+
     #[Route('/new', name: '_new')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {

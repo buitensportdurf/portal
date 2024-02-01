@@ -1,25 +1,30 @@
 {% extends 'base/single.column.html.twig' %}
 
-{% set title %}All events{% endset %}
+{% set title %}Upcoming events{% endset %}
 
 {% block body %}
     <div class="btn-group">
-        {% if is_granted('ROLE_EVENT_ADMIN') %}
-            <a class="btn btn-success" href="{{ path('event_event_new') }}">Create new</a>
-            <a class="btn btn-primary" href="{{ path('event_recurring_event_index') }}">Recurring events</a>
-        {% endif %}
         <a class="btn btn-primary" href="{{ path('event_calendar_index') }}">Calendars</a>
+        <a class="btn btn-secondary" href="{{ path('event_event_past') }}">Past events</a>
     </div>
+    {% if is_granted('ROLE_EVENT_ADMIN') %}
+        <div class="btn-group">
+            <a class="btn btn-success" href="{{ path('event_event_new') }}">Create new</a>
+            <a class="btn btn-warning" href="{{ path('event_recurring_event_index') }}">Recurring events</a>
+        </div>
+    {% endif %}
     <h5>Tags</h5>
     <div class="btn-group">
         {% for tagOption in tags %}
             {% if tagOption == tag %}
                 <a class="btn btn-success" href="{{ path('event_event_index') }}">{{ tagOption }}</a>
             {% else %}
-                <a class="btn btn-{% if tagOption.defaultHide %}danger{% else %}primary{% endif %}" href="{{ path('event_event_index', {tag: tagOption.name}) }}">{{ tagOption }}</a>
+                <a class="btn btn-{% if tagOption.defaultHide %}danger{% else %}primary{% endif %}"
+                   href="{{ path('event_event_index', {tag: tagOption.name}) }}">{{ tagOption }}</a>
             {% endif %}
         {% endfor %}
     </div>
+    <br><br>
 
     <div class="row row-cols-1 row-cols-md-3 g-3">
         {% for event in events %}

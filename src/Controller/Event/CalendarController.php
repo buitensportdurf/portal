@@ -2,8 +2,8 @@
 
 namespace App\Controller\Event;
 
-
 use App\Entity\Event\Event;
+use App\Entity\Event\Tag;
 use App\Entity\User;
 use App\Repository\Event\EventRepository;
 use App\Repository\Event\TagRepository;
@@ -21,9 +21,7 @@ class CalendarController extends AbstractController
     public function __construct(
         private readonly EventRepository     $eventRepository,
         private readonly EventCalTransformer $eventCalTransformer,
-    )
-    {
-    }
+    ) {}
 
     #[Route('/index', name: '_index')]
     public function index(TagRepository $tagRepository): Response
@@ -46,7 +44,7 @@ class CalendarController extends AbstractController
     }
 
     #[Route('/tag/{tag}/cal.ics', name: '_tag')]
-    public function tag(string $tag): Response
+    public function tag(Tag $tag): Response
     {
         return $this->getCalendarResponse($this->eventRepository->findByTag($tag), 'tag_' . $tag);
     }
@@ -62,7 +60,8 @@ class CalendarController extends AbstractController
             $calendar->addEvent($this->eventCalTransformer->transform($event));
         }
         $calendar->setProductIdentifier('buitensport_durf_events_' . $name)
-            ->setPublishedTTL(new DateInterval('PT1H'));
+                 ->setPublishedTTL(new DateInterval('PT1H'))
+        ;
 
         $componentFactory = new CalendarFactory();
         $calendarComponent = $componentFactory->createCalendar($calendar);
