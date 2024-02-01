@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/reset-password')]
 class ResetPasswordController extends AbstractController
@@ -26,14 +26,12 @@ class ResetPasswordController extends AbstractController
     public function __construct(
         private readonly ResetPasswordRequestRepository $repository,
         private readonly UserRepository                 $userRepository
-    )
-    {
-    }
+    ) {}
 
     #[Route('', name: 'forgot_password_request')]
     public function request(
-        Request $request,
-        MailerInterface $mailer,
+        Request                $request,
+        MailerInterface        $mailer,
         EntityManagerInterface $em,
     ): Response
     {
@@ -125,12 +123,10 @@ class ResetPasswordController extends AbstractController
     }
 
     private function processSendingPasswordResetEmail(
-        string          $emailFormData,
-        MailerInterface $mailer,
+        string                 $emailFormData,
+        MailerInterface        $mailer,
         EntityManagerInterface $em,
-    ): RedirectResponse
-    {
-    }
+    ): RedirectResponse {}
 
     private function validateTokenAndFetchUser(string $token): User
     {
@@ -175,7 +171,8 @@ class ResetPasswordController extends AbstractController
             ->setUser($user)
             ->setExpiresAt($expiresAt)
             ->setToken($token)
-            ->setRequestedAt(new \DateTime());
+            ->setRequestedAt(new \DateTime())
+        ;
     }
 
     private function hasUserHitThrottling(User $user): ?\DateTimeInterface

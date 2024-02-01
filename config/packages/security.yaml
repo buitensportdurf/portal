@@ -38,11 +38,13 @@ security:
          - { path: ^/admin, roles: ROLE_ADMIN }
          - { path: ^/user, roles: ROLE_USER }
 
-         - { path: ^/event/event/(index|show), roles: PUBLIC_ACCESS }
+         - { path: ^/event/event/(index|past), roles: PUBLIC_ACCESS }
+         - { path: ^/event/event/[0-9]+/show, roles: PUBLIC_ACCESS }
          - { path: ^/event/event, roles: ROLE_EVENT_ADMIN }
+
          - { path: ^/event/subscription, roles: ROLE_USER }
-         - { path: ^/event/calendar/index, roles: PUBLIC_ACCESS }
-         - { path: ^/event/calendar, roles: ROLE_USER }
+
+         - { path: ^/event/calendar, roles: PUBLIC_ACCESS }
 
     role_hierarchy:
         ROLE_ADMIN:

@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
@@ -60,7 +60,8 @@ class SecurityController extends AbstractController
                     $user,
                     $form->get('plainPassword')->getData()
                 ))
-                    ->setEnabled(false);
+                     ->setEnabled(false)
+                ;
 
                 $repository->add($user);
                 $mailer->send(EmailFactory::signupEmail($user));
