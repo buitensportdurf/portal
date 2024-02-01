@@ -39,7 +39,8 @@ abstract class BaseEvent
 
     public function __construct()
     {
-        $this->startDate = new DateTimeImmutable();
+        $this->startDate = (new DateTimeImmutable())->setTime(18, 0);
+        $this->subscriptionDeadline = (new DateTimeImmutable())->setTime(23, 59);
         $this->setTags(new ArrayCollection());
     }
 
@@ -73,8 +74,11 @@ abstract class BaseEvent
     }
 
     public abstract function getTags(): Collection;
+
     public abstract function setTags(Collection $tags): static;
+
     public abstract function addTag(Tag $tag): static;
+
     public abstract function removeTag(Tag $tag): static;
 
     public function getStartDate(): ?DateTimeImmutable
