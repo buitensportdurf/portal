@@ -37,7 +37,8 @@ class EventSubscriptionController extends AbstractController
         if ($this->isGranted('ROLE_EVENT_ADMIN')) {
             $form->add('createdUser');
         }
-        $form->add('Subscribe', SubmitType::class);
+        $form->add('note')
+            ->add('Subscribe', SubmitType::class);
         $form = $form->getForm();
         $form->handleRequest($request);
 
