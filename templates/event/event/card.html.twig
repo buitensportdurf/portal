@@ -22,25 +22,23 @@
     <ul class="list-group list-group-flush">
         {% if subscription %}
             <li class="list-group-item d-flex justify-content-between align-items-start">
-                <div class="ms-2 me-auto">Subscribed</div>
+                <div class="ms-2 me-auto">You are subscribed</div>
                 <span class="badge bg-primary rounded-pill">{{ subscription.amount }}</span>
-            </>
+            </li>
         {% endif %}
     </ul>
 
     <div class="card-body">
-        {% if is_granted('ROLE_USER') %}
-            <div class="btn-group">
-                {% if not subscription or is_granted('ROLE_EVENT_ADMIN') %}
-                    <a class="btn btn-success"
-                       href="{{ path('event_subscription_subscribe', {'id': event.id}) }}">Subscribe</a>
-                {% endif %}
-                {% if subscription %}
-                    <a class="btn btn-info"
-                       href="{{ path('event_subscription_unsubscribe', {'id': subscription.id}) }}">Unsubscribe</a>
-                {% endif %}
-            </div>
-        {% endif %}
+        <div class="btn-group">
+            {% if is_granted('subscribe', event) %}
+                <a class="btn btn-success"
+                   href="{{ path('event_subscription_subscribe', {'id': event.id}) }}">Subscribe</a>
+            {% endif %}
+            {% if subscription and is_granted('unsubscribe', event) %}
+                <a class="btn btn-info"
+                   href="{{ path('event_subscription_unsubscribe', {'id': subscription.id}) }}">Unsubscribe</a>
+            {% endif %}
+        </div>
         <div class="btn-group">
             <a class="btn btn-info" href="{{ path('event_event_show', {'id': event.id}) }}">Details</a>
             {% if is_granted('ROLE_EVENT_ADMIN') %}

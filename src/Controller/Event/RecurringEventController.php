@@ -5,7 +5,6 @@ namespace App\Controller\Event;
 use App\Entity\Event\RecurringEvent;
 use App\Form\ConfirmationType;
 use App\Form\Event\RecurringEventType;
-use App\Repository\Event\EventRepository;
 use App\Repository\Event\RecurringEventRepository;
 use App\Service\EventService;
 use DateInterval;
@@ -14,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/event/recurring_event', name: 'event_recurring_event')]
 class RecurringEventController extends AbstractController

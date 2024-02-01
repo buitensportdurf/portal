@@ -5,11 +5,12 @@ namespace App\Controller\Event;
 use App\Entity\Event\Event;
 use App\Entity\Event\EventSubscription;
 use App\Repository\Event\EventSubscriptionRepository;
+use App\Security\Voter\EventSubscriptionVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/event/subscription', name: 'event_subscription')]
 class EventSubscriptionController extends AbstractController
@@ -23,13 +24,13 @@ class EventSubscriptionController extends AbstractController
     #[Route('/subscribe/{id}', name: '_subscribe')]
     public function subscribe(Request $request, Event $event): Response
     {
+        $this->denyAccessUnlessGranted(EventSubscriptionVoter::SUBSCRIBE, $event);
+
         $subscription = new EventSubscription();
         $subscription->setCreatedDateNowNoSeconds()
             ->setEvent($event)
             ->setAmount(1)
             ->setCreatedUser($this->getUser());
-
-        $this->denyAccessUnlessGranted('subscribe', $subscription);
 
         $form = $this->createFormBuilder($subscription)
             ->add('amount');
@@ -62,7 +63,7 @@ class EventSubscriptionController extends AbstractController
     #[Route('/unsubscribe/{id}', name: '_unsubscribe')]
     public function unsubscribe(EventSubscription $subscription): Response
     {
-        $this->denyAccessUnlessGranted('unsubscribe', $subscription);
+        $this->denyAccessUnlessGranted(EventSubscriptionVoter::UNSUBSCRIBE, $subscription->getEvent());
 
         $event = $subscription->getEvent();
         $this->repository->delete($subscription);

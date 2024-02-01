@@ -21,7 +21,7 @@ class TextExtension extends AbstractExtension
 
     public function truncate(?string $text, int $length = 30, string $separator = '...'): ?string
     {
-        if (strlen($text) > $length) {
+        if ($text && strlen($text) > $length) {
             $text = substr($text, 0, $length);
             return substr($text, 0, strrpos($text, ' ')) . ' ' . $separator;
         } else {
