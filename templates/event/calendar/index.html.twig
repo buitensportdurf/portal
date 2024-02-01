@@ -3,9 +3,18 @@
 {% set title %}All event calendars{% endset %}
 
 {% block body %}
+    <p>
+        This page lists all event calendars. You can view all events, your own events or events by tag.
+        If you click a button, you can download the iCal (.ics) file for that calendar. You can then import this
+        to your own calendar application. <br>
+        You can also right-click the button and copy the url, this in turn can then
+        also be imported to your calendar application to keep it up to date.
+    </p>
     <h5>Generic</h5>
     <a class="btn btn-primary" href="{{ path('event_calendar_all') }}">All events</a>
-    <a class="btn btn-primary" href="{{ path('event_calendar_user', {user: app.user.id}) }}">Your events</a>
+    {% if app.user %}
+        <a class="btn btn-primary" href="{{ path('event_calendar_user', {user: app.user.id}) }}">Your events</a>
+    {% endif %}
     <h5>By tag</h5>
     {% for tag in tags %}
         <a class="btn btn-primary" href="{{ path('event_calendar_tag', {tag: tag.id}) }}">{{ tag }}</a>

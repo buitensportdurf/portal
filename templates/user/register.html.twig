@@ -3,5 +3,11 @@
 {% set title %}Register{% endset %}
 
 {% block body %}
+    <p>
+        Please register a new account. If you already have an account, you can
+        <a href="{{ path('login') }}">login here</a>. <br>
+        After you registered, your account will have to be activated first to be able to log in. <br>
+        You can contact the Media Committee or the Durf Board to activate your account.
+    </p>
     {{ form(registrationForm) }}
 {% endblock %}

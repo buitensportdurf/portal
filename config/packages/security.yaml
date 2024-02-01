@@ -41,7 +41,7 @@ security:
          - { path: ^/event/event/(index|show), roles: PUBLIC_ACCESS }
          - { path: ^/event/event, roles: ROLE_EVENT_ADMIN }
          - { path: ^/event/subscription, roles: ROLE_USER }
-         - { path: ^/event/calendar/all, roles: PUBLIC_ACCESS }
+         - { path: ^/event/calendar/index, roles: PUBLIC_ACCESS }
          - { path: ^/event/calendar, roles: ROLE_USER }
 
     role_hierarchy:
