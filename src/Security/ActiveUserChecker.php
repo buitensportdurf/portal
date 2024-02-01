@@ -14,7 +14,7 @@ class ActiveUserChecker implements UserCheckerInterface
         /** @var User $user */
         if (!$user->isActive()) {
             throw new AccountDisabledException(
-                'This account is not active. Please contact the Media Committee of the Durf Board to activate your account.'
+                'This account is not active. Please contact the Media Committee or the Durf Board to activate your account.'
             );
         }
     }
