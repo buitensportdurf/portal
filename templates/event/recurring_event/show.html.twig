@@ -3,13 +3,18 @@
 {% set title %}Recurring event {{ recurringEvent }}{% endset %}
 
 {% block body %}
-    {% if is_granted('ROLE_EVENT_ADMIN') %}
-        <a class="btn btn-primary" href="{{ path('event_recurring_event_index') }}">Back</a>
-        <a class="btn btn-warning" href="{{ path('event_recurring_event_edit', {'id': recurringEvent.id}) }}">Edit</a>
-        <a class="btn btn-success" href="{{ path('event_recurring_event_create_events', {'id': recurringEvent.id}) }}">Create events</a>
-        <a class="btn btn-danger" href="{{ path('event_recurring_event_delete_events', {'id': recurringEvent.id}) }}">Delete events</a>
-    {% endif %}
-    <h5>Future Events</h5>
+    <div class="btn btn-group">
+        {% if is_granted('ROLE_EVENT_ADMIN') %}
+            <a class="btn btn-primary" href="{{ path('event_recurring_event_index') }}">Back</a>
+            <a class="btn btn-warning"
+               href="{{ path('event_recurring_event_edit', {'id': recurringEvent.id}) }}">Edit</a>
+            <a class="btn btn-success"
+               href="{{ path('event_recurring_event_create_events', {'id': recurringEvent.id}) }}">Create events</a>
+            <a class="btn btn-danger"
+               href="{{ path('event_recurring_event_delete_events', {'id': recurringEvent.id}) }}">Delete events</a>
+        {% endif %}
+    </div>
+    <h5>Upcoming events</h5>
     <div class="row row-cols-1 row-cols-md-3 g-3">
         {% for event in recurringEvent.futureEvents %}
             <div class="col">
@@ -17,7 +22,7 @@
             </div>
         {% endfor %}
     </div>
-    <h5>Past Events</h5>
+    <h5>Past events</h5>
     <div class="row row-cols-1 row-cols-md-3 g-3">
         {% for event in recurringEvent.pastEvents %}
             <div class="col">

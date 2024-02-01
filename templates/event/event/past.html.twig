@@ -1,0 +1,18 @@
+{% extends 'base/single.column.html.twig' %}
+
+{% set title %}Past events{% endset %}
+
+{% block body %}
+    <div class="btn-group">
+        <a class="btn btn-primary" href="{{ path('event_event_index') }}">Back</a>
+    </div>
+    <br>
+
+    <div class="row row-cols-1 row-cols-md-3 g-3">
+        {% for event in events %}
+            <div class="col">
+                {{ include('event/event/card.html.twig', {event: event}) }}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
