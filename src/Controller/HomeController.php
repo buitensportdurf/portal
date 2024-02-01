@@ -12,8 +12,5 @@ class HomeController extends AbstractController
     public function home(): Response
     {
         return $this->redirectToRoute('event_event_index');
-//        return $this->render('general/simple.html.twig', [
-//            'text' => 'Welcome!'
-//        ]);
     }
 }

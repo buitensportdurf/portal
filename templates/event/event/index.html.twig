@@ -3,6 +3,11 @@
 {% set title %}Upcoming events{% endset %}
 
 {% block body %}
+    <p>
+        Welcome to the event page of BuitenSport Durf. Here you can find all the upcoming events.
+        If you want to add the events to your own calendar, click on the calendars button.
+        To see the past events, click on the button below.
+    </p>
     <div class="btn-group">
         <a class="btn btn-primary" href="{{ path('event_calendar_index') }}">Calendars</a>
         <a class="btn btn-secondary" href="{{ path('event_event_past') }}">Past events</a>
@@ -14,6 +19,11 @@
         </div>
     {% endif %}
     <h5>Tags</h5>
+    <p>
+        Below you can find all the tags that are used for events.
+        Click on a tag to filter the events by that tag.
+        The red tags are hidden by default.
+    </p>
     <div class="btn-group">
         {% for tagOption in tags %}
             {% if tagOption == tag %}
@@ -26,6 +36,16 @@
     </div>
     <br><br>
 
+    <h5>Events</h5>
+    <p>
+        Below you can find all the upcoming events.
+        Click on an event to see more information about it.
+        {% if not app.user %}
+            If you want to subscribe to an event, please
+            <a href="{{ path('register') }}">register</a>
+            or <a href="{{ path('login') }}">login</a>.
+        {% endif %}
+    </p>
     <div class="row row-cols-1 row-cols-md-3 g-3">
         {% for event in events %}
             <div class="col">
