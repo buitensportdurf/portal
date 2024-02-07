@@ -59,8 +59,9 @@ class CalendarController extends AbstractController
         foreach ($events as $event) {
             $calendar->addEvent($this->eventCalTransformer->transform($event));
         }
-        $calendar->setProductIdentifier('buitensport_durf_events_' . $name)
-                 ->setPublishedTTL(new DateInterval('PT1H'))
+        $calendar
+            ->setProductIdentifier('buitensport_durf_events_' . $name)
+            ->setPublishedTTL(new DateInterval('PT1H'))
         ;
 
         $componentFactory = new CalendarFactory();
