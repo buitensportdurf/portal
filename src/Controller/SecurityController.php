@@ -53,23 +53,20 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($form->get('plainPassword')->getData() !== $form->get('plainPasswordRepeated')->getData()) {
-                $this->addFlash('error', 'Password and password repeated must be the same');
-            } else {
-                $user->setPassword($userPasswordHasher->hashPassword(
+            $user
+                ->setPassword($userPasswordHasher->hashPassword(
                     $user,
                     $form->get('plainPassword')->getData()
                 ))
-                     ->setEnabled(false)
-                ;
+                ->setEnabled(false)
+            ;
 
-                $repository->add($user);
-                $mailer->send(EmailFactory::signupEmail($user));
+            $repository->add($user);
+            $mailer->send(EmailFactory::signupEmail($user));
 
-                $this->addFlash('success', sprintf('Successfully registered user %s', $user->getUsername()));
+            $this->addFlash('success', sprintf('Successfully registered user %s', $user->getUsername()));
 
-                return $this->redirectToRoute('register');
-            }
+            return $this->redirectToRoute('register');
         }
 
         return $this->render('user/register.html.twig', [
