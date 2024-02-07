@@ -6,6 +6,7 @@ use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -20,12 +21,13 @@ class RegistrationFormType extends AbstractType
         $builder
             ->add('username', TextType::class, ['label' => 'Username (for login)'])
             ->add('name', TextType::class, ['label' => 'Full name (first and last name)'])
-            ->add('plainPassword', PasswordType::class, [
-                // instead of being set onto the object directly,
-                // this is read and encoded in the controller
+            ->add('plainPassword', RepeatedType::class, [
+                'type' => PasswordType::class,
                 'mapped' => false,
-                'attr' => ['autocomplete' => 'new-password'],
-                'label' => 'Password',
+                'invalid_message' => 'The password fields must match.',
+                'required' => true,
+                'first_options' => ['label' => 'Password'],
+                'second_options' => ['label' => 'Repeat Password'],
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Please enter a password',
@@ -37,10 +39,6 @@ class RegistrationFormType extends AbstractType
                         'max' => 4096,
                     ]),
                 ],
-            ])
-            ->add('plainPasswordRepeated', PasswordType::class, [
-                'mapped' => false,
-                'label' => 'Password repeated',
             ])
             ->add('email', EmailType::class, ['required' => false])
             ->add('register', SubmitType::class);
