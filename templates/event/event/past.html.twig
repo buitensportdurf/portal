@@ -3,10 +3,8 @@
 {% set title %}Past events{% endset %}
 
 {% block body %}
-    <div class="btn-group">
-        <a class="btn btn-primary" href="{{ path('event_event_index') }}">Back</a>
-    </div>
-    <br>
+    <a class="btn btn-primary" href="{{ path('event_event_index') }}">Back to events</a>
+    <br><br>
 
     <div class="row row-cols-1 row-cols-md-3 g-3">
         {% for event in events %}
