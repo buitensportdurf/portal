@@ -24,16 +24,14 @@
         Click on a tag to filter the events by that tag.
         The red tags are hidden by default.
     </p>
-    <div class="btn-group">
-        {% for tagOption in tags %}
-            {% if tagOption == tag %}
-                <a class="btn btn-success" href="{{ path('event_event_index') }}">{{ tagOption }}</a>
-            {% else %}
-                <a class="btn btn-{% if tagOption.defaultHide %}danger{% else %}primary{% endif %}"
-                   href="{{ path('event_event_index', {tag: tagOption.name}) }}">{{ tagOption }}</a>
-            {% endif %}
-        {% endfor %}
-    </div>
+    {% for tagOption in tags %}
+        {% if tagOption == tag %}
+            <a class="btn btn-success" href="{{ path('event_event_index') }}">{{ tagOption }}</a>
+        {% else %}
+            <a class="btn btn-{% if tagOption.defaultHide %}danger{% else %}primary{% endif %}"
+               href="{{ path('event_event_index', {tag: tagOption.name}) }}">{{ tagOption }}</a>
+        {% endif %}
+    {% endfor %}
     <br><br>
 
     <h5>Events</h5>
