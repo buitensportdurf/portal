@@ -1,45 +1,45 @@
-<nav class="navbar navbar-expand-md navbar-light bg-light">
-    <div class="container-fluid">
-        <a title="Durf leden portaal" class="navbar-brand" href="{{ main_website }}">Durf</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar"
-                aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+<nav class="navbar navbar-expand-md navbar-light bg-white shadow px-5">
+    {% if app.request.attributes.get('_route') == 'event_event_index' %}
+        <a class="navbar-brand" href="{{ main_website }}">
+            <img src="{{ asset('/logo.svg') }}" alt="Logo" height="90px" style="margin-top: -10px; margin-bottom: -10px">
+        </a>
+    {% else %}
+        <a class="btn btn-primary" href="{{ path('event_event_index') }}">Back to events</a>
+    {% endif %}
 
-        <div class="collapse navbar-collapse" id="navbar">
-            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar"
+            aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbar">
+        <ul class="navbar-nav flex-row flex-wrap ms-md-auto">
+            {% if app.environment == 'dev' %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('event_event_index') }}">Events</a>
+                    <a class="btn navbar-text bg-danger" href="#">dev</a> &nbsp;
                 </li>
-            </ul>
-            <ul class="navbar-nav my-2 my-lg-0">
-                {% if app.environment == 'dev' %}
-                    <li class="nav-item">
-                        <a class="btn navbar-text bg-danger" href="#">dev</a> &nbsp;
-                    </li>
-                {% endif %}
-                {% if is_granted("ROLE_ADMIN") %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('admin') }}">Admin</a>
-                    </li>
-                {% endif %}
-                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                    <span class="nav-item navbar-text mr-sm-2">Logged in as</span>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('user_profile') }}">{{ app.user.name }}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('logout') }}">Logout</a>
-                    </li>
-                {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('login') }}">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('register') }}">Register</a>
-                    </li>
-                {% endif %}
-            </ul>
-        </div>
+            {% endif %}
+            {% if is_granted("ROLE_ADMIN") %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('admin') }}">Admin</a>
+                </li>
+            {% endif %}
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                <span class="nav-item navbar-text mr-sm-2">Logged in as</span>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('user_profile') }}">{{ app.user.name }}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('logout') }}">Logout</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('login') }}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('register') }}">Register</a>
+                </li>
+            {% endif %}
+        </ul>
     </div>
 </nav>
