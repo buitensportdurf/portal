@@ -14,6 +14,8 @@ brew install mariadb
 brew services start mariadb
 brew install composer
 brew install symfony-cli/tap/symfony-cli
+sudo mariadb-secure-installation
+# Decline switch to unix sockets, answer Yes to rest to complete setup
 ```
 
 ## Setup
@@ -25,6 +27,7 @@ cd portal
 
 Create a database (and user) in MySQL/MariaDB
 ```sql
+sudo mysql
 CREATE DATABASE `durf`;
 CREATE USER 'durf'@'localhost' IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON `durf`.* TO 'durf'@'localhost';
