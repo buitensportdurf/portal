@@ -1,11 +1,20 @@
 # Getting started
-## Installation
+## Installation (generic)
 Install the following tools:
 - Git
 - PHP version 8.3+ (php-fpm and php-cli)
 - MySQL or MariaDB
 - [Composer](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-composer-on-ubuntu-22-04)
 - [Symfony CLI](https://symfony.com/download)
+
+## Installation MacOS
+```console fish
+brew install php
+brew install mariadb
+brew services start mariadb
+brew install composer
+brew install symfony-cli/tap/symfony-cli
+```
 
 ## Setup
 Clone the repository
