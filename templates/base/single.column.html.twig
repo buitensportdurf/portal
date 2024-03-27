@@ -1,7 +1,7 @@
 {% extends 'base/container.html.twig' %}
 
 {% block container %}
-    <div class="row">
+    <div class="row py-3">
         <div class="col-sm mx-auto">
             {% if title is defined %}<h3>{{ title }}</h3>{% endif %}
             {% block body %}{% endblock %}
