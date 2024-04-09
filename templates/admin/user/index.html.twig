@@ -1,0 +1,24 @@
+{% extends 'base/single.column.html.twig' %}
+
+{% set title %}All users{% endset %}
+
+{% block body %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Enable</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.name }}</td>
+                <td>
+                    <a class="btn btn-sm btn-success" href="{{ path('admin_user_enable', {'id': user.id}) }}">Enable</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
