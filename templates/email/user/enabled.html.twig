@@ -1,0 +1,16 @@
+{% extends 'email/base.html.twig' %}
+
+{% set title %}Account activated{% endset %}
+
+{% block body %}
+    <p>
+        Your account is now activated!
+        You have previously signed up to the Buitensport Durf vereniging member portal.
+    </p>
+
+    <p>
+        You can now freely log in
+        <a class="btn btn-primary btn-sm" href="{{ url('login') }}">Here</a>
+        and subscribe to events, view your profile and more!
+    </p>
+{% endblock %}

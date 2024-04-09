@@ -1,7 +1,8 @@
 <nav class="navbar navbar-expand-md navbar-light bg-white shadow px-5">
     {% if app.request.attributes.get('_route') == 'event_event_index' %}
         <a class="navbar-brand" href="{{ main_website }}">
-            <img src="{{ asset('/logo.svg') }}" alt="Logo" height="90px" style="margin-top: -10px; margin-bottom: -10px">
+            <img src="{{ asset('/logo.svg') }}" alt="Logo" height="90px"
+                 style="margin-top: -10px; margin-bottom: -10px">
         </a>
     {% else %}
         <a class="btn btn-primary" href="{{ path('event_event_index') }}">Back to events</a>
@@ -13,7 +14,14 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbar">
-        <ul class="navbar-nav flex-row flex-wrap ms-md-auto">
+        <ul class="navbar-nav me-auto mb-2 mb-md-0">
+            {% if is_granted("ROLE_ADMIN_USER") %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('admin_user_index') }}">Users</a>
+                </li>
+            {% endif %}
+        </ul>
+        <ul class="navbar-nav my-2 my-lg-0">
             {% if app.environment == 'dev' %}
                 <li class="nav-item">
                     <a class="btn navbar-text bg-danger" href="#">dev</a> &nbsp;
