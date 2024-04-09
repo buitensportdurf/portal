@@ -8,21 +8,34 @@ use Symfony\Component\Mime\Email;
 
 class EmailFactory
 {
-    public static function signupEmail(User $user): Email
+    private static function createEmailBase(User $user, string $title, array $context = []): TemplatedEmail
     {
+        $title = 'Durf - ' . $title;
         return (new TemplatedEmail())
             ->to($user->getEmail())
-            ->subject('Buitensport Vereniging Durf - Account created')
-            ->htmlTemplate('email/signup.html.twig')
-            ->context(['user' => $user]);
+            ->subject($title)
+            ->context(['user' => $user, 'title' => $title] + $context)
+        ;
+    }
+
+    public static function signupEmail(User $user): Email
+    {
+        return self::createEmailBase($user, 'Account created')
+                   ->htmlTemplate('email/user/signup.html.twig')
+        ;
     }
 
     public static function resetPassword(User $user, string $resetToken): Email
     {
-        return (new TemplatedEmail())
-            ->to($user->getEmail())
-            ->subject('Buitensport Vereniging Durf - Your password reset request')
-            ->htmlTemplate('email/reset.password.html.twig')
-            ->context(['user' => $user, 'resetToken' => $resetToken]);
+        return self::createEmailBase($user, 'Password reset request', ['resetToken' => $resetToken])
+                   ->htmlTemplate('email/user/reset.password.html.twig')
+        ;
+    }
+
+    public static function userEnabled(User $user): Email
+    {
+        return self::createEmailBase($user, 'Account enabled')
+                   ->htmlTemplate('email/user/enabled.html.twig')
+        ;
     }
 }
