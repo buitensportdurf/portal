@@ -1,0 +1,8 @@
+{% extends 'base/single.column.html.twig' %}
+
+{% set title %}Edit subscription of {{ subscription.createdUser.name }} to {{ subscription.event }}{% endset %}
+
+{% block body %}
+    {{ form(form) }}
+{% endblock %}
+
