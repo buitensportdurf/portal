@@ -44,7 +44,7 @@ class UserAdminController extends AbstractController
         return $this->render('general/confirmation.form.html.twig', [
             'form' => $form->createView(),
             'title' => 'Enable ' . $user->getName(),
-            'message' => sprintf('Do you really want to enable %s?', $user->getName()),
+            'message' => sprintf('Do you really want to enable "%s" with email "%s"?', $user->getName(), $user->getEmail()),
         ]);
     }
 }
