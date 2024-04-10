@@ -2,8 +2,7 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\Event\Event;
-use DateTimeImmutable;
+use App\Entity\Event\EventSubscription;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -11,8 +10,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class EventSubscriptionVoter extends Voter
 {
-    public const SUBSCRIBE = 'subscribe';
-    public const UNSUBSCRIBE = 'unsubscribe';
+    public const string EDIT = 'edit';
 
     public function __construct(
         private readonly Security $security,
@@ -22,8 +20,8 @@ class EventSubscriptionVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::UNSUBSCRIBE, self::SUBSCRIBE])
-            && $subject instanceof Event;
+        return in_array($attribute, [self::EDIT])
+            && $subject instanceof EventSubscription;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
@@ -33,31 +31,19 @@ class EventSubscriptionVoter extends Voter
         if (!$user instanceof UserInterface) {
             return false;
         }
-        if (!$subject instanceof Event) {
+        if (!$subject instanceof EventSubscription) {
             return false;
         } else {
-            $event = $subject;
+            $subscription = $subject;
         }
         if ($this->security->isGranted('ROLE_EVENT_ADMIN')) {
             return true;
         }
 
-        $now = new DateTimeImmutable();
+        // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
-            case self::SUBSCRIBE:
-                if ($event->getSubscriptionDeadline() > $now
-                    && $event->getStartDate() > $now
-                    && !$event->isSubscribed($user)
-                ) {
-                    return true;
-                }
-                break;
-            case self::UNSUBSCRIBE:
-                if ($event->isSubscribed($user)
-                    && $event->getStartDate() > $now) {
-                    return true;
-                }
-                break;
+            case self::EDIT:
+                return $subscription->getCreatedUser() === $user;
         }
 
         return false;
