@@ -1,56 +1,61 @@
 security:
-    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
-    password_hashers:
-        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
-    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
-    providers:
-        # used to reload user from session & other features (e.g. switch_user)
-        user_provider:
-            entity:
-                class: App\Entity\User
-                property: username
-    firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
-        main:
-            lazy: true
-            provider: user_provider
-            user_checker: App\Security\ActiveUserChecker
-            logout:
-                path: logout
-            form_login:
-                login_path: login
-                check_path: login
-            remember_me:
-                secret: '%kernel.secret%' # required
-                lifetime: 2419200 # 4 weeks in seconds
+  # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+  password_hashers:
+    Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+  # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+  providers:
+    # used to reload user from session & other features (e.g. switch_user)
+    user_provider:
+      entity:
+        class: App\Entity\User
+        property: username
+  firewalls:
+    dev:
+      pattern: ^/(_(profiler|wdt)|css|images|js)/
+      security: false
+    main:
+      lazy: true
+      provider: user_provider
+      user_checker: App\Security\ActiveUserChecker
+      logout:
+        path: logout
+      form_login:
+        login_path: login
+        check_path: login
+      remember_me:
+        secret: '%kernel.secret%' # required
+        lifetime: 2419200 # 4 weeks in seconds
 
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#the-firewall
+      # activate different ways to authenticate
+      # https://symfony.com/doc/current/security.html#the-firewall
 
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
+      # https://symfony.com/doc/current/security/impersonating_user.html
+      # switch_user: true
 
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
-    access_control:
-         - { path: ^/admin/user, roles: ROLE_ADMIN_USER }
-         - { path: ^/admin, roles: ROLE_ADMIN }
-         - { path: ^/user, roles: ROLE_USER }
+  # Easy way to control access for large sections of your site
+  # Note: Only the *first* access control that matches will be used
+  access_control:
+    - { path: ^/admin/user, roles: ROLE_ADMIN_USER }
+    - { path: ^/admin, roles: ROLE_ADMIN }
+    - { path: ^/user, roles: ROLE_USER }
 
-         - { path: ^/event/event/(index|past), roles: PUBLIC_ACCESS }
-         - { path: ^/event/event/[0-9]+/show, roles: PUBLIC_ACCESS }
-         - { path: ^/event/event, roles: ROLE_EVENT_ADMIN }
+    - { path: ^/event/event/(index|past), roles: PUBLIC_ACCESS }
+    - { path: ^/event/event/[ 0-9 ]+/show, roles: PUBLIC_ACCESS }
+    - { path: ^/event/event/(new|edit|delete), roles: ROLE_EVENT_EDIT }
+    - { path: ^/event/recurring_event, roles: ROLE_EVENT_RECURRING }
+    - { path: ^/event, roles: ROLE_EVENT_ADMIN }
 
-         - { path: ^/event/subscription, roles: ROLE_USER }
+    #- { path: ^/event/subscription, roles: ROLE_USER } # done with voter
 
-         - { path: ^/event/calendar, roles: PUBLIC_ACCESS }
+    - { path: ^/event/calendar, roles: PUBLIC_ACCESS }
 
-    role_hierarchy:
-        ROLE_ADMIN:
-            - ROLE_EVENT_ADMIN
-            - ROLE_ADMIN_USER
-        ROLE_SUPER_ADMIN:
-            - ROLE_ADMIN
+  role_hierarchy:
+    ROLE_EVENT_ADMIN:
+      - ROLE_EVENT_EDIT
+      - ROLE_EVENT_RECURRING
+    ROLE_ADMIN:
+      - ROLE_EVENT_ADMIN
+      - ROLE_ADMIN_USER
+    ROLE_SUPER_ADMIN:
+      - ROLE_ADMIN
 #            - ROLE_ALLOWED_TO_SWITCH

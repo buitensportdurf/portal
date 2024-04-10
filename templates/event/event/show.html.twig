@@ -5,22 +5,12 @@
 {% block body %}
     <a class="btn btn-primary" href="{{ path('event_event_index') }}">Back to list</a>
 
-    {% if is_granted('ROLE_USER') %}
-        {% set subscription = event.subscription(app.user) %}
-        <div class="btn-group">
-            {% if subscription %}
-                <a class="btn btn-info" href="{{ path('event_subscription_unsubscribe', {'id': subscription.id}) }}">Unsubscribe</a>
-            {% endif %}
-        </div>
+    {% if is_granted('ROLE_EVENT_EDIT') %}
+        <a class="btn btn-danger" href="{{ path('event_event_delete', {'id': event.id}) }}">Delete</a>
     {% endif %}
-    {% if is_granted('ROLE_EVENT_ADMIN') %}
-        <div class="btn-group">
-            <a class="btn btn-danger" href="{{ path('event_event_delete', {'id': event.id}) }}">Delete</a>
-            {% if event.recurringEvent %}
-                <a class="btn btn-info"
-                   href="{{ path('event_recurring_event_show', {'id': event.recurringEvent.id}) }}">Parent</a>
-            {% endif %}
-        </div>
+    {% if event.recurringEvent and is_granted('ROLE_EVENT_RECURRING') %}
+        <a class="btn btn-info"
+           href="{{ path('event_recurring_event_show', {'id': event.recurringEvent.id}) }}">Parent</a>
     {% endif %}
     <br><br>
 

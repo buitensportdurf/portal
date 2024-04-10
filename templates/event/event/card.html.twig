@@ -44,7 +44,7 @@
         </div>
         <div class="btn-group">
             <a class="btn btn-info" href="{{ path('event_event_show', {'id': event.id}) }}">Details</a>
-            {% if is_granted('ROLE_EVENT_ADMIN') %}
+            {% if is_granted('ROLE_EVENT_EDIT') %}
                 <a class="btn btn-warning" href="{{ path('event_event_edit', {'id': event.id}) }}">Edit</a>
             {% endif %}
         </div>
