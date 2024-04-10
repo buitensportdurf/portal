@@ -8,16 +8,15 @@
         If you want to add the events to your own calendar, click on the calendars button.
         To see the past events, click on the button below.
     </p>
-    <div class="btn-group">
-        <a class="btn btn-primary" href="{{ path('event_calendar_index') }}">Calendars</a>
-        <a class="btn btn-secondary" href="{{ path('event_event_past') }}">Past events</a>
-    </div>
-    {% if is_granted('ROLE_EVENT_ADMIN') %}
-        <div class="btn-group">
-            <a class="btn btn-success" href="{{ path('event_event_new') }}">Create new</a>
-            <a class="btn btn-warning" href="{{ path('event_recurring_event_index') }}">Recurring events</a>
-        </div>
+    <a class="btn btn-primary" href="{{ path('event_calendar_index') }}">Calendars</a>
+    <a class="btn btn-secondary" href="{{ path('event_event_past') }}">Past events</a>
+    {% if is_granted('ROLE_EVENT_EDIT') %}
+        <a class="btn btn-success" href="{{ path('event_event_new') }}">Create new</a>
     {% endif %}
+    {% if is_granted('ROLE_EVENT_RECURRING') %}
+        <a class="btn btn-warning" href="{{ path('event_recurring_event_index') }}">Recurring events</a>
+    {% endif %}
+
     <h5>Tags</h5>
     <p>
         Below you can find all the tags that are used for events.
