@@ -8,6 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -28,9 +29,7 @@ class UserCrudController extends AbstractCrudController
     public function __construct(
         private readonly RoleService                 $roles,
         private readonly UserPasswordHasherInterface $userPasswordHasher
-    )
-    {
-    }
+    ) {}
 
     public static function getEntityFqcn(): string
     {
@@ -39,7 +38,15 @@ class UserCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
-        return $actions->remove(Crud::PAGE_INDEX, Action::NEW);
+        return $actions
+            ->remove(Crud::PAGE_INDEX, Action::NEW)
+            ->add(
+                Crud::PAGE_INDEX,
+                Action::new('impersonate', 'Impersonate', 'fa fa-user')
+                      ->linkToRoute('admin_user_switch', fn(User $user) => ['id' => $user->getId()])
+                      ->displayIf(fn(User $user) => $this->isGranted('ROLE_ALLOWED_TO_SWITCH'))
+            )
+        ;
     }
 
     public function configureFields(string $pageName): iterable
@@ -57,15 +64,16 @@ class UserCrudController extends AbstractCrudController
         yield TextField::new('name');
         yield TextField::new('email');
         yield TextField::new('password')
-            ->setFormType(RepeatedType::class)
-            ->setFormTypeOptions([
-                'type' => PasswordType::class,
-                'first_options' => ['label' => 'Password'],
-                'second_options' => ['label' => '(Repeat)'],
-                'mapped' => false,
-            ])
-            ->setRequired($pageName === Crud::PAGE_NEW)
-            ->onlyOnForms();
+                       ->setFormType(RepeatedType::class)
+                       ->setFormTypeOptions([
+                           'type' => PasswordType::class,
+                           'first_options' => ['label' => 'Password'],
+                           'second_options' => ['label' => '(Repeat)'],
+                           'mapped' => false,
+                       ])
+                       ->setRequired($pageName === Crud::PAGE_NEW)
+                       ->onlyOnForms()
+        ;
         yield BooleanField::new('enabled');
         yield ChoiceField::new($roles)->allowMultipleChoices()->setChoices($this->roles->getRoleChoices());
         yield AssociationField::new('groups');
