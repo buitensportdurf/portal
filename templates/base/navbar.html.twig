@@ -28,7 +28,9 @@
                 </li>
             {% endif %}
             {% if is_granted('IS_IMPERSONATOR') %}
-                <a class="btn navbar-text bg-warning" href="{{ impersonation_exit_path(path('home') ) }}">Exit impersonation</a>
+                <a class="btn navbar-text bg-warning" href="{{ impersonation_exit_path(
+                    path(app.request.attributes.get('_route'),app.request.attributes.get('_route_params')
+                    ) ) }}">Exit impersonation</a>
             {% endif %}
             {% if is_granted("ROLE_ADMIN") %}
                 <li class="nav-item">
