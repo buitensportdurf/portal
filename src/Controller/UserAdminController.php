@@ -47,4 +47,11 @@ class UserAdminController extends AbstractController
             'message' => sprintf('Do you really want to enable "%s" with email "%s"?', $user->getName(), $user->getEmail()),
         ]);
     }
+
+    #[Route('/{id}/switch', name: '_switch')]
+    public function switch(User $user): Response
+    {
+        $this->addFlash('success', sprintf('Now impersonating %s', $user->getName()));
+        return $this->redirectToRoute('home', ['_switch_user' => $user->getUsername()]);
+    }
 }

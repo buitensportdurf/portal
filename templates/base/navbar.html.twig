@@ -27,6 +27,9 @@
                     <a class="btn navbar-text bg-danger" href="#">dev</a> &nbsp;
                 </li>
             {% endif %}
+            {% if is_granted('IS_IMPERSONATOR') %}
+                <a class="btn navbar-text bg-warning" href="{{ impersonation_exit_path(path('home') ) }}">Exit impersonation</a>
+            {% endif %}
             {% if is_granted("ROLE_ADMIN") %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('admin') }}">Admin</a>

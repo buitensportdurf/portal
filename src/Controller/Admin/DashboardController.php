@@ -47,7 +47,7 @@ class DashboardController extends AbstractDashboardController
 
     public function configureDashboard(): Dashboard
     {
-        return Dashboard::new()->setTitle('Durf Admin Page');
+        return Dashboard::new()->setTitle('Durf Portal Admin Page');
     }
 
     public function configureMenuItems(): iterable
