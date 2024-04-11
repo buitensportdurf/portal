@@ -17,6 +17,12 @@ class DateFormatExtension extends AbstractExtension
     public function formatTimeDuration(\DateInterval $interval): string
     {
         $format = '';
+        if ($interval->d > 0) {
+            $format .= ' %d day';
+            if ($interval->d > 1) {
+                $format .= 's';
+            }
+        }
         if ($interval->h > 0) {
             $format .= ' %h hour';
             if ($interval->h > 1) {
