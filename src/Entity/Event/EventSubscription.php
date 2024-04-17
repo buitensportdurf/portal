@@ -32,7 +32,7 @@ class EventSubscription
     public function validate(ExecutionContextInterface $context): void
     {
         if ($this->event) {
-            if ($this->event->getAmountOfSubscriptions() > $this->event->getSubscriberLimit()) {
+            if ($this->event->getSubscriberLimit() && $this->event->getAmountOfSubscriptions() > $this->event->getSubscriberLimit()) {
                 $context
                     ->buildViolation(sprintf('Subscription exceeds subscriber limit for this event, limit is %d', $this->event->getSubscriberLimit()))
                     ->atPath('amount')
