@@ -32,6 +32,7 @@ class BaseEventType extends AbstractType
                 'with_minutes' => true,
             ])
             ->add('subscriptionDeadline')
+            ->add('subscriberLimit')
             ->add('image', ImageType::class, ['required' => false]);
     }
 }

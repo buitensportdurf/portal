@@ -6,6 +6,8 @@ use App\Entity\Helpers\TrackedTrait;
 use App\Repository\Event\EventSubscriptionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: EventSubscriptionRepository::class)]
 class EventSubscription
@@ -20,10 +22,31 @@ class EventSubscription
     private ?Event $event = null;
 
     #[ORM\Column]
+    #[Assert\Positive]
     private ?int $amount = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $note = null;
+
+    #[Assert\Callback]
+    public function validate(ExecutionContextInterface $context): void
+    {
+        if ($this->event) {
+            if ($this->event->getAmountOfSubscriptions() > $this->event->getSubscriberLimit()) {
+                $context
+                    ->buildViolation(sprintf('Subscription exceeds subscriber limit for this event, limit is %d', $this->event->getSubscriberLimit()))
+                    ->atPath('amount')
+                    ->addViolation()
+                ;
+            }
+            if ($this->event->isSubscribed($this->getCreatedUser()) && $this->event->getSubscription($this->getCreatedUser()) !== $this) {
+                $context
+                    ->buildViolation('You are already subscribed to this event')
+                    ->addViolation()
+                ;
+            }
+        }
+    }
 
     public function getId(): ?int
     {
@@ -38,6 +61,10 @@ class EventSubscription
     public function setEvent(?Event $event): static
     {
         $this->event = $event;
+        // Required to update the owning side of the relationship for validation
+        if ($event && !$event->getEventSubscriptions()->contains($this)) {
+            $event->addEventSubscription($this);
+        }
 
         return $this;
     }
