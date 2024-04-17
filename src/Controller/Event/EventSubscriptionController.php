@@ -48,11 +48,6 @@ class EventSubscriptionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($event->isSubscribed($subscription->getCreatedUser())) {
-                $this->addFlash('error', sprintf('User %s is already subscribed to %s', $subscription->getCreatedUser(), $event));
-                return $this->redirectToRoute('event_event_show', ['id' => $event->getId()]);
-            }
-
             $this->repository->save($subscription);
             $this->addFlash('success', sprintf('You have subscribed to %s', $event));
             return $this->redirectToRoute('event_event_show', ['id' => $event->getId()]);

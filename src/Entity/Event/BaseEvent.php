@@ -37,6 +37,9 @@ abstract class BaseEvent
     #[ORM\Column]
     private ?DateInterval $duration = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $subscriberLimit = null;
+
     public function __construct()
     {
         $this->startDate = (new DateTimeImmutable())->setTime(18, 0);
@@ -55,6 +58,7 @@ abstract class BaseEvent
             ->setName($event->getName())
             ->setDescription($event->getDescription())
             ->setSubscriptionDeadline($event->getSubscriptionDeadline())
+            ->setSubscriberLimit($event->getSubscriberLimit())
             ->setLocation($event->getLocation())
             ->setImage($event->getImage())
             ->setDuration($event->getDuration())
@@ -161,6 +165,18 @@ abstract class BaseEvent
     public function setDuration(DateInterval $duration): static
     {
         $this->duration = $duration;
+
+        return $this;
+    }
+
+    public function getSubscriberLimit(): ?int
+    {
+        return $this->subscriberLimit;
+    }
+
+    public function setSubscriberLimit(?int $subscriberLimit): static
+    {
+        $this->subscriberLimit = $subscriberLimit;
 
         return $this;
     }
