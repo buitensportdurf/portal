@@ -36,7 +36,8 @@ security:
 
     - { path: ^/event/event/(index|past), roles: PUBLIC_ACCESS }
     - { path: ^/event/event/[ 0-9 ]+/show, roles: PUBLIC_ACCESS }
-    - { path: ^/event/event/(new|edit|delete), roles: ROLE_EVENT_EDIT }
+    - { path: ^/event/event/new, roles: ROLE_EVENT_EDIT }
+    - { path: ^/event/event/[ 0-9 ]+/(edit|delete), roles: ROLE_EVENT_EDIT }
     - { path: ^/event/recurring_event, roles: ROLE_EVENT_RECURRING }
     - { path: ^/event/subscription, roles: ROLE_USER }
     - { path: ^/event/calendar, roles: PUBLIC_ACCESS }

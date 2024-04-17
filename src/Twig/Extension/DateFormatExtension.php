@@ -10,7 +10,7 @@ class DateFormatExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('time_duration', [$this, 'formatTimeDuration'], ['is_safe' => ['html']]),
+            new TwigFilter('time_duration', $this->formatTimeDuration(...), ['is_safe' => ['html']]),
         ];
     }
 
