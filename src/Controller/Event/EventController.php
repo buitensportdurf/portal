@@ -20,9 +20,9 @@ class EventController extends AbstractController
 {
     #[Route('/index', name: '_index')]
     public function index(
-        Request $request,
+        Request         $request,
         EventRepository $eventRepository,
-        TagRepository $tagRepository
+        TagRepository   $tagRepository
     ): Response
     {
         $tagName = $request->query->get('tag');
@@ -83,7 +83,7 @@ class EventController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('event_event_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('event_event_show', ['id' => $event->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('event/event/edit.html.twig', [

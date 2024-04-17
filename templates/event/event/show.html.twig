@@ -34,7 +34,7 @@
                     {% endif %}
                     <tr>
                         <th>Description</th>
-                        <td>{{ event.description|nl2br }}</td>
+                        <td>{{ event.description|markdown_to_html }}</td>
                     </tr>
                     {% if is_granted('ROLE_USER') %}
                         <tr>
