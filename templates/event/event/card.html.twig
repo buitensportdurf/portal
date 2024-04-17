@@ -19,7 +19,7 @@
                     <br>Subscriptions: <span class="badge bg-success rounded-pill">{{ event.amountOfSubscriptions }}</span>
                 {% endif %}
             </small></p>
-        <p class="card-text">{{ event.description|truncate(100)|nl2br }}</p>
+        <p class="card-text">{{ event.description|truncate(100)|markdown_to_html }}</p>
     </div>
 
     <ul class="list-group list-group-flush">
