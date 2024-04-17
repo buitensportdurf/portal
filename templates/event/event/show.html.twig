@@ -26,6 +26,10 @@
                         <th>Subscription deadline</th>
                         <td>{{ event.subscriptionDeadline ? event.subscriptionDeadline|date('Y-m-d') : '' }}</td>
                     </tr>
+                    <tr>
+                        <th>Subscriber limit</th>
+                        <td>{{ event.subscriberLimit ?? 'None' }}</td>
+                    </tr>
                     {% if event.recurringEvent %}
                         <tr>
                             <th>Recurring every</th>
