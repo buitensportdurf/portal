@@ -25,8 +25,8 @@ abstract class BaseEvent
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?DateTimeImmutable $subscriptionDeadline;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $subscriptionDeadline = null;
 
     #[ORM\Column(length: 255)]
     private ?string $location = null;
@@ -43,7 +43,6 @@ abstract class BaseEvent
     public function __construct()
     {
         $this->startDate = (new DateTimeImmutable())->setTime(18, 0);
-        $this->subscriptionDeadline = (new DateTimeImmutable())->setTime(23, 59);
         $this->setTags(new ArrayCollection());
     }
 
@@ -126,7 +125,7 @@ abstract class BaseEvent
         return $this->subscriptionDeadline;
     }
 
-    public function setSubscriptionDeadline(DateTimeImmutable $subscriptionDeadline): static
+    public function setSubscriptionDeadline(?DateTimeImmutable $subscriptionDeadline): static
     {
         $this->subscriptionDeadline = $subscriptionDeadline;
 
