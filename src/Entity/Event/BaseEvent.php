@@ -26,7 +26,7 @@ abstract class BaseEvent
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?DateTimeImmutable $subscriptionDeadline = null;
+    private ?DateTimeImmutable $subscriptionDeadline;
 
     #[ORM\Column(length: 255)]
     private ?string $location = null;
@@ -109,9 +109,9 @@ abstract class BaseEvent
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getDescription(): string
     {
-        return $this->description;
+        return $this->description ?? '';
     }
 
     public function setDescription(?string $description): static
