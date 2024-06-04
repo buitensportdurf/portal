@@ -22,10 +22,12 @@
             <div class="table-responsive">
                 <table class="table">
                     <tbody>
-                    <tr>
-                        <th>Subscription deadline</th>
-                        <td>{{ event.subscriptionDeadline ? event.subscriptionDeadline|date('Y-m-d') : '' }}</td>
-                    </tr>
+                    {% if event.subscriptionDeadline %}
+                        <tr>
+                            <th>Subscription deadline</th>
+                            <td>{{ event.subscriptionDeadline ? event.subscriptionDeadline|date('Y-m-d') : '' }}</td>
+                        </tr>
+                    {% endif %}
                     <tr>
                         <th>Subscriber limit</th>
                         <td>{{ event.subscriberLimit ?? 'None' }}</td>
