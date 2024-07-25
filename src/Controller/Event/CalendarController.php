@@ -60,7 +60,13 @@ class CalendarController extends AbstractController
     private function getCalendarResponse(array $events, string $name): Response
     {
         $calendar = new Calendar();
-        $calendar->addTimeZone($this->getTimeZone());
+        $now = new DateTimeImmutable();
+        $timeZone = TimeZone::createFromPhpDateTimeZone(
+            new \DateTimeZone('Europe/Amsterdam'),
+            $now->sub(new DateInterval('P1Y')),
+            $now->add(new DateInterval('P3Y'))
+        );
+        $calendar->addTimeZone($timeZone);
         foreach ($events as $event) {
             $calendar->addEvent($this->eventCalTransformer->transform($event));
         }
