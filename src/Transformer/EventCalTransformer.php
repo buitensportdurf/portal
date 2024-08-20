@@ -21,7 +21,7 @@ class EventCalTransformer
 
     public function transform(Event $event): IcalEvent
     {
-        if ($event->getDuration()->h < 32) {
+        if ($event->getDuration()->d < 2) {
             $timeSpan = new TimeSpan(
                 new DateTime($event->getStartDate(), false),
                 new DateTime($event->getStartDate()->add($event->getDuration()), false)
