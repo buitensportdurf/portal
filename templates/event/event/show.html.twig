@@ -68,6 +68,25 @@
                             </td>
                         </tr>
                     {% endif %}
+                    {% if is_granted('ROLE_EVENT_ADMIN') %}
+                        <tr>
+                            <th>Subscriber emails</th>
+                            <td>
+                                <p>
+                                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEmails" aria-expanded="false" aria-controls="collapseEmails">
+                                        Show all subscriber emails
+                                    </button>
+                                </p>
+                                <div class="collapse" id="collapseEmails">
+                                    <div class="card card-body">
+                                        {% for subscription in event.eventSubscriptions %}
+                                            {{ subscription.createdUser.email }}<br>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
                     </tbody>
                 </table>
             </div>
