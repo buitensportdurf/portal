@@ -23,7 +23,11 @@ class EventSubscriptionController extends AbstractController
     #[Route('/subscribe/{id}', name: '_subscribe')]
     public function subscribe(Request $request, Event $event): Response
     {
-        $this->denyAccessUnlessGranted(EventVoter::SUBSCRIBE, $event);
+        if(!$this->isGranted(EventVoter::SUBSCRIBE, $event))
+        {
+            $this->addFlash('error', sprintf('Please register to subscribe to %s', $event));
+            return $this->redirectToRoute('register');
+        }
 
         $subscription = new EventSubscription();
         $subscription
