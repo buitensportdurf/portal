@@ -33,7 +33,7 @@
 
     <div class="card-body">
         <div class="btn-group">
-            {% if is_granted('subscribe', event) %}
+            {% if is_granted('subscribe', event) or not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                 <a class="btn btn-success"
                    href="{{ path('event_subscription_subscribe', {'id': event.id}) }}">Subscribe</a>
             {% endif %}

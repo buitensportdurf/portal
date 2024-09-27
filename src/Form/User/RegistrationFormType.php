@@ -23,6 +23,7 @@ class RegistrationFormType extends AbstractType
         $builder
             ->add('username', TextType::class, ['label' => 'Username (for login)'])
             ->add('name', TextType::class, ['label' => 'Full name (first and last name)'])
+            ->add('email', EmailType::class, ['required' => false])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'mapped' => false,
@@ -42,7 +43,6 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('email', EmailType::class, ['required' => false])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'constraints' => [
