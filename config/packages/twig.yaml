@@ -3,3 +3,8 @@ twig:
     form_themes: ['bootstrap_5_layout.html.twig']
     globals:
         main_website: "%main_website%"
+    file_name_pattern: '*.twig'
+
+when@test:
+    twig:
+        strict_variables: true
