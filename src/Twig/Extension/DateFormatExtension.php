@@ -2,6 +2,7 @@
 
 namespace App\Twig\Extension;
 
+use DateTime;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
@@ -11,6 +12,8 @@ class DateFormatExtension extends AbstractExtension
     {
         return [
             new TwigFilter('time_duration', $this->formatTimeDuration(...), ['is_safe' => ['html']]),
+            new TwigFilter('fdate_time', $this->formatDateTime(...), ['is_safe' => ['html']]),
+            new TwigFilter('fdate', $this->formatDate(...), ['is_safe' => ['html']]),
         ];
     }
 
@@ -42,5 +45,15 @@ class DateFormatExtension extends AbstractExtension
             }
         }
         return $interval->format(trim($format));
+    }
+
+    public function formatDateTime(DateTime|\DateTimeImmutable $dateTime): string
+    {
+        return $dateTime->format('D d M Y, H:i');
+    }
+
+    public function formatDate(DateTime|\DateTimeImmutable $dateTime): string
+    {
+        return $dateTime->format('D d M Y');
     }
 }
