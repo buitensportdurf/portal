@@ -18,7 +18,6 @@ security:
       provider: user_provider
       user_checker: App\Security\ActiveUserChecker
       logout:
-        path: logout
       form_login:
         login_path: login
         check_path: login

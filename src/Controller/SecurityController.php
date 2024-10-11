@@ -34,13 +34,6 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    #[Route('/logout', name: 'logout')]
-    public function logout(): void
-    {
-        // controller can be blank: it will never be called!
-        throw new Exception('Don\'t forget to activate logout in security.yaml');
-    }
-
     #[Route('/register', name: 'register')]
     public function register(
         Request                     $request,
