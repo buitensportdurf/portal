@@ -7,6 +7,7 @@ use App\Entity\Event\EventSubscription;
 use App\Repository\Event\EventSubscriptionRepository;
 use App\Security\Voter\EventSubscriptionVoter;
 use App\Security\Voter\EventVoter;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,8 +24,7 @@ class EventSubscriptionController extends AbstractController
     #[Route('/subscribe/{id}', name: '_subscribe')]
     public function subscribe(Request $request, Event $event): Response
     {
-        if(!$this->isGranted(EventVoter::SUBSCRIBE, $event))
-        {
+        if (!$this->isGranted(EventVoter::SUBSCRIBE, $event)) {
             $this->addFlash('error', sprintf('Please register to subscribe to %s', $event));
             return $this->redirectToRoute('register');
         }
@@ -43,7 +43,9 @@ class EventSubscriptionController extends AbstractController
         ;
 
         if ($this->isGranted('ROLE_EVENT_ADMIN')) {
-            $form->add('createdUser');
+            $form->add('createdUser', options: [
+                'query_builder' => fn($er) => $er->createQueryBuilder('u')->orderBy('u.name', 'ASC'),
+            ]);
         }
         $form->add('note')
              ->add('subscribe', SubmitType::class)
