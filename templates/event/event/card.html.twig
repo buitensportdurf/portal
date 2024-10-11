@@ -11,8 +11,8 @@
                 {% for tag in event.tags %}
                     <span class="badge bg-primary">{{ tag }}</span>
                 {% endfor %}<br>
-                Start: {{ event.startDate ? event.startDate|date('Y-m-d H:i') : '' }} <br>
-                End: {{ event.startDate ? (event.startDate.add(event.duration))|date('Y-m-d H:i') : '' }} <br>
+                Start: {{ event.startDate ? event.startDate|fdate_time : '' }} <br>
+                End: {{ event.startDate ? (event.startDate.add(event.duration))|fdate_time : '' }} <br>
                 Duration: {{ event.duration|time_duration }} <br>
                 Location: {{ event.location }}
                 {% if event.amountOfSubscriptions > 0 %}
