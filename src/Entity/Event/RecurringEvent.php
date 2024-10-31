@@ -5,9 +5,11 @@ namespace App\Entity\Event;
 use App\Repository\Event\RecurringEventRepository;
 use App\Service\TimeIntervalService;
 use DateInterval;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
@@ -31,31 +33,29 @@ class RecurringEvent extends BaseEvent
         $this->events = new ArrayCollection();
     }
 
-    public function getRecurringDate(int $index): \DateTimeInterface
+    public function getRecurringDate(int $index, ?DateTimeImmutable $date = null): \DateTimeInterface
     {
+        $date ??= $this->getStartDate();
+
         try {
-            return TimeIntervalService::addIntervalNTimes(
-                $this->getStartDate(),
-                $this->getRecurrenceInterval(),
-                $index
+            return TimeIntervalService::addIntervalsNTimes(
+                $date, $this->getRecurrenceIntervals(), $index
             );
-        } catch (\Exception) {
-            return $this->getStartDate();
+        } catch (Exception) {
+            return $date;
         }
     }
 
     public function createNextEvent(): Event
     {
-        $lastEvent = $this->getEvents()->last();
-        $lastDate = $lastEvent ? $lastEvent->getStartDate() : $this->getStartDate();
-        $prevLastDate = $lastDate;
-        if ($lastDate < new \DateTimeImmutable()) {
-            $lastDate = (new \DateTimeImmutable())->setTime($prevLastDate->format('H'), $prevLastDate->format('i'));
-        }
-        $event = new Event();
-        $event
+        $previousEvent = $this->getEvents()->last();
+        $previousDate = $previousEvent ? $previousEvent->getStartDate() : $this->getStartDate();
+
+        $event = (new Event())
             ->copyFrom($this)
-            ->setStartDate($lastDate->add($this->getRecurrenceInterval()))
+            ->setStartDate(TimeIntervalService::addIntervalsNTimes(
+                $previousDate, $this->getRecurrenceIntervals()
+            ))
         ;
         $this->addEvent($event);
 
@@ -69,8 +69,8 @@ class RecurringEvent extends BaseEvent
     ): void
     {
         try {
-            DateInterval::createFromDateString($value);
-        } catch (\Exception) {
+            $context->getObject()->getRecurrenceIntervals();
+        } catch (Exception) {
             $context->buildViolation('Invalid recurrence rule')
                     ->atPath('recurrenceRule')
                     ->addViolation()
@@ -144,13 +144,13 @@ class RecurringEvent extends BaseEvent
      */
     public function getFutureEvents(): Collection
     {
-        $now = new \DateTimeImmutable();
+        $now = new DateTimeImmutable();
         return $this->getEvents()->filter(fn(Event $event) => $event->getStartDate() > $now);
     }
 
     public function getPastEvents(): Collection
     {
-        $now = new \DateTimeImmutable();
+        $now = new DateTimeImmutable();
         return $this->getEvents()->filter(fn(Event $event) => $event->getStartDate() < $now);
     }
 
@@ -166,8 +166,14 @@ class RecurringEvent extends BaseEvent
         return $this;
     }
 
-    public function getRecurrenceInterval(): false|DateInterval
+    /**
+     * @return DateInterval[]
+     */
+    public function getRecurrenceIntervals(): array
     {
-        return DateInterval::createFromDateString($this->getRecurrenceRule());
+        return array_map(
+            fn(string $string) => DateInterval::createFromDateString($string),
+            explode(';', $this->getRecurrenceRule())
+        );
     }
 }
