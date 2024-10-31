@@ -12,7 +12,10 @@ class RecurringEventType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('recurrenceRule', TextType::class, ['priority' => 1]);
+        $builder->add('recurrenceRule', TextType::class, [
+            'priority' => 1,
+            'label' => 'Recurrence rule, relative to start date (e.g. "P1D" for daily, +1 month, next week). Can be multiple seperated by ";"',
+        ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

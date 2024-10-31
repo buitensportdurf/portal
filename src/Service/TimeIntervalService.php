@@ -2,14 +2,20 @@
 
 namespace App\Service;
 
-use DateTimeInterface;
+use DateInterval;
+use DateTimeImmutable;
 
 class TimeIntervalService
 {
-    public static function addIntervalNTimes(DateTimeInterface $date, \DateInterval $interval, int $n): DateTimeInterface
+    /**
+     * @param DateInterval[] $intervals
+     */
+    public static function addIntervalsNTimes(DateTimeImmutable $date, array $intervals, int $n = 1): DateTimeImmutable
     {
         for ($i = 0; $i < $n; $i++) {
-            $date = $date->add($interval);
+            foreach ($intervals as $interval) {
+                $date = $date->add($interval);
+            }
         }
         return $date;
     }
