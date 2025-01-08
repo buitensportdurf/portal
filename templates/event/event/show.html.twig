@@ -28,16 +28,37 @@
                             <td>{{ event.subscriptionDeadline ? event.subscriptionDeadline|fdate : '' }}</td>
                         </tr>
                     {% endif %}
+                    {% if event.subscriberLimit > 0 %}
                     <tr>
                         <th>Subscriber limit</th>
                         <td>{{ event.subscriberLimit ?? 'None' }}</td>
                     </tr>
-                    {% if event.recurringEvent %}
+                    {% endif %}
+                    {% if event.recurringEvent and is_granted('ROLE_EVENT_ADMIN') %}
                         <tr>
                             <th>Recurring every</th>
                             <td>{{ event.recurringEvent.recurrenceRule }}</td>
                         </tr>
                     {% endif %}
+                    <tr>
+                        <th>Member Price</th>
+                        <td>
+                            {% if event.memberPrice %}
+                                € {{ event.memberPrice }}
+                            {% else %}
+                                Free
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Guest Price</th>
+                        <td>
+                            {% if event.guestPrice %}
+                                € {{ event.guestPrice }}
+                            {% else %}
+                                Free
+                            {% endif %}
+                        </td>
                     <tr>
                         <th>Description</th>
                         <td>{{ event.description|markdown_to_html }}</td>

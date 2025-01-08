@@ -7,6 +7,7 @@ use App\Form\ImageType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class BaseEventType extends AbstractType
@@ -33,6 +34,8 @@ class BaseEventType extends AbstractType
             ])
             ->add('subscriptionDeadline')
             ->add('subscriberLimit')
+            ->add('memberPrice', MoneyType::class)
+            ->add('guestPrice', MoneyType::class)
             ->add('image', ImageType::class, ['required' => false]);
     }
 }
