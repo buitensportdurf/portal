@@ -40,6 +40,12 @@ abstract class BaseEvent
     #[ORM\Column(nullable: true)]
     private ?int $subscriberLimit = null;
 
+    #[ORM\Column]
+    private ?int $memberPrice = null;
+
+    #[ORM\Column]
+    private ?int $guestPrice = null;
+
     public function __construct()
     {
         $this->startDate = (new DateTimeImmutable())->setTime(18, 0);
@@ -176,6 +182,30 @@ abstract class BaseEvent
     public function setSubscriberLimit(?int $subscriberLimit): static
     {
         $this->subscriberLimit = $subscriberLimit;
+
+        return $this;
+    }
+
+    public function getMemberPrice(): float
+    {
+        return $this->memberPrice / 100;
+    }
+
+    public function setMemberPrice(float $memberPrice): static
+    {
+        $this->memberPrice = $memberPrice * 100;
+
+        return $this;
+    }
+
+    public function getGuestPrice(): ?float
+    {
+        return $this->guestPrice / 100;
+    }
+
+    public function setGuestPrice(float $guestPrice): static
+    {
+        $this->guestPrice = $guestPrice * 100;
 
         return $this;
     }
