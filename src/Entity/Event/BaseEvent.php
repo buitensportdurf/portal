@@ -41,9 +41,9 @@ abstract class BaseEvent
     private ?int $subscriberLimit = null;
 
     #[ORM\Column]
-    private ?int $memberPrice = null;
+    private int $memberPrice = 0;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $guestPrice = null;
 
     public function __construct()
