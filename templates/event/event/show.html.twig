@@ -50,6 +50,7 @@
                             {% endif %}
                         </td>
                     </tr>
+                    {% if event.guestPrice is not null %}
                     <tr>
                         <th>Guest Price</th>
                         <td>
@@ -59,6 +60,8 @@
                                 Free
                             {% endif %}
                         </td>
+                    </tr>
+                    {% endif %}
                     <tr>
                         <th>Description</th>
                         <td>{{ event.description|markdown_to_html }}</td>
