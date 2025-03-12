@@ -200,7 +200,7 @@ abstract class BaseEvent
 
     public function getGuestPrice(): ?float
     {
-        return $this->guestPrice / 100;
+        return $this->guestPrice ? $this->guestPrice / 100 : null;
     }
 
     public function setGuestPrice(float $guestPrice): static
