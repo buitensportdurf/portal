@@ -35,7 +35,7 @@ class BaseEventType extends AbstractType
             ->add('subscriptionDeadline')
             ->add('subscriberLimit')
             ->add('memberPrice', MoneyType::class)
-            ->add('guestPrice', MoneyType::class)
+            ->add('guestPrice', MoneyType::class, ['required' => false])
             ->add('image', ImageType::class, ['required' => false]);
     }
 }
