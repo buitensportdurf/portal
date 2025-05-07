@@ -24,18 +24,17 @@ class EventRepository extends ServiceEntityRepository
     }
 
     /**
-     * @argument array<string> $hiddenTags
+     * @param array<Tag> $hiddenTags
      * @return array<Event>
      */
     public function findByTag(?Tag $tag, array $hiddenTags = []): array
     {
-        $qb = $this->_em->createQueryBuilder();
-        $qb->select('e')
-           ->from($this->_entityName, 'e')
-           ->leftJoin('e.tags', 't')
-           ->where('e.startDate >= :now')
-           ->setParameter('now', new \DateTimeImmutable())
-           ->addOrderBy('e.startDate', 'ASC')
+        $qb = $this
+            ->createQueryBuilder('e')
+            ->leftJoin('e.tags', 't')
+            ->where('e.startDate >= :now')
+            ->setParameter('now', new \DateTimeImmutable())
+            ->addOrderBy('e.startDate', 'ASC')
         ;
 
         $tagAnd = $qb->expr()->andX();
