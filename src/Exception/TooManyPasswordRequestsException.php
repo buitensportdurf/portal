@@ -4,11 +4,16 @@ namespace App\Exception;
 
 use DateTime;
 use DateTimeInterface;
+use Throwable;
 
 final class TooManyPasswordRequestsException extends \Exception
 {
     public function __construct(
-        private readonly DateTimeInterface $availableAt, string $message = '', int $code = 0, \Throwable $previous = null)
+        private readonly DateTimeInterface $availableAt,
+        string                             $message = '',
+        int                                $code = 0,
+        ?Throwable                         $previous = null
+    )
     {
         parent::__construct($message, $code, $previous);
     }

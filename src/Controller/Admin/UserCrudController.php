@@ -43,7 +43,7 @@ class UserCrudController extends AbstractCrudController
             ->add(
                 Crud::PAGE_INDEX,
                 Action::new('impersonate', 'Impersonate', 'fa fa-user')
-                      ->linkToRoute('admin_user_switch', fn(User $user) => ['id' => $user->getId()])
+                      ->linkToRoute('admin2_user_switch', fn(User $user) => ['id' => $user->getId()])
                       ->displayIf(fn(User $user) => $this->isGranted('ROLE_ALLOWED_TO_SWITCH'))
             )
         ;

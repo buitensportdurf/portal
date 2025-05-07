@@ -12,8 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/admin/user', name: 'admin_user')]
-class UserAdminController extends AbstractController
+#[Route('/admin2/user', name: 'admin2_user')]
+class UserAdmin2Controller extends AbstractController
 {
     public function __construct(
         private readonly UserRepository $userRepository,
@@ -38,7 +38,7 @@ class UserAdminController extends AbstractController
             $mailer->send(EmailFactory::userEnabled($user));
             $this->addFlash('success', sprintf('%s is now enabled', $user->getName()));
 
-            return $this->redirectToRoute('admin_user_index');
+            return $this->redirectToRoute('admin2_user_index');
         }
 
         return $this->render('general/confirmation.form.html.twig', [

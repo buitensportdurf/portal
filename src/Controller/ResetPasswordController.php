@@ -79,7 +79,7 @@ class ResetPasswordController extends AbstractController
     public function reset(
         Request                     $request,
         UserPasswordHasherInterface $passwordHasher,
-        string                      $token = null
+        ?string                     $token = null
     ): Response
     {
         if (null === $token) {
