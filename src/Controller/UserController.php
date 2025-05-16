@@ -10,12 +10,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 #[Route('/user', name: 'user')]
 class UserController extends AbstractController
 {
     public function __construct(
-        private EntityManagerInterface $em,
+        private readonly EntityManagerInterface $em,
     ) {}
 
     #[Route('/profile', name: '_profile')]
@@ -27,6 +28,10 @@ class UserController extends AbstractController
     {
         $user = $this->getUser();
         $form = $this->createForm(ProfileType::class, $user);
+
+        if ($user->isGuest()) {
+            throw $this->createAccessDeniedException('You cannot access this page with a guest account');
+        }
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

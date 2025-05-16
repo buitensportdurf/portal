@@ -50,6 +50,22 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $repoUser = $repository->findByEmail($user->getEmail());
+            if ($repoUser) {
+                if ($repoUser->isGuest()) {
+                    $this->addFlash('success', 'Found an existing guest account based on email, upgrading to normal user');
+                    $repoUser
+                        ->setUsername($user->getUsername())
+                        ->setName($user->getName())
+                        ->setGuest(false)
+                    ;
+                    $user = $repoUser;
+                } else {
+                    $this->addFlash('error', 'Email already used by a registered user');
+                    return $this->redirectToRoute('register');
+                }
+            }
+
             $user
                 ->setPassword($userPasswordHasher->hashPassword(
                     $user,
@@ -91,17 +107,12 @@ class SecurityController extends AbstractController
         ;
 
         $form = $this
-            ->createForm(GuestForm::class)
+            ->createForm(GuestForm::class, $user)
             ->add('Save', SubmitType::class)
         ;
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $user
-                ->setName($form->get('name')->getData())
-                ->setEmail($form->get('email')->getData())
-            ;
-
             $repoUser = $repository->findByEmail($user->getEmail());
             if ($repoUser) {
                 if ($repoUser->isGuest()) {
@@ -136,6 +147,10 @@ class SecurityController extends AbstractController
         Security $security,
     ): Response
     {
+        if (!$user->isGuest()) {
+            $this->addFlash('error', 'Logging in like this only works for a guest account');
+            return $this->redirectToRoute('home');
+        }
         $security->login($user, 'form_login');
 
         return $this->redirectToRoute('event_subscription_subscribe', [
