@@ -29,10 +29,10 @@
                         </tr>
                     {% endif %}
                     {% if event.subscriberLimit > 0 %}
-                    <tr>
-                        <th>Subscriber limit</th>
-                        <td>{{ event.subscriberLimit ?? 'None' }}</td>
-                    </tr>
+                        <tr>
+                            <th>Subscriber limit</th>
+                            <td>{{ event.subscriberLimit ?? 'None' }}</td>
+                        </tr>
                     {% endif %}
                     {% if event.recurringEvent and is_granted('ROLE_EVENT_ADMIN') %}
                         <tr>
@@ -51,16 +51,21 @@
                         </td>
                     </tr>
                     {% if event.guestPrice is not null %}
-                    <tr>
-                        <th>Guest Price</th>
-                        <td>
-                            {% if event.guestPrice %}
-                                € {{ event.guestPrice }}
-                            {% else %}
-                                Free
-                            {% endif %}
-                        </td>
-                    </tr>
+                        <tr>
+                            <th>Guest Price</th>
+                            <td>
+                                {% if event.guestPrice %}
+                                    € {{ event.guestPrice }}
+                                {% else %}
+                                    Free
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                    {% if not event.guestsAllowed %}
+                        <tr>
+                            <th colspan="2">Only for members</th>
+                        </tr>
                     {% endif %}
                     <tr>
                         <th>Description</th>
@@ -70,9 +75,9 @@
                         <tr>
                             <th>Subscribers</th>
                             <td>
-                                <ul class="list-group">
+                                <ol class="list-group list-group-flush">
                                     {% for subscription in event.eventSubscriptions %}
-                                        <li class="list-group-item d-flex justify-content-between align-items-start {% if subscription.createdUser is same as(app.user) %}list-group-item-success{% endif %}">
+                                        <li class="list-group-item d-flex justify-content-between {% if subscription.createdUser is same as(app.user) %}list-group-item-success{% endif %}">
                                             {% if is_granted('edit', subscription) %}
                                                 <div class="ms-2 me-2">
                                                     <a class="btn btn-sm btn-warning"
@@ -85,10 +90,15 @@
                                             {% if subscription.note %}
                                                 <div class="ms-2 me-auto">{{ subscription.note|nl2br }}</div>
                                             {% endif %}
-                                            <span class="badge bg-primary rounded-pill">{{ subscription.amount }}</span>
+                                            <span>
+                                                {% if subscription.createdUser.guest %}
+                                                    <span class="badge bg-secondary">guest</span>
+                                                {% endif %}
+                                                <span class="badge bg-primary rounded-pill">{{ subscription.amount }}</span>
+                                            </span>
                                         </li>
                                     {% endfor %}
-                                </ul>
+                                </ol>
                             </td>
                         </tr>
                     {% endif %}
@@ -97,7 +107,9 @@
                             <th>Subscriber emails</th>
                             <td>
                                 <p>
-                                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEmails" aria-expanded="false" aria-controls="collapseEmails">
+                                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseEmails" aria-expanded="false"
+                                            aria-controls="collapseEmails">
                                         Show all subscriber emails
                                     </button>
                                 </p>

@@ -3,6 +3,7 @@
 namespace App\Security\Voter;
 
 use App\Entity\Event\Event;
+use App\Entity\User;
 use DateTimeImmutable;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -27,6 +28,7 @@ class EventVoter extends Voter
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
+        /** @var User $user */
         $user = $token->getUser();
         // if the user is anonymous, do not grant access
         if (!$user instanceof UserInterface) {
@@ -40,8 +42,10 @@ class EventVoter extends Voter
         if ($this->security->isGranted('ROLE_EVENT_ADMIN')) {
             return true;
         }
+        if ($user->isGuest() && !$event->isGuestsAllowed()) {
+            return false;
+        }
 
-        $now = new DateTimeImmutable();
         switch ($attribute) {
             case self::SUBSCRIBE:
                 if ($event->isNotPastSubscriptionDeadline()
