@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Event\Event;
 use App\Entity\User;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mime\Email;
@@ -11,7 +12,7 @@ class EmailFactory
     private static function createEmailBase(User $user, string $title, array $context = []): TemplatedEmail
     {
         $title = 'Durf - ' . $title;
-        return (new TemplatedEmail())
+        return new TemplatedEmail()
             ->to($user->getEmail())
             ->subject($title)
             ->context(['user' => $user, 'title' => $title] + $context)
@@ -22,6 +23,13 @@ class EmailFactory
     {
         return self::createEmailBase($user, 'Account created')
                    ->htmlTemplate('email/user/signup.html.twig')
+        ;
+    }
+
+    public static function eventGuestSignupEmail(User $user, Event $event): Email
+    {
+        return self::createEmailBase($user, 'Guest account created', ['event' => $event])
+                   ->htmlTemplate('email/user/signup.guest.html.twig')
         ;
     }
 

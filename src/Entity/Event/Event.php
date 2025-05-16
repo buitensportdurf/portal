@@ -28,6 +28,28 @@ class Event extends BaseEvent
         $this->tags = new ArrayCollection();
     }
 
+    public function isNotPastSubscriptionDeadline(?\DateTime $date = null): bool
+    {
+        if ($this->getSubscriptionDeadline() === null) {
+            return true;
+        }
+        if ($date === null) {
+            $date = new \DateTime();
+        }
+        return $this->getSubscriptionDeadline() > $date;
+    }
+
+    public function isNotPastStartDate(?\DateTime $date = null): bool
+    {
+        if ($this->getStartDate() === null) {
+            return true;
+        }
+        if ($date === null) {
+            $date = new \DateTime();
+        }
+        return $this->getStartDate() > $date;
+    }
+
     /**
      * @return Collection<int, EventSubscription>
      */

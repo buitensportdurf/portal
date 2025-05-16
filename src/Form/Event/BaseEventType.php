@@ -4,6 +4,7 @@ namespace App\Form\Event;
 
 use App\Entity\Event\Tag;
 use App\Form\ImageType;
+use App\Form\SwitchType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
@@ -36,6 +37,7 @@ class BaseEventType extends AbstractType
             ->add('subscriberLimit')
             ->add('memberPrice', MoneyType::class)
             ->add('guestPrice', MoneyType::class, ['required' => false])
+            ->add('guestsAllowed', SwitchType::class)
             ->add('image', ImageType::class, ['required' => false]);
     }
 }

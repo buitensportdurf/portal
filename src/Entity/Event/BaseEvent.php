@@ -46,9 +46,12 @@ abstract class BaseEvent
     #[ORM\Column(nullable: true)]
     private ?int $guestPrice = null;
 
+    #[ORM\Column]
+    private bool $guestsAllowed = false;
+
     public function __construct()
     {
-        $this->startDate = (new DateTimeImmutable())->setTime(18, 0);
+        $this->startDate = new DateTimeImmutable()->setTime(18, 0);
         $this->setTags(new ArrayCollection());
     }
 
@@ -59,7 +62,7 @@ abstract class BaseEvent
 
     public function copyFrom(self $event): self
     {
-        $this
+        return $this
             ->setName($event->getName())
             ->setDescription($event->getDescription())
             ->setSubscriptionDeadline($event->getSubscriptionDeadline())
@@ -72,9 +75,10 @@ abstract class BaseEvent
                 $event->getStartDate()->format('H'),
                 $event->getStartDate()->format('i')
             ))
+            ->setMemberPrice($event->getMemberPrice())
+            ->setGuestPrice($event->getGuestPrice())
+            ->setGuestsAllowed($event->isGuestsAllowed())
         ;
-
-        return $this;
     }
 
     public function getId(): ?int
@@ -206,6 +210,18 @@ abstract class BaseEvent
     public function setGuestPrice(float $guestPrice): static
     {
         $this->guestPrice = $guestPrice * 100;
+
+        return $this;
+    }
+
+    public function isGuestsAllowed(): ?bool
+    {
+        return $this->guestsAllowed;
+    }
+
+    public function setGuestsAllowed(bool $guestsAllowed): static
+    {
+        $this->guestsAllowed = $guestsAllowed;
 
         return $this;
     }
