@@ -50,7 +50,7 @@
                             {% endif %}
                         </td>
                     </tr>
-                    {% if event.guestPrice is not null %}
+                    {% if event.guestsAllowed %}
                         <tr>
                             <th>Guest Price</th>
                             <td>
@@ -62,11 +62,15 @@
                             </td>
                         </tr>
                     {% endif %}
-                    {% if not event.guestsAllowed %}
-                        <tr>
-                            <th colspan="2">Only for members</th>
-                        </tr>
-                    {% endif %}
+                    <tr>
+                        <th colspan="2">
+                            {% if event.guestsAllowed %}
+                                Open for guests
+                            {% else %}
+                                Only for members
+                            {% endif %}
+                        </th>
+                    </tr>
                     <tr>
                         <th>Description</th>
                         <td>{{ event.description|markdown_to_html }}</td>
