@@ -3,6 +3,7 @@
 namespace App\Controller\Event;
 
 use App\Entity\Event\Event;
+use App\Entity\User;
 use App\Form\ConfirmationType;
 use App\Form\Event\EventType;
 use App\Repository\Event\EventRepository;

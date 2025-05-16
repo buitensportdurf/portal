@@ -75,6 +75,7 @@ class UserCrudController extends AbstractCrudController
                        ->onlyOnForms()
         ;
         yield BooleanField::new('enabled');
+        yield BooleanField::new('guest');
         yield ChoiceField::new($roles)->allowMultipleChoices()->setChoices($this->roles->getRoleChoices());
         yield AssociationField::new('groups');
     }
