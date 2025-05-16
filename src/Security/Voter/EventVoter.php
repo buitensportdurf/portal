@@ -44,8 +44,8 @@ class EventVoter extends Voter
         $now = new DateTimeImmutable();
         switch ($attribute) {
             case self::SUBSCRIBE:
-                if ((($event->getSubscriptionDeadline() && $event->getSubscriptionDeadline() > $now) || $event->getSubscriptionDeadline() === null)
-                    && $event->getStartDate() > $now
+                if ($event->isNotPastSubscriptionDeadline()
+                    && $event->isNotPastStartDate()
                     && !$event->isSubscribed($user)
                 ) {
                     return true;
@@ -53,7 +53,7 @@ class EventVoter extends Voter
                 break;
             case self::UNSUBSCRIBE:
                 if ($event->isSubscribed($user)
-                    && $event->getStartDate() > $now) {
+                    && $event->isNotPastStartDate()) {
                     return true;
                 }
                 break;

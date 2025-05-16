@@ -35,7 +35,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(unique: true, nullable: true)]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -46,6 +46,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToMany(targetEntity: Group::class, inversedBy: 'users')]
     private Collection $groups;
+
+    #[ORM\Column]
+    private bool $guest = false;
 
     public function __construct()
     {
@@ -204,6 +207,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeGroup(Group $group): self
     {
         $this->groups->removeElement($group);
+
+        return $this;
+    }
+
+    public function isGuest(): ?bool
+    {
+        return $this->guest;
+    }
+
+    public function setGuest(bool $guest): static
+    {
+        $this->guest = $guest;
 
         return $this;
     }

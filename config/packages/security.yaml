@@ -32,16 +32,21 @@ security:
     - { path: ^/admin/user, roles: ROLE_ADMIN_USER }
     - { path: ^/admin, roles: ROLE_ADMIN }
     - { path: ^/user, roles: ROLE_USER }
+    - { path: ^/register, roles: PUBLIC_ACCESS }
+    - { path: ^/reset-password, roles: PUBLIC_ACCESS }
+    - { path: ^/(loginEventGuest|login), roles: PUBLIC_ACCESS }
 
     - { path: ^/event/event/(index|past), roles: PUBLIC_ACCESS }
     - { path: ^/event/event/[ 0-9 ]+/show, roles: PUBLIC_ACCESS }
     - { path: ^/event/event/new, roles: ROLE_EVENT_EDIT }
     - { path: ^/event/event/[ 0-9 ]+/(edit|delete), roles: ROLE_EVENT_EDIT }
     - { path: ^/event/recurring_event, roles: ROLE_EVENT_RECURRING }
-    - { path: ^/event/subscription/subscribe, roles: PUBLIC_ACCESS }
+    - { path: ^/event/subscription/(subscribe|nologin), roles: PUBLIC_ACCESS }
     - { path: ^/event/subscription, roles: ROLE_USER }
     - { path: ^/event/calendar, roles: PUBLIC_ACCESS }
     - { path: ^/event, roles: ROLE_EVENT_ADMIN }
+
+    - { path: ^/, roles: PUBLIC_ACCESS }
 
   role_hierarchy:
     ROLE_EVENT_ADMIN:
