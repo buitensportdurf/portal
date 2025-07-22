@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\IdenticalTo;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -40,6 +41,20 @@ class RegistrationFormType extends AbstractType
                         'minMessage' => 'Your password should be at least {{ limit }} characters',
                         // max length allowed by Symfony for security reasons
                         'max' => 4096,
+                    ]),
+                ],
+            ])
+            ->add('memberCheck', TextType::class, [
+                'required' => true,
+                'mapped' => false,
+                'label' => 'Vul de naam van de vereniging waar je lid van bent (buitensportverenigingdurf)',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Vul iets in',
+                    ]),
+                    new IdenticalTo([
+                        'value' => 'buitensportverenigingdurf',
+                        'message' => 'Je moet de naam van de vereniging correct invullen.',
                     ]),
                 ],
             ])
