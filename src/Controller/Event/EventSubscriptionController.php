@@ -4,13 +4,19 @@ namespace App\Controller\Event;
 
 use App\Entity\Event\Event;
 use App\Entity\Event\EventSubscription;
+use App\Entity\Event\QuestionAnswer;
 use App\Entity\User;
+use App\Form\Event\EventSubscriptionType;
+use App\Form\Event\QuestionAnswerType;
 use App\Repository\Event\EventSubscriptionRepository;
+use App\Repository\Event\QuestionAnswerRepository;
 use App\Security\Voter\EventSubscriptionVoter;
 use App\Security\Voter\EventVoter;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -24,14 +30,23 @@ class EventSubscriptionController extends AbstractController
     ) {}
 
     #[Route('/subscribe/{id}', name: '_subscribe')]
-    public function subscribe(Request $request, Event $event): Response
+    public function subscribe(
+        Request                  $request,
+        Event                    $event,
+        QuestionAnswerRepository $answerRepository,
+    ): Response
     {
+        /** @var User $user */
         $user = $this->getUser();
+
+        // Redirect if already subscribed
         if ($user && $event->isSubscribed($user)) {
             return $this->redirectToRoute('event_subscription_edit', [
                 'id' => $event->getSubscription($user)->getId(),
             ]);
         }
+
+        // Check permissions
         if (!$this->isGranted(EventVoter::SUBSCRIBE, $event)) {
             if ($user) {
                 $this->addFlash('error', 'You cannot subscribe to this event');
@@ -53,10 +68,13 @@ class EventSubscriptionController extends AbstractController
             ->setCreatedUser($user)
         ;
 
-        $form = $this
-            ->createFormBuilder($subscription)
-            ->add('amount')
-        ;
+        foreach ($event->questions as $question) {
+            $answer = new QuestionAnswer();
+            $answer->question = $question;
+            $answer->subscription = $subscription;
+        }
+
+        $form = $this->createForm(EventSubscriptionType::class, $subscription);
 
         if ($this->isGranted('ROLE_EVENT_ADMIN')) {
             $form->add('createdUser', options: [
@@ -66,7 +84,6 @@ class EventSubscriptionController extends AbstractController
         $form->add('note')
              ->add('subscribe', SubmitType::class)
         ;
-        $form = $form->getForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -102,12 +119,25 @@ class EventSubscriptionController extends AbstractController
     {
         $this->denyAccessUnlessGranted(EventSubscriptionVoter::EDIT, $subscription);
 
-        $form = $this
-            ->createFormBuilder($subscription)
-            ->add('amount')
+        // Add missing question answers
+        foreach ($subscription->getEvent()->questions as $question) {
+            $found = false;
+            foreach ($subscription->questionAnswers as $answer) {
+                if ($answer->question === $question) {
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
+                $answer = new QuestionAnswer();
+                $answer->question = $question;
+                $answer->subscription = $subscription;
+            }
+        }
+
+        $form = $this->createForm(EventSubscriptionType::class, $subscription)
             ->add('note')
             ->add('save', SubmitType::class)
-            ->getForm()
         ;
 
         $form->handleRequest($request);

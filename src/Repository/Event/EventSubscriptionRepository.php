@@ -23,13 +23,13 @@ class EventSubscriptionRepository extends ServiceEntityRepository
 
     public function save(EventSubscription $eventSubscription): void
     {
-        $this->_em->persist($eventSubscription);
-        $this->_em->flush();
+        $this->getEntityManager()->persist($eventSubscription);
+        $this->getEntityManager()->flush();
     }
 
     public function delete(EventSubscription $subscription): void
     {
-        $this->_em->remove($subscription);
-        $this->_em->flush();
+        $this->getEntityManager()->remove($subscription);
+        $this->getEntityManager()->flush();
     }
 }

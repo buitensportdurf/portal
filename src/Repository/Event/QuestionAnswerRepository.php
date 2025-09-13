@@ -2,7 +2,10 @@
 
 namespace App\Repository\Event;
 
+use App\Entity\Event\EventSubscription;
+use App\Entity\Event\Question;
 use App\Entity\Event\QuestionAnswer;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +19,22 @@ class QuestionAnswerRepository extends ServiceEntityRepository
         parent::__construct($registry, QuestionAnswer::class);
     }
 
-    //    /**
-    //     * @return QuestionAnswer[] Returns an array of QuestionAnswer objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('q')
-    //            ->andWhere('q.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('q.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function save(QuestionAnswer $answer, bool $flush = true): void
+    {
+        $this->getEntityManager()->persist($answer);
+        if($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
 
-    //    public function findOneBySomeField($value): ?QuestionAnswer
-    //    {
-    //        return $this->createQueryBuilder('q')
-    //            ->andWhere('q.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findOneByQuestionSubscription(
+        Question          $question,
+        EventSubscription $subscription,
+    ): ?QuestionAnswer
+    {
+        return $this->findOneBy([
+            'question' => $question,
+            'subscription' => $subscription,
+        ]);
+    }
 }

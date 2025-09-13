@@ -25,7 +25,7 @@ class Question
     #[ORM\JoinColumn(nullable: false)]
     public ?Event $event = null;
 
-    #[ORM\OneToMany(mappedBy: 'question', targetEntity: QuestionAnswer::class, orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: QuestionAnswer::class, mappedBy: 'question', orphanRemoval: true, indexBy: 'subscription_id')]
     public Collection $answers;
 
     #[ORM\Column(length: 255, nullable: false)]
