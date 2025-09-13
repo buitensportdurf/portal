@@ -41,11 +41,15 @@ class ResetPasswordController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $this->userRepository->findOneBy(['email' => $form->get('email')->getData()]);
 
-            $this->addFlash('success', 'An email has been sent with a reset password link.');
-            // Do not reveal whether a user account was found or not.
             if (!$user) {
+                $this->addFlash('error', 'No user found with this email address.');
                 return $this->redirectToRoute('login');
             }
+            if ($user->isGuest()) {
+                $this->addFlash('error', 'You cannot reset the password for a guest account.');
+                return $this->redirectToRoute('login');
+            }
+            $this->addFlash('success', 'An email has been sent with a reset password link.');
 
             try {
                 $resetToken = $this->generateResetToken($user);

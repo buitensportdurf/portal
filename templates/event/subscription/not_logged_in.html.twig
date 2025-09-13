@@ -1,0 +1,21 @@
+{% extends 'base/single.column.html.twig' %}
+
+{% set title %}Not logged in{% endset %}
+
+{% block body %}
+    <h5>You tried to subscribe to {{ event }}, but you first need to be logged in</h5>
+    <div class="list-group">
+        <a class="list-group-item list-group-item-action" href="{{ path('login') }}">
+            Login
+        </a>
+        <a class="list-group-item list-group-item-action" href="{{ path('register') }}">
+            Register
+        </a>
+        {% if event.guestsAllowed %}
+            <a class="list-group-item list-group-item-action" href="{{ path('create_event_guest', {id: event.id}) }}">
+                Subscribe as guest to {{ event }}
+            </a>
+        {% endif %}
+    </div>
+{% endblock %}
+

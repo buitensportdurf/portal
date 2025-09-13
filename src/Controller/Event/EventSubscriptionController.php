@@ -4,6 +4,7 @@ namespace App\Controller\Event;
 
 use App\Entity\Event\Event;
 use App\Entity\Event\EventSubscription;
+use App\Entity\User;
 use App\Repository\Event\EventSubscriptionRepository;
 use App\Security\Voter\EventSubscriptionVoter;
 use App\Security\Voter\EventVoter;
@@ -12,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/event/subscription', name: 'event_subscription')]
@@ -24,9 +26,23 @@ class EventSubscriptionController extends AbstractController
     #[Route('/subscribe/{id}', name: '_subscribe')]
     public function subscribe(Request $request, Event $event): Response
     {
+        $user = $this->getUser();
+        if ($user && $event->isSubscribed($user)) {
+            return $this->redirectToRoute('event_subscription_edit', [
+                'id' => $event->getSubscription($user)->getId(),
+            ]);
+        }
         if (!$this->isGranted(EventVoter::SUBSCRIBE, $event)) {
-            $this->addFlash('error', sprintf('Please register to subscribe to %s', $event));
-            return $this->redirectToRoute('register');
+            if ($user) {
+                $this->addFlash('error', 'You cannot subscribe to this event');
+                return $this->redirectToRoute('event_event_show', [
+                    'id' => $event->getId(),
+                ]);
+            } else {
+                return $this->redirectToRoute('event_subscription_nologin', [
+                    'id' => $event->getId(),
+                ]);
+            }
         }
 
         $subscription = new EventSubscription();
@@ -34,7 +50,7 @@ class EventSubscriptionController extends AbstractController
             ->setCreatedDateNowNoSeconds()
             ->setEvent($event)
             ->setAmount(1)
-            ->setCreatedUser($this->getUser())
+            ->setCreatedUser($user)
         ;
 
         $form = $this
@@ -54,6 +70,11 @@ class EventSubscriptionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if (!$this->isGranted('ROLE_EVENT_ADMIN') && $user !== $subscription->getCreatedUser()) {
+                $this->addFlash('error', 'You can only subscribe to your own events');
+                return $this->redirectToRoute('event_event_show', ['id' => $event->getId()]);
+            }
+
             $this->repository->save($subscription);
             $this->addFlash('success', sprintf('You have subscribed to %s', $event));
             return $this->redirectToRoute('event_event_show', ['id' => $event->getId()]);
@@ -99,6 +120,14 @@ class EventSubscriptionController extends AbstractController
         return $this->render('event/subscription/edit.html.twig', [
             'subscription' => $subscription,
             'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/nologin/{id}', name: '_nologin')]
+    public function notLoggedIn(Event $event): Response
+    {
+        return $this->render('event/subscription/not_logged_in.html.twig', [
+            'event' => $event,
         ]);
     }
 }

@@ -38,10 +38,19 @@
                 </li>
             {% endif %}
             {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                {% if app.user.guest %}
+                    <li class="nav-item">
+                        <a class="btn navbar-text bg-danger" href="#">Guest account</a> &nbsp;
+                    </li>
+                {% endif %}
                 <span class="nav-item navbar-text mr-sm-2">Logged in as</span>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('user_profile') }}">{{ app.user.name }}</a>
-                </li>
+                {% if not app.user.guest %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('user_profile') }}">{{ app.user.name }}</a>
+                    </li>
+                {% else %}
+                    <span class="nav-item navbar-text mr-sm-2">&nbsp;{{ app.user.name }}</span>
+                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('_logout_main') }}">Logout</a>
                 </li>
