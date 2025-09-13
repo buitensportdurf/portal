@@ -9,7 +9,7 @@
         "ext-iconv": "*",
         "doctrine/doctrine-bundle": "^2.10",
         "doctrine/doctrine-migrations-bundle": "^3.2",
-        "doctrine/orm": "^2.16",
+        "doctrine/orm": "^3.0",
         "easycorp/easyadmin-bundle": "^4.7",
         "eluceo/ical": "^2.12",
         "league/commonmark": "^2.4",

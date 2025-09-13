@@ -44,6 +44,7 @@ security:
     - { path: ^/event/subscription/(subscribe|nologin), roles: PUBLIC_ACCESS }
     - { path: ^/event/subscription, roles: ROLE_USER }
     - { path: ^/event/calendar, roles: PUBLIC_ACCESS }
+    - { path: ^/event/question, roles: ROLE_EVENT_EDIT }
     - { path: ^/event, roles: ROLE_EVENT_ADMIN }
 
     - { path: ^/, roles: PUBLIC_ACCESS }

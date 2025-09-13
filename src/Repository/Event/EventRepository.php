@@ -68,7 +68,7 @@ class EventRepository extends ServiceEntityRepository
      */
     public function findSubscribedByUser(User $user): array
     {
-        $qb = $this->_em->createQueryBuilder();
+        $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->select('e')
            ->from($this->_entityName, 'e')
            ->addOrderBy('e.startDate', 'ASC')
@@ -87,15 +87,15 @@ class EventRepository extends ServiceEntityRepository
         $image = $event->getImage();
         if ($image && $event->getRecurringEvent()?->getImage() !== $image
             && count($this->findBy(['image' => $image])) === 1) {
-            $this->_em->remove($image);
+            $this->getEntityManager()->remove($image);
         }
-        $this->_em->remove($event);
-        $this->_em->flush();
+        $this->getEntityManager()->remove($event);
+        $this->getEntityManager()->flush();
     }
 
     public function findPast(): array
     {
-        $qb = $this->_em->createQueryBuilder();
+        $qb = $this->getEntityManager()->createQueryBuilder();
         $qb->select('e')
            ->from($this->_entityName, 'e')
            ->where('e.startDate < :now')
