@@ -91,10 +91,12 @@
                                             <div class="ms-2 me-auto">
                                                 {{ subscription.createdUser }}
                                             </div>
-                                            {% if subscription.note %}
-                                                <div class="ms-2 me-auto">{{ subscription.note|nl2br }}</div>
-                                            {% endif %}
                                             <div class="ms-2 me-auto">
+                                                {% if subscription.note %}
+                                                    <strong>Note:</strong><br>
+                                                    {{ subscription.note|nl2br }}
+                                                {% endif %}
+
                                                 {% for question in event.questions %}
                                                     <div>
                                                         <strong>{{ question }}</strong><br>

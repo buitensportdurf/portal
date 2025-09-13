@@ -22,6 +22,7 @@ class EventSubscriptionType extends AbstractType
                 'entry_options' => ['label' => false],
                 'label' => false,
             ])
+            ->add('note')
         ;
     }
 

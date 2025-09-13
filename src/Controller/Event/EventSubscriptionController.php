@@ -40,7 +40,7 @@ class EventSubscriptionController extends AbstractController
         $user = $this->getUser();
 
         // Redirect if already subscribed
-        if ($user && $event->isSubscribed($user)) {
+        if ($user && $event->isSubscribed($user) && !$this->isGranted('ROLE_EVENT_ADMIN')) {
             return $this->redirectToRoute('event_subscription_edit', [
                 'id' => $event->getSubscription($user)->getId(),
             ]);
@@ -79,11 +79,10 @@ class EventSubscriptionController extends AbstractController
         if ($this->isGranted('ROLE_EVENT_ADMIN')) {
             $form->add('createdUser', options: [
                 'query_builder' => fn($er) => $er->createQueryBuilder('u')->orderBy('u.name', 'ASC'),
+                'label' => 'To subscribe user',
             ]);
         }
-        $form->add('note')
-             ->add('subscribe', SubmitType::class)
-        ;
+        $form->add('subscribe', SubmitType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -136,7 +135,6 @@ class EventSubscriptionController extends AbstractController
         }
 
         $form = $this->createForm(EventSubscriptionType::class, $subscription)
-            ->add('note')
             ->add('save', SubmitType::class)
         ;
 
