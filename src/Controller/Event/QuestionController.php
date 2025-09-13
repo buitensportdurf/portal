@@ -31,6 +31,7 @@ class QuestionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->questionRepository->save($question);
 
+            $this->addFlash('success', sprintf('Added question "%s" to event "%s"', $question->question, $event));
             return $this->redirectToRoute('event_event_show', ['id' => $event->getId()], Response::HTTP_SEE_OTHER);
         }
 
@@ -50,6 +51,7 @@ class QuestionController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->questionRepository->save($question);
 
+            $this->addFlash('success', sprintf('Saved question "%s" to event "%s"', $question->question, $question->event));
             return $this->redirectToRoute('event_event_show', ['id' => $question->event->getId()], Response::HTTP_SEE_OTHER);
         }
 
@@ -58,5 +60,16 @@ class QuestionController extends AbstractController
             'question' => $question,
             'form' => $form,
         ]);
+    }
+
+    #[Route('/delete/{id}', name: '_delete')]
+    public function delete(Question $question): Response
+    {
+        $event = $question->event;
+        $questionText = $question->question;
+        $this->questionRepository->remove($question);
+
+        $this->addFlash('success', sprintf('Deleted question "%s" from event "%s"', $questionText, $question->event));
+        return $this->redirectToRoute('event_event_show', ['id' => $event->getId()], Response::HTTP_SEE_OTHER);
     }
 }

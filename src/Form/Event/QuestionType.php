@@ -20,12 +20,7 @@ class QuestionType extends AbstractType
             ->add('type', ChoiceType::class, [
                 'choices' => [
                     'Open' => 'text',
-                    'Dropdown' => 'select',
                 ],
-            ])
-            ->add('event', EntityType::class, [
-                'class' => Event::class,
-                'choice_label' => 'id',
             ])
         ;
     }
