@@ -127,6 +127,30 @@
                             </td>
                         </tr>
                     {% endif %}
+                    <tr>
+                        <th>Questions</th>
+                        <td>
+                            <p>
+                                {% if is_granted('ROLE_EVENT_EDIT') %}
+                                    <a class="btn btn-primary"
+                                       href="{{ path('event_question_create', {'id': event.id}) }}">
+                                        Add question
+                                    </a>
+                                {% endif %}
+                            </p>
+                            <ol class="list-group list-group-flush">
+                                {% for question in event.questions %}
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        {{ question }}
+                                        <a class="btn btn-sm btn-warning"
+                                           href="{{ path('event_question_edit', {'id': question.id}) }}">
+                                            Edit
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ol>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
