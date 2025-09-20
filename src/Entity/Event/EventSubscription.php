@@ -4,6 +4,8 @@ namespace App\Entity\Event;
 
 use App\Entity\Helpers\TrackedTrait;
 use App\Repository\Event\EventSubscriptionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -27,6 +29,13 @@ class EventSubscription
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $note = null;
+
+    #[ORM\OneToMany(targetEntity: QuestionAnswer::class, mappedBy: 'subscription', cascade: ['persist'], orphanRemoval: true)]
+    public Collection $questionAnswers;
+
+    public function __construct() {
+        $this->questionAnswers = new ArrayCollection();
+    }
 
     #[Assert\Callback]
     public function validate(ExecutionContextInterface $context): void

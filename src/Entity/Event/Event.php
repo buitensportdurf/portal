@@ -21,11 +21,16 @@ class Event extends BaseEvent
     #[ORM\ManyToOne(inversedBy: 'events')]
     private ?RecurringEvent $recurringEvent = null;
 
+    #[ORM\OneToMany(mappedBy: 'event', targetEntity: Question::class, orphanRemoval: true)]
+    /** @var ?Collection<Question> $questions */
+    public ?Collection $questions = null;
+
     public function __construct()
     {
         parent::__construct();
         $this->eventSubscriptions = new ArrayCollection();
         $this->tags = new ArrayCollection();
+        $this->questions = new ArrayCollection();
     }
 
     public function isNotPastSubscriptionDeadline(?\DateTime $date = null): bool
