@@ -91,9 +91,19 @@
                                             <div class="ms-2 me-auto">
                                                 {{ subscription.createdUser }}
                                             </div>
-                                            {% if subscription.note %}
-                                                <div class="ms-2 me-auto">{{ subscription.note|nl2br }}</div>
-                                            {% endif %}
+                                            <div class="ms-2 me-auto">
+                                                {% if subscription.note %}
+                                                    <strong>Note:</strong><br>
+                                                    {{ subscription.note|nl2br }}
+                                                {% endif %}
+
+                                                {% for question in event.questions %}
+                                                    <div>
+                                                        <strong>{{ question }}</strong><br>
+                                                        {{ question.answers[subscription.id] ?? '-' }}
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
                                             <span>
                                                 {% if subscription.createdUser.guest %}
                                                     <span class="badge bg-secondary">guest</span>
@@ -127,6 +137,36 @@
                             </td>
                         </tr>
                     {% endif %}
+                    <tr>
+                        <th>Questions</th>
+                        <td>
+                            <p>
+                                {% if is_granted('ROLE_EVENT_EDIT') %}
+                                    <a class="btn btn-primary"
+                                       href="{{ path('event_question_create', {'id': event.id}) }}">
+                                        Add question
+                                    </a>
+                                {% endif %}
+                            </p>
+                            <ol class="list-group list-group-flush">
+                                {% for question in event.questions %}
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        {{ question }}
+                                        <div class="btn-group">
+                                            <a class="btn btn-sm btn-warning"
+                                               href="{{ path('event_question_edit', {'id': question.id}) }}">
+                                                Edit
+                                            </a>
+                                            <a class="btn btn-sm btn-danger"
+                                               href="{{ path('event_question_delete', {'id': question.id}) }}">
+                                                Delete
+                                            </a>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ol>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
