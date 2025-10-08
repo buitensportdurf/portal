@@ -68,14 +68,13 @@ class EventRepository extends ServiceEntityRepository
      */
     public function findSubscribedByUser(User $user): array
     {
-        $qb = $this->getEntityManager()->createQueryBuilder();
-        $qb->select('e')
-           ->from($this->_entityName, 'e')
-           ->addOrderBy('e.startDate', 'ASC')
-           ->join('e.eventSubscriptions', 's')
-           ->join('s.createdUser', 'u')
-           ->where('u.id = :user')
-           ->setParameter('user', $user->getId()->toBinary())
+        $qb = $this->createQueryBuilder('e');
+        $qb
+            ->addOrderBy('e.startDate', 'ASC')
+            ->join('e.eventSubscriptions', 's')
+            ->join('s.createdUser', 'u')
+            ->where('u.id = :user')
+            ->setParameter('user', $user->getId()->toBinary())
         ;
 
         return $qb->getQuery()->getResult();
@@ -95,12 +94,11 @@ class EventRepository extends ServiceEntityRepository
 
     public function findPast(): array
     {
-        $qb = $this->getEntityManager()->createQueryBuilder();
-        $qb->select('e')
-           ->from($this->_entityName, 'e')
-           ->where('e.startDate < :now')
-           ->setParameter('now', new \DateTimeImmutable())
-           ->addOrderBy('e.startDate', 'DESC')
+        $qb = $this->createQueryBuilder('e');
+        $qb
+            ->where('e.startDate < :now')
+            ->setParameter('now', new \DateTimeImmutable())
+            ->addOrderBy('e.startDate', 'DESC')
         ;
 
         return $qb->getQuery()->getResult();
