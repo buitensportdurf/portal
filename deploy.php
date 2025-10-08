@@ -24,7 +24,7 @@ set('bin/console', fn() => parse('{{release_path}}/bin/console'));
 
 // Hosts
 //host('app.bluelinked.nl')
-host('durf.loken.nl')
+host('portal.buitensportdurf.nl')
     ->setRemoteUser('www-data')
     ->set('branch', function () {
         return input()->getOption('branch') ?: 'master';
