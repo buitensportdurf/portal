@@ -23,7 +23,6 @@ set('allow_anonymous_stats', false);
 set('bin/console', fn() => parse('{{release_path}}/bin/console'));
 
 // Hosts
-//host('app.bluelinked.nl')
 host('portal.buitensportdurf.nl')
     ->setRemoteUser('www-data')
     ->set('branch', function () {
