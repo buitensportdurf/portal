@@ -22,13 +22,15 @@ set('allow_anonymous_stats', false);
 
 set('bin/console', fn() => parse('{{release_path}}/bin/console'));
 
+set('keep_releases', 2);
+
 // Hosts
 host('portal.buitensportdurf.nl')
     ->setRemoteUser('www-data')
     ->set('branch', function () {
         return input()->getOption('branch') ?: 'master';
     })
-    ->set('deploy_path', '~/durf.loken.nl');
+    ->set('deploy_path', '~/portal.buitensportdurf.nl');
 
 set('console_options', function () {
     return '--no-interaction';
