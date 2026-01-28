@@ -13,10 +13,10 @@ use Eluceo\iCal\Domain\ValueObject\UniqueIdentifier;
 use Eluceo\iCal\Domain\ValueObject\Uri;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class EventCalTransformer
+readonly class EventCalTransformer
 {
     public function __construct(
-        private readonly UrlGeneratorInterface $urlGenerator,
+        private UrlGeneratorInterface $urlGenerator,
     ) {}
 
     public function transform(Event $event): IcalEvent
