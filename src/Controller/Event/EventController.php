@@ -28,8 +28,10 @@ class EventController extends AbstractController
         $tagName = $request->query->get('tag');
         $tag = $tagRepository->findOneBy(['name' => $tagName]);
 
+        $includeUnpublished = $this->isGranted('ROLE_EVENT_EDIT');
+
         return $this->render('event/event/index.html.twig', [
-            'events' => $eventRepository->findByTag($tag, $tagRepository->findIsDefaultHide()),
+            'events' => $eventRepository->findByTag($tag, $tagRepository->findIsDefaultHide(), $includeUnpublished),
             'tags' => $tagRepository->findAll(),
             'tag' => $tag,
         ]);
@@ -42,7 +44,7 @@ class EventController extends AbstractController
         $year = $request->query->getInt('year') ?: ($years[0] ?? null);
 
         return $this->render('event/event/past.html.twig', [
-            'events' => $eventRepository->findPast($year),
+            'events' => $eventRepository->findPast($year, $this->isGranted('ROLE_EVENT_EDIT')),
             'years' => $years,
             'year' => $year,
         ]);
@@ -53,6 +55,7 @@ class EventController extends AbstractController
     {
         $event = new Event();
         $event->setDuration(new DateInterval('PT0S'));
+        $event->setPublished(false);
         $form = $this->createForm(EventType::class, $event);
         $form->add('Save', SubmitType::class);
         $form->handleRequest($request);
@@ -73,6 +76,10 @@ class EventController extends AbstractController
     #[Route('/{id}/show', name: '_show')]
     public function show(Event $event): Response
     {
+        if (!$event->isPublished() && !$this->isGranted('ROLE_EVENT_EDIT')) {
+            throw $this->createNotFoundException();
+        }
+
         return $this->render('event/event/show.html.twig', [
             'event' => $event,
         ]);
@@ -95,6 +102,30 @@ class EventController extends AbstractController
             'event' => $event,
             'form' => $form,
         ]);
+    }
+
+    #[Route('/{id}/publish', name: '_publish')]
+    public function publish(Event $event, EntityManagerInterface $entityManager): Response
+    {
+        $this->denyAccessUnlessGranted('publish', $event);
+
+        $event->setPublished(true);
+        $entityManager->flush();
+
+        $this->addFlash('success', sprintf('Event "%s" has been published.', $event));
+        return $this->redirectToRoute('event_event_show', ['id' => $event->getId()]);
+    }
+
+    #[Route('/{id}/unpublish', name: '_unpublish')]
+    public function unpublish(Event $event, EntityManagerInterface $entityManager): Response
+    {
+        $this->denyAccessUnlessGranted('unpublish', $event);
+
+        $event->setPublished(false);
+        $entityManager->flush();
+
+        $this->addFlash('success', sprintf('Event "%s" has been moved to draft.', $event));
+        return $this->redirectToRoute('event_event_show', ['id' => $event->getId()]);
     }
 
     #[Route('/{id}/delete', name: '_delete')]

@@ -15,6 +15,8 @@ class EventVoter extends Voter
 {
     public const SUBSCRIBE = 'subscribe';
     public const UNSUBSCRIBE = 'unsubscribe';
+    public const PUBLISH = 'publish';
+    public const UNPUBLISH = 'unpublish';
 
     public function __construct(
         private readonly Security $security,
@@ -22,8 +24,7 @@ class EventVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::UNSUBSCRIBE, self::SUBSCRIBE])
+        return in_array($attribute, [self::SUBSCRIBE, self::UNSUBSCRIBE, self::PUBLISH, self::UNPUBLISH])
             && $subject instanceof Event;
     }
 
@@ -31,40 +32,53 @@ class EventVoter extends Voter
     {
         /** @var User $user */
         $user = $token->getUser();
-        // if the user is anonymous, do not grant access
         if (!$user instanceof UserInterface) {
             return false;
         }
         if (!$subject instanceof Event) {
             return false;
-        } else {
-            $event = $subject;
         }
+        $event = $subject;
+
+        return match ($attribute) {
+            self::PUBLISH => $this->canPublish($event),
+            self::UNPUBLISH => $this->canUnpublish($event),
+            self::SUBSCRIBE, self::UNSUBSCRIBE => $this->voteOnSubscription($attribute, $event, $user),
+        };
+    }
+
+    private function canPublish(Event $event): bool
+    {
+        return $this->security->isGranted('ROLE_EVENT_EDIT') && !$event->isPublished();
+    }
+
+    private function canUnpublish(Event $event): bool
+    {
+        return $this->security->isGranted('ROLE_EVENT_EDIT')
+            && $event->isPublished()
+            && $event->getEventSubscriptions()->isEmpty();
+    }
+
+    private function voteOnSubscription(string $attribute, Event $event, User $user): bool
+    {
         if ($this->security->isGranted('ROLE_EVENT_ADMIN')) {
             return true;
+        }
+        if (!$event->isPublished()) {
+            return false;
         }
         if ($user->isGuest() && !$event->isGuestsAllowed()) {
             return false;
         }
 
-        switch ($attribute) {
-            case self::SUBSCRIBE:
-                if ($event->isPastSubscriptionOpenDate()
-                    && $event->isNotPastSubscriptionDeadline()
-                    && $event->isNotPastStartDate()
-                    && !$event->isSubscribed($user)
-                ) {
-                    return true;
-                }
-                break;
-            case self::UNSUBSCRIBE:
-                if ($event->isSubscribed($user)
-                    && $event->isNotPastStartDate()) {
-                    return true;
-                }
-                break;
-        }
-
-        return false;
+        return match ($attribute) {
+            self::SUBSCRIBE => $event->isPastSubscriptionOpenDate()
+                && $event->isNotPastSubscriptionDeadline()
+                && $event->isNotPastStartDate()
+                && !$event->isSubscribed($user),
+            self::UNSUBSCRIBE => $event->isSubscribed($user)
+                && $event->isNotPastStartDate(),
+            default => false,
+        };
     }
 }

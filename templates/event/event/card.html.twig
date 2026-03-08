@@ -1,6 +1,6 @@
 {# @var event App\Entity\Event\Event #}
 {% set subscription = event.subscription(app.user) %}
-<div class="card h-100">
+<div class="card h-100{% if not event.published %} opacity-50{% endif %}">
     {% if event.image %}
         <img class="card-img-top" src="{{ vich_uploader_asset(event.image) }}" alt="{{ event.name }} image">
     {% endif %}
@@ -8,8 +8,11 @@
     <div class="card-body">
         <h4 class="card-title">
             <a class="text-decoration-none text-dark stretched-link" href="{{ path('event_event_show', {'id': event.id}) }}">{{ event }}</a>
-        </h5>
+        </h4>
         <p class="card-text text-muted small mb-2">
+            {% if not event.published %}
+                <span class="badge bg-secondary">Draft</span>
+            {% endif %}
             {% for tag in event.tags %}
                 <span class="badge bg-primary">{{ tag }}</span>
             {% endfor %}
