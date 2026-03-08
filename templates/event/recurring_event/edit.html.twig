@@ -4,7 +4,14 @@
 
 {% block body %}
     <a class="btn btn-primary" href="{{ path('event_recurring_event_index') }}">Back to list</a>
-    <a class="btn btn-danger" href="{{ path('event_recurring_event_delete', {'id': recurringEvent.id}) }}">Delete</a>
+    <a class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteRecurring">Delete</a>
+    {{ include('components/_confirm_modal.html.twig', {
+        id: 'confirmDeleteRecurring',
+        title: 'Delete recurring event',
+        message: 'Are you sure you want to delete recurring event "' ~ recurringEvent ~ '"?',
+        action_url: path('event_recurring_event_delete', {id: recurringEvent.id}),
+        action_label: 'Delete',
+    }) }}
 
     <br><br>
     <div class="row">

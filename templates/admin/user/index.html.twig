@@ -17,7 +17,16 @@
                 <td>{{ user.name }}</td>
                 <td>{{ user.email }}</td>
                 <td>
-                    <a class="btn btn-sm btn-success" href="{{ path('admin2_user_enable', {'id': user.id}) }}">Enable</a>
+                    <a class="btn btn-sm btn-success" data-bs-toggle="modal"
+                       data-bs-target="#confirmEnable{{ user.id }}">Enable</a>
+                    {{ include('components/_confirm_modal.html.twig', {
+                        id: 'confirmEnable' ~ user.id,
+                        title: 'Enable ' ~ user.name,
+                        message: 'Do you really want to enable "' ~ user.name ~ '" with email "' ~ user.email ~ '"?',
+                        action_url: path('admin2_user_enable', {id: user.id}),
+                        action_label: 'Enable',
+                        action_class: 'btn-success',
+                    }) }}
                 </td>
             </tr>
         {% endfor %}
