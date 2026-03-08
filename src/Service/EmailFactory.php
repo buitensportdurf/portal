@@ -46,4 +46,14 @@ class EmailFactory
                    ->htmlTemplate('email/user/enabled.html.twig')
         ;
     }
+
+    public static function newUserNotification(User $user): Email
+    {
+        $title = 'Durf - New user registered: ' . $user->getName();
+        return (new TemplatedEmail())
+            ->subject($title)
+            ->context(['user' => $user, 'title' => $title])
+            ->htmlTemplate('email/user/new_user_notification.html.twig')
+        ;
+    }
 }

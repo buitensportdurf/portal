@@ -1,0 +1,19 @@
+{% extends 'email/base.html.twig' %}
+
+{% set title %}New user registered{% endset %}
+
+{% block body %}
+    <p>
+        A new {{ user.guest ? 'guest ' : '' }}user has registered on the Durf portal.
+    </p>
+    <ul>
+        <li>Name: <strong>{{ user.name }}</strong></li>
+        <li>Email: <strong>{{ user.email }}</strong></li>
+        <li>Username: <strong>{{ user.username }}</strong></li>
+    </ul>
+    {% if not user.guest %}
+        <p>
+            The account is disabled and needs to be activated by an admin.
+        </p>
+    {% endif %}
+{% endblock %}
