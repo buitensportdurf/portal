@@ -28,6 +28,9 @@ abstract class BaseEvent
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $subscriptionDeadline = null;
 
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?DateTimeImmutable $subscriptionOpenDate = null;
+
     #[ORM\Column(length: 255)]
     private ?string $location = null;
 
@@ -138,6 +141,18 @@ abstract class BaseEvent
     public function setSubscriptionDeadline(?DateTimeImmutable $subscriptionDeadline): static
     {
         $this->subscriptionDeadline = $subscriptionDeadline;
+
+        return $this;
+    }
+
+    public function getSubscriptionOpenDate(): ?DateTimeImmutable
+    {
+        return $this->subscriptionOpenDate;
+    }
+
+    public function setSubscriptionOpenDate(?DateTimeImmutable $subscriptionOpenDate): static
+    {
+        $this->subscriptionOpenDate = $subscriptionOpenDate;
 
         return $this;
     }

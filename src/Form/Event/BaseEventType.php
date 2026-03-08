@@ -37,6 +37,10 @@ class BaseEventType extends AbstractType
                 'with_hours' => true,
                 'with_minutes' => true,
             ])
+            ->add('subscriptionOpenDate', null, [
+                'required' => false,
+                'widget' => 'single_text',
+            ])
             ->add('subscriptionDeadline')
             ->add('subscriberLimit')
             ->add('memberPrice', MoneyType::class)

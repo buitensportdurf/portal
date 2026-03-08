@@ -48,7 +48,8 @@ class EventVoter extends Voter
 
         switch ($attribute) {
             case self::SUBSCRIBE:
-                if ($event->isNotPastSubscriptionDeadline()
+                if ($event->isPastSubscriptionOpenDate()
+                    && $event->isNotPastSubscriptionDeadline()
                     && $event->isNotPastStartDate()
                     && !$event->isSubscribed($user)
                 ) {

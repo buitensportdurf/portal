@@ -33,6 +33,16 @@ class Event extends BaseEvent
         $this->questions = new ArrayCollection();
     }
 
+    public function isPastSubscriptionOpenDate(?\DateTime $date = null): bool
+    {
+        if ($this->getSubscriptionOpenDate() === null) {
+            return true;
+        }
+        $date ??= new \DateTime();
+
+        return $this->getSubscriptionOpenDate() <= $date;
+    }
+
     public function isNotPastSubscriptionDeadline(?\DateTime $date = null): bool
     {
         if ($this->getSubscriptionDeadline() === null) {
