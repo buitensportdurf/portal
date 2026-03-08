@@ -11,3 +11,8 @@ release.json
 public/uploads
 .phpunit.result.cache
 tools/
+
+###> phpunit/phpunit ###
+/phpunit.xml
+/.phpunit.cache/
+###< phpunit/phpunit ###

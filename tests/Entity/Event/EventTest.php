@@ -299,4 +299,23 @@ class EventTest extends TestCase
         $event->setDescription(null);
         self::assertSame('', $event->getDescription());
     }
+
+    // --- Published ---
+
+    public function testPublishedTrueByDefault(): void
+    {
+        $event = new Event();
+        self::assertTrue($event->isPublished());
+    }
+
+    public function testCopyFromCopiesPublishedState(): void
+    {
+        $source = $this->createEvent();
+        $source->setPublished(false);
+
+        $target = new Event();
+        $target->copyFrom($source);
+
+        self::assertFalse($target->isPublished());
+    }
 }
