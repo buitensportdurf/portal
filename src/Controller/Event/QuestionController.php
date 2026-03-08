@@ -11,8 +11,10 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/event/question', name: 'event_question')]
+#[IsGranted('ROLE_EVENT_EDIT')]
 class QuestionController extends AbstractController
 {
     public function __construct(

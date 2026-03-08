@@ -14,6 +14,7 @@ use App\Security\Voter\EventSubscriptionVoter;
 use App\Security\Voter\EventVoter;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -21,6 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/event/subscription', name: 'event_subscription')]
 class EventSubscriptionController extends AbstractController
@@ -103,10 +105,10 @@ class EventSubscriptionController extends AbstractController
     }
 
     #[Route('/unsubscribe/{id}', name: '_unsubscribe')]
+    #[IsGranted('ROLE_USER')]
+    #[IsGranted(EventVoter::UNSUBSCRIBE, subject: new Expression('args["subscription"].getEvent()'))]
     public function unsubscribe(EventSubscription $subscription): Response
     {
-        $this->denyAccessUnlessGranted(EventVoter::UNSUBSCRIBE, $subscription->getEvent());
-
         $event = $subscription->getEvent();
         $this->repository->delete($subscription);
         $this->addFlash('success', sprintf('You have unsubscribed from %s', $event));
@@ -114,10 +116,10 @@ class EventSubscriptionController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: '_edit')]
+    #[IsGranted('ROLE_USER')]
+    #[IsGranted(EventSubscriptionVoter::EDIT, subject: 'subscription')]
     public function edit(EventSubscription $subscription, Request $request): Response
     {
-        $this->denyAccessUnlessGranted(EventSubscriptionVoter::EDIT, $subscription);
-
         // Add missing question answers
         foreach ($subscription->getEvent()->questions as $question) {
             $found = false;
