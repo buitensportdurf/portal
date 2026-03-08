@@ -1,0 +1,82 @@
+@import url('https://fonts.cdnfonts.com/css/nal-hand');
+
+:root {
+    --durf-dark: #32373c;
+    --durf-blue-1: #EFF9FF;
+    --durf-blue-2: #B9DEF6;
+    --durf-blue-3: #6FB9EB;
+    --durf-blue-4: #1F8BD3;
+    --durf-blue-5: #005187;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #fff !important;
+}
+.navbar .nav-link {
+    font-family: "NAL Hand", sans-serif;
+    font-size: 24px;
+    letter-spacing: 1px;
+}
+.navbar .nav-link.active {
+    color: var(--durf-blue-4) !important;
+}
+.navbar .dropdown-toggle {
+    font-family: "NAL Hand", sans-serif;
+    font-size: 24px;
+    letter-spacing: 1px;
+}
+.navbar-corner-badge {
+    font-family: system-ui, sans-serif;
+    font-size: 10px;
+    letter-spacing: 0;
+}
+
+/* Cards */
+.card {
+    border: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s ease;
+}
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.card-header {
+    background-color: var(--durf-blue-1);
+    border-bottom: 2px solid var(--durf-blue-2);
+    font-weight: 600;
+}
+
+/* Buttons - primary uses durf dark */
+.btn-primary {
+    background-color: var(--durf-dark) !important;
+    border-color: var(--durf-dark) !important;
+}
+.btn-primary:hover {
+    background-color: #25292d !important;
+    border-color: #25292d !important;
+}
+.btn-outline-primary {
+    color: var(--durf-dark) !important;
+    border-color: var(--durf-dark) !important;
+}
+.btn-outline-primary:hover {
+    background-color: var(--durf-dark) !important;
+    color: #fff !important;
+}
+
+/* Badges */
+.badge.bg-primary {
+    background-color: var(--durf-blue-4) !important;
+}
+
+/* Page headings */
+h3 {
+    color: var(--durf-dark);
+    font-weight: 700;
+}
+
+/* Footer */
+.footer-link {
+    color: var(--durf-dark);
+}

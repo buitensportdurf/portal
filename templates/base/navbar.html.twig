@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-md navbar-light bg-white shadow px-5">
+<nav class="navbar navbar-expand-md navbar-light shadow px-5">
     <div style="width: 160px; height: 80px" class="d-flex align-items-center">
         {% if app.request.attributes.get('_route') == 'event_event_index' %}
             <a class="navbar-brand m-0" href="{{ main_website }}">
@@ -14,53 +14,63 @@
         <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbar">
-        <ul class="navbar-nav me-auto mb-2 mb-md-0">
+    <div class="collapse navbar-collapse justify-content-end" id="navbar">
+        <ul class="navbar-nav mb-2 mb-md-0 align-items-center">
+            {% set route = app.request.attributes.get('_route') %}
             <li class="nav-item">
-                <a class="nav-link" href="{{ path('event_event_past') }}">Past events</a>
+                <a class="nav-link {% if route == 'event_event_index' %}active{% endif %}"
+                   href="{{ path('event_event_index') }}">Events</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ path('event_calendar_index') }}">Calendars</a>
+                <a class="nav-link {% if route == 'event_event_past' %}active{% endif %}"
+                   href="{{ path('event_event_past') }}">Past events</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if route starts with 'event_calendar' %}active{% endif %}"
+                   href="{{ path('event_calendar_index') }}">Calendars</a>
             </li>
             {% if is_granted('ROLE_EVENT_RECURRING') %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('event_recurring_event_index') }}">Recurring</a>
+                    <a class="nav-link {% if route starts with 'event_recurring' %}active{% endif %}"
+                       href="{{ path('event_recurring_event_index') }}">Recurring</a>
                 </li>
             {% endif %}
             {% if is_granted("ROLE_ADMIN_USER") %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('admin2_user_index') }}">User activation</a>
+                    <a class="nav-link {% if route starts with 'admin2_user' %}active{% endif %}"
+                       href="{{ path('admin2_user_index') }}">User activation</a>
                 </li>
             {% endif %}
             {% if is_granted("ROLE_ADMIN") %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('admin') }}">Admin</a>
-                </li>
-            {% endif %}
-        </ul>
-        <ul class="navbar-nav my-2 my-lg-0 align-items-center">
-            {% if app.environment == 'dev' %}
-                <li class="nav-item">
-                    <span class="badge bg-danger">dev</span>
+                    <a class="nav-link {% if route == 'admin' %}active{% endif %}"
+                       href="{{ path('admin') }}">Admin</a>
                 </li>
             {% endif %}
             {% if is_granted('IS_IMPERSONATOR') %}
                 <li class="nav-item">
                     <a class="badge bg-warning text-decoration-none" href="{{ impersonation_exit_path(
-                        path(app.request.attributes.get('_route'),app.request.attributes.get('_route_params')
-                        ) ) }}">Exit impersonation</a>
+                        path(route, app.request.attributes.get('_route_params'))
+                    ) }}">Exit impersonation</a>
                 </li>
             {% endif %}
             {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                {% if app.user.guest %}
-                    <li class="nav-item">
-                        <span class="badge bg-secondary">Guest</span>
-                    </li>
-                {% endif %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                        aria-expanded="false">
-                        {{ app.user.name }}
+                        <span class="position-relative d-inline-block me-1">
+                            {{ app.user.name }}
+                            <span class="position-absolute top-0 start-100 translate-middle d-flex gap-1 navbar-corner-badges">
+                                {% if app.user.guest %}
+                                    <span class="badge rounded-pill bg-secondary navbar-corner-badge">Guest</span>
+                                {% elseif is_granted("ROLE_ADMIN") %}
+                                    <span class="badge rounded-pill bg-primary navbar-corner-badge">Admin</span>
+                                {% endif %}
+                                {% if app.environment == 'dev' %}
+                                    <span class="badge rounded-pill bg-danger navbar-corner-badge">dev</span>
+                                {% endif %}
+                            </span>
+                        </span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         {% if not app.user.guest %}
