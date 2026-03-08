@@ -38,10 +38,10 @@ class EventVoterTest extends TestCase
     private function createUser(string $name = 'user', bool $guest = false): User
     {
         $user = new User();
-        $user->setUsername($name);
-        $user->setName($name);
-        $user->setPassword('hashed');
-        $user->setGuest($guest);
+        $user->username = $name;
+        $user->name = $name;
+        $user->password = 'hashed';
+        $user->guest = $guest;
 
         return $user;
     }
@@ -54,18 +54,18 @@ class EventVoterTest extends TestCase
         bool $published = true,
     ): Event {
         $event = new Event();
-        $event->setName('Event');
-        $event->setLocation('Here');
-        $event->setStartDate(new DateTimeImmutable($startDate));
-        $event->setDuration(new DateInterval('PT2H'));
-        $event->setGuestsAllowed($guestsAllowed);
-        $event->setPublished($published);
+        $event->name = 'Event';
+        $event->location = 'Here';
+        $event->startDate = new DateTimeImmutable($startDate);
+        $event->duration = new DateInterval('PT2H');
+        $event->guestsAllowed = $guestsAllowed;
+        $event->published = $published;
 
         if ($deadline !== null) {
-            $event->setSubscriptionDeadline(new DateTimeImmutable($deadline));
+            $event->subscriptionDeadline = new DateTimeImmutable($deadline);
         }
         if ($openDate !== null) {
-            $event->setSubscriptionOpenDate(new DateTimeImmutable($openDate));
+            $event->subscriptionOpenDate = new DateTimeImmutable($openDate);
         }
 
         return $event;
@@ -74,9 +74,9 @@ class EventVoterTest extends TestCase
     private function subscribeUser(Event $event, User $user): void
     {
         $sub = new EventSubscription();
-        $sub->setCreatedUser($user);
-        $sub->setAmount(1);
-        $sub->setEvent($event);
+        $sub->createdUser = $user;
+        $sub->amount = 1;
+        $sub->event = $event;
     }
 
     private function vote(EventVoter $voter, string $attribute, Event $event, User $user): bool

@@ -12,10 +12,10 @@ class ActiveUserCheckerTest extends TestCase
     private function createUser(bool $enabled = true): User
     {
         $user = new User();
-        $user->setUsername('testuser');
-        $user->setName('Test');
-        $user->setPassword('hashed');
-        $user->setEnabled($enabled);
+        $user->username = 'testuser';
+        $user->name = 'Test';
+        $user->password = 'hashed';
+        $user->enabled = $enabled;
 
         return $user;
     }

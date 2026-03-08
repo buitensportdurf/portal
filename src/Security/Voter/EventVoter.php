@@ -49,13 +49,13 @@ class EventVoter extends Voter
 
     private function canPublish(Event $event): bool
     {
-        return $this->security->isGranted('ROLE_EVENT_EDIT') && !$event->isPublished();
+        return $this->security->isGranted('ROLE_EVENT_EDIT') && !$event->published;
     }
 
     private function canUnpublish(Event $event): bool
     {
         return $this->security->isGranted('ROLE_EVENT_EDIT')
-            && $event->isPublished()
+            && $event->published
             && $event->getEventSubscriptions()->isEmpty();
     }
 
@@ -64,10 +64,10 @@ class EventVoter extends Voter
         if ($this->security->isGranted('ROLE_EVENT_ADMIN')) {
             return true;
         }
-        if (!$event->isPublished()) {
+        if (!$event->published) {
             return false;
         }
-        if ($user->isGuest() && !$event->isGuestsAllowed()) {
+        if ($user->guest && !$event->guestsAllowed) {
             return false;
         }
 

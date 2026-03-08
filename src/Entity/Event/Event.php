@@ -19,7 +19,7 @@ class Event extends BaseEvent
     private Collection $tags;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
-    private ?RecurringEvent $recurringEvent = null;
+    public ?RecurringEvent $recurringEvent = null;
 
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: Question::class, orphanRemoval: true)]
     /** @var ?Collection<Question> $questions */
@@ -35,34 +35,32 @@ class Event extends BaseEvent
 
     public function isPastSubscriptionOpenDate(?\DateTime $date = null): bool
     {
-        if ($this->getSubscriptionOpenDate() === null) {
+        if ($this->subscriptionOpenDate === null) {
             return true;
         }
         $date ??= new \DateTime();
 
-        return $this->getSubscriptionOpenDate() <= $date;
+        return $this->subscriptionOpenDate <= $date;
     }
 
     public function isNotPastSubscriptionDeadline(?\DateTime $date = null): bool
     {
-        if ($this->getSubscriptionDeadline() === null) {
+        if ($this->subscriptionDeadline === null) {
             return true;
         }
-        if ($date === null) {
-            $date = new \DateTime();
-        }
-        return $this->getSubscriptionDeadline() > $date;
+        $date ??= new \DateTime();
+
+        return $this->subscriptionDeadline > $date;
     }
 
     public function isNotPastStartDate(?\DateTime $date = null): bool
     {
-        if ($this->getStartDate() === null) {
+        if ($this->startDate === null) {
             return true;
         }
-        if ($date === null) {
-            $date = new \DateTime();
-        }
-        return $this->getStartDate() > $date;
+        $date ??= new \DateTime();
+
+        return $this->startDate > $date;
     }
 
     /**
@@ -77,7 +75,7 @@ class Event extends BaseEvent
     {
         if (!$this->eventSubscriptions->contains($eventSubscription)) {
             $this->eventSubscriptions->add($eventSubscription);
-            $eventSubscription->setEvent($this);
+            $eventSubscription->event = $this;
         }
 
         return $this;
@@ -86,9 +84,8 @@ class Event extends BaseEvent
     public function removeEventSubscription(EventSubscription $eventSubscription): static
     {
         if ($this->eventSubscriptions->removeElement($eventSubscription)) {
-            // set the owning side to null (unless already changed)
-            if ($eventSubscription->getEvent() === $this) {
-                $eventSubscription->setEvent(null);
+            if ($eventSubscription->event === $this) {
+                $eventSubscription->event = null;
             }
         }
 
@@ -99,7 +96,7 @@ class Event extends BaseEvent
     {
         $amount = 0;
         foreach ($this->eventSubscriptions as $eventSubscription) {
-            $amount += $eventSubscription->getAmount();
+            $amount += $eventSubscription->amount;
         }
         return $amount;
     }
@@ -115,7 +112,7 @@ class Event extends BaseEvent
             return null;
         }
         foreach ($this->eventSubscriptions as $eventSubscription) {
-            if ($eventSubscription->getCreatedUser() === $user) {
+            if ($eventSubscription->createdUser === $user) {
                 return $eventSubscription;
             }
         }
@@ -149,18 +146,6 @@ class Event extends BaseEvent
     public function setTags(Collection $tags): static
     {
         $this->tags = $tags;
-
-        return $this;
-    }
-
-    public function getRecurringEvent(): ?RecurringEvent
-    {
-        return $this->recurringEvent;
-    }
-
-    public function setRecurringEvent(?RecurringEvent $recurringEvent): static
-    {
-        $this->recurringEvent = $recurringEvent;
 
         return $this;
     }

@@ -17,18 +17,25 @@ class EventSubscription
     use TrackedTrait;
 
     #[ORM\Id, ORM\GeneratedValue, ORM\Column]
-    private ?int $id = null;
+    public private(set) ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'eventSubscriptions')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Event $event = null;
+    public ?Event $event = null {
+        set {
+            $this->event = $value;
+            if ($value !== null && !$value->getEventSubscriptions()->contains($this)) {
+                $value->addEventSubscription($this);
+            }
+        }
+    }
 
     #[ORM\Column]
     #[Assert\Positive]
-    private ?int $amount = null;
+    public ?int $amount = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $note = null;
+    public ?string $note = null;
 
     #[ORM\OneToMany(targetEntity: QuestionAnswer::class, mappedBy: 'subscription', cascade: ['persist'], orphanRemoval: true)]
     public Collection $questionAnswers;
@@ -41,64 +48,19 @@ class EventSubscription
     public function validate(ExecutionContextInterface $context): void
     {
         if ($this->event) {
-            if ($this->event->getSubscriberLimit() && $this->event->getAmountOfSubscriptions() > $this->event->getSubscriberLimit()) {
+            if ($this->event->subscriberLimit && $this->event->getAmountOfSubscriptions() > $this->event->subscriberLimit) {
                 $context
-                    ->buildViolation(sprintf('Subscription exceeds subscriber limit for this event, limit is %d', $this->event->getSubscriberLimit()))
+                    ->buildViolation(sprintf('Subscription exceeds subscriber limit for this event, limit is %d', $this->event->subscriberLimit))
                     ->atPath('amount')
                     ->addViolation()
                 ;
             }
-            if ($this->event->isSubscribed($this->getCreatedUser()) && $this->event->getSubscription($this->getCreatedUser()) !== $this) {
+            if ($this->event->isSubscribed($this->createdUser) && $this->event->getSubscription($this->createdUser) !== $this) {
                 $context
                     ->buildViolation('You are already subscribed to this event')
                     ->addViolation()
                 ;
             }
         }
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getEvent(): ?Event
-    {
-        return $this->event;
-    }
-
-    public function setEvent(?Event $event): static
-    {
-        $this->event = $event;
-        // Required to update the owning side of the relationship for validation
-        if ($event && !$event->getEventSubscriptions()->contains($this)) {
-            $event->addEventSubscription($this);
-        }
-
-        return $this;
-    }
-
-    public function getAmount(): ?int
-    {
-        return $this->amount;
-    }
-
-    public function setAmount(int $amount): static
-    {
-        $this->amount = $amount;
-
-        return $this;
-    }
-
-    public function getNote(): ?string
-    {
-        return $this->note;
-    }
-
-    public function setNote(?string $note): static
-    {
-        $this->note = $note;
-
-        return $this;
     }
 }

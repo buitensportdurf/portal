@@ -21,30 +21,30 @@ readonly class EventCalTransformer
 
     public function transform(Event $event): IcalEvent
     {
-        if ($event->getDuration()->d < 2) {
+        if ($event->duration->d < 2) {
             $timeSpan = new TimeSpan(
-                new DateTime($event->getStartDate(), false),
-                new DateTime($event->getStartDate()->add($event->getDuration()), false)
+                new DateTime($event->startDate, false),
+                new DateTime($event->startDate->add($event->duration), false)
             );
         } else {
             $timeSpan = new MultiDay(
-                new Date($event->getStartDate()),
-                new Date($event->getStartDate()->add($event->getDuration()))
+                new Date($event->startDate),
+                new Date($event->startDate->add($event->duration))
             );
         }
 
         $icalEvent = new IcalEvent(new UniqueIdentifier(
-            'portal.buitensportdurf.nl/event/' . $event->getId()
+            'portal.buitensportdurf.nl/event/' . $event->id
         ));
         $icalEvent
             ->setOccurrence($timeSpan)
             ->setUrl(new Uri($this->urlGenerator->generate(
-                'event_event_show', ['id' => $event->getId()],
+                'event_event_show', ['id' => $event->id],
                 UrlGeneratorInterface::ABSOLUTE_URL)
             ))
-            ->setSummary($event->getName())
-            ->setDescription($event->getDescription() ?? '')
-            ->setLocation(new Location($event->getLocation()))
+            ->setSummary($event->name)
+            ->setDescription($event->description)
+            ->setLocation(new Location($event->location))
         ;
 
         return $icalEvent;

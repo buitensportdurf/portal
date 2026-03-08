@@ -52,15 +52,13 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $repoUser = $repository->findByEmail($user->getEmail());
+            $repoUser = $repository->findByEmail($user->email);
             if ($repoUser) {
-                if ($repoUser->isGuest()) {
+                if ($repoUser->guest) {
                     $this->addFlash('success', 'Found an existing guest account based on email, upgrading to normal user');
-                    $repoUser
-                        ->setUsername($user->getUsername())
-                        ->setName($user->getName())
-                        ->setGuest(false)
-                    ;
+                    $repoUser->username = $user->username;
+                    $repoUser->name = $user->name;
+                    $repoUser->guest = false;
                     $user = $repoUser;
                 } else {
                     $this->addFlash('error', 'Email already used by a registered user');
@@ -68,19 +66,17 @@ class SecurityController extends AbstractController
                 }
             }
 
-            $user
-                ->setPassword($userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                ))
-                ->setEnabled(false)
-            ;
+            $user->password = $userPasswordHasher->hashPassword(
+                $user,
+                $form->get('plainPassword')->getData()
+            );
+            $user->enabled = false;
 
             $repository->add($user);
             $mailer->send(EmailFactory::signupEmail($user));
             $commissionMailer->send(EmailFactory::newUserNotification($user));
 
-            $this->addFlash('success', sprintf('Successfully registered user %s', $user->getUsername()));
+            $this->addFlash('success', sprintf('Successfully registered user %s', $user->username));
 
             return $this->redirectToRoute('register');
         }
@@ -104,11 +100,10 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('home');
         }
 
-        $user = new User()
-            ->setUsername(sprintf('guest_%s', uniqid()))
-            ->setPassword(uniqid())
-            ->setGuest(true)
-        ;
+        $user = new User();
+        $user->username = sprintf('guest_%s', uniqid());
+        $user->password = uniqid();
+        $user->guest = true;
 
         $form = $this
             ->createForm(GuestForm::class, $user)
@@ -117,14 +112,14 @@ class SecurityController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $repoUser = $repository->findByEmail($user->getEmail());
+            $repoUser = $repository->findByEmail($user->email);
             if ($repoUser) {
-                if ($repoUser->isGuest()) {
+                if ($repoUser->guest) {
                     $user = $repoUser;
                 } else {
                     $this->addFlash('error', 'Email already used by a registered user');
                     return $this->redirectToRoute('create_event_guest', [
-                        'id' => $event->getId(),
+                        'id' => $event->id,
                     ]);
                 }
             } else {
@@ -134,10 +129,10 @@ class SecurityController extends AbstractController
             $mailer->send(EmailFactory::eventGuestSignupEmail($user, $event));
             $commissionMailer->send(EmailFactory::newUserNotification($user));
 
-            $this->addFlash('success', sprintf('Successfully registered guest user %s', $user->getName()));
+            $this->addFlash('success', sprintf('Successfully registered guest user %s', $user->name));
 
             return $this->redirectToRoute('event_event_show', [
-                'id' => $event->getId(),
+                'id' => $event->id,
             ]);
         }
 
@@ -153,14 +148,14 @@ class SecurityController extends AbstractController
         Security $security,
     ): Response
     {
-        if (!$user->isGuest()) {
+        if (!$user->guest) {
             $this->addFlash('error', 'Logging in like this only works for a guest account');
             return $this->redirectToRoute('home');
         }
         $security->login($user, 'form_login');
 
         return $this->redirectToRoute('event_subscription_subscribe', [
-            'id' => $event->getId(),
+            'id' => $event->id,
         ]);
     }
 }

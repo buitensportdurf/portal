@@ -15,11 +15,11 @@ class RecurringEventTest extends TestCase
     private function createRecurringEvent(string $rule = '1 week'): RecurringEvent
     {
         $event = new RecurringEvent();
-        $event->setName('Weekly Event');
-        $event->setLocation('Club');
-        $event->setStartDate(new DateTimeImmutable('2025-01-06 18:00:00'));
-        $event->setDuration(new DateInterval('PT2H'));
-        $event->setRecurrenceRule($rule);
+        $event->name = 'Weekly Event';
+        $event->location = 'Club';
+        $event->startDate = new DateTimeImmutable('2025-01-06 18:00:00');
+        $event->duration = new DateInterval('PT2H');
+        $event->recurrenceRule = $rule;
 
         return $event;
     }
@@ -108,13 +108,13 @@ class RecurringEventTest extends TestCase
         // Start: 2025-01-06
 
         $first = $recurring->createNextEvent();
-        self::assertSame('2025-01-23', $first->getStartDate()->format('Y-m-d')); // +17 days
+        self::assertSame('2025-01-23', $first->startDate->format('Y-m-d')); // +17 days
 
         $second = $recurring->createNextEvent();
-        self::assertSame('2025-02-09', $second->getStartDate()->format('Y-m-d')); // +17 days
+        self::assertSame('2025-02-09', $second->startDate->format('Y-m-d')); // +17 days
 
         $third = $recurring->createNextEvent();
-        self::assertSame('2025-02-26', $third->getStartDate()->format('Y-m-d')); // +17 days
+        self::assertSame('2025-02-26', $third->startDate->format('Y-m-d')); // +17 days
     }
 
     public function testCompoundRulePreservesTime(): void
@@ -123,20 +123,20 @@ class RecurringEventTest extends TestCase
 
         $event = $recurring->createNextEvent();
 
-        self::assertSame('18:00:00', $event->getStartDate()->format('H:i:s'));
+        self::assertSame('18:00:00', $event->startDate->format('H:i:s'));
     }
 
     public function testCompoundRuleWithMonthAndDays(): void
     {
         // "1 month;1 week" = 1 month + 7 days per occurrence
         $recurring = $this->createRecurringEvent('1 month;1 week');
-        $recurring->setStartDate(new DateTimeImmutable('2025-01-01 20:00:00'));
+        $recurring->startDate = new DateTimeImmutable('2025-01-01 20:00:00');
 
         $first = $recurring->createNextEvent();
-        self::assertSame('2025-02-08', $first->getStartDate()->format('Y-m-d'));
+        self::assertSame('2025-02-08', $first->startDate->format('Y-m-d'));
 
         $second = $recurring->createNextEvent();
-        self::assertSame('2025-03-15', $second->getStartDate()->format('Y-m-d'));
+        self::assertSame('2025-03-15', $second->startDate->format('Y-m-d'));
     }
 
     public function testTripleCompoundRule(): void
@@ -146,12 +146,12 @@ class RecurringEventTest extends TestCase
         // Start: 2025-01-06 18:00
 
         $first = $recurring->createNextEvent();
-        self::assertSame('2025-01-15', $first->getStartDate()->format('Y-m-d'));
-        self::assertSame('21:00:00', $first->getStartDate()->format('H:i:s'));
+        self::assertSame('2025-01-15', $first->startDate->format('Y-m-d'));
+        self::assertSame('21:00:00', $first->startDate->format('H:i:s'));
 
         $second = $recurring->createNextEvent();
-        self::assertSame('2025-01-25', $second->getStartDate()->format('Y-m-d'));
-        self::assertSame('00:00:00', $second->getStartDate()->format('H:i:s'));
+        self::assertSame('2025-01-25', $second->startDate->format('Y-m-d'));
+        self::assertSame('00:00:00', $second->startDate->format('H:i:s'));
     }
 
     // --- Create Next Event ---
@@ -162,11 +162,11 @@ class RecurringEventTest extends TestCase
         $event = $recurring->createNextEvent();
 
         self::assertInstanceOf(Event::class, $event);
-        self::assertSame('Weekly Event', $event->getName());
-        self::assertSame('Club', $event->getLocation());
-        self::assertSame('2025-01-13', $event->getStartDate()->format('Y-m-d'));
-        self::assertSame('18:00', $event->getStartDate()->format('H:i'));
-        self::assertSame($recurring, $event->getRecurringEvent());
+        self::assertSame('Weekly Event', $event->name);
+        self::assertSame('Club', $event->location);
+        self::assertSame('2025-01-13', $event->startDate->format('Y-m-d'));
+        self::assertSame('18:00', $event->startDate->format('H:i'));
+        self::assertSame($recurring, $event->recurringEvent);
     }
 
     public function testCreateNextEventPreservesTime(): void
@@ -174,7 +174,7 @@ class RecurringEventTest extends TestCase
         $recurring = $this->createRecurringEvent('1 week');
         $event = $recurring->createNextEvent();
 
-        self::assertSame('18:00:00', $event->getStartDate()->format('H:i:s'));
+        self::assertSame('18:00:00', $event->startDate->format('H:i:s'));
     }
 
     public function testCreateNextEventChainsBuildOnPrevious(): void
@@ -182,29 +182,29 @@ class RecurringEventTest extends TestCase
         $recurring = $this->createRecurringEvent('1 week');
 
         $first = $recurring->createNextEvent();
-        self::assertSame('2025-01-13', $first->getStartDate()->format('Y-m-d'));
+        self::assertSame('2025-01-13', $first->startDate->format('Y-m-d'));
 
         $second = $recurring->createNextEvent();
-        self::assertSame('2025-01-20', $second->getStartDate()->format('Y-m-d'));
+        self::assertSame('2025-01-20', $second->startDate->format('Y-m-d'));
 
         $third = $recurring->createNextEvent();
-        self::assertSame('2025-01-27', $third->getStartDate()->format('Y-m-d'));
+        self::assertSame('2025-01-27', $third->startDate->format('Y-m-d'));
     }
 
     public function testCreateNextEventCopiesProperties(): void
     {
         $recurring = $this->createRecurringEvent('2 weeks');
-        $recurring->setDescription('A recurring event');
+        $recurring->description = 'A recurring event';
         $recurring->setMemberPrice(10.00);
-        $recurring->setGuestsAllowed(true);
-        $recurring->setSubscriberLimit(15);
+        $recurring->guestsAllowed = true;
+        $recurring->subscriberLimit = 15;
 
         $event = $recurring->createNextEvent();
 
-        self::assertSame('A recurring event', $event->getDescription());
+        self::assertSame('A recurring event', $event->description);
         self::assertSame(10.00, $event->getMemberPrice());
-        self::assertTrue($event->isGuestsAllowed());
-        self::assertSame(15, $event->getSubscriberLimit());
+        self::assertTrue($event->guestsAllowed);
+        self::assertSame(15, $event->subscriberLimit);
     }
 
     public function testCreateNextEventIsAddedToEventsCollection(): void
@@ -224,7 +224,7 @@ class RecurringEventTest extends TestCase
     public function testGetFutureEvents(): void
     {
         $recurring = $this->createRecurringEvent('1 week');
-        $recurring->setStartDate(new DateTimeImmutable('-3 weeks'));
+        $recurring->startDate = new DateTimeImmutable('-3 weeks');
 
         // Create 4 events: 3 past, 1 future
         $recurring->createNextEvent(); // -2 weeks
@@ -242,18 +242,18 @@ class RecurringEventTest extends TestCase
     {
         $recurring = $this->createRecurringEvent('1 week');
         $event = new Event();
-        $event->setName('Child');
-        $event->setLocation('Here');
-        $event->setStartDate(new DateTimeImmutable('+1 week'));
-        $event->setDuration(new DateInterval('PT1H'));
+        $event->name = 'Child';
+        $event->location = 'Here';
+        $event->startDate = new DateTimeImmutable('+1 week');
+        $event->duration = new DateInterval('PT1H');
 
         $recurring->addEvent($event);
         self::assertCount(1, $recurring->getEvents());
-        self::assertSame($recurring, $event->getRecurringEvent());
+        self::assertSame($recurring, $event->recurringEvent);
 
         $recurring->removeEvent($event);
         self::assertCount(0, $recurring->getEvents());
-        self::assertNull($event->getRecurringEvent());
+        self::assertNull($event->recurringEvent);
     }
 
     public function testAddEventIdempotent(): void
@@ -270,13 +270,13 @@ class RecurringEventTest extends TestCase
     public function testMonthlyRecurrence(): void
     {
         $event = $this->createRecurringEvent('1 month');
-        $event->setStartDate(new DateTimeImmutable('2025-01-15 19:00:00'));
+        $event->startDate = new DateTimeImmutable('2025-01-15 19:00:00');
 
         $first = $event->createNextEvent();
-        self::assertSame('2025-02-15', $first->getStartDate()->format('Y-m-d'));
+        self::assertSame('2025-02-15', $first->startDate->format('Y-m-d'));
 
         $second = $event->createNextEvent();
-        self::assertSame('2025-03-15', $second->getStartDate()->format('Y-m-d'));
+        self::assertSame('2025-03-15', $second->startDate->format('Y-m-d'));
     }
 
     // --- copyFrom ---
@@ -284,29 +284,29 @@ class RecurringEventTest extends TestCase
     public function testCreateNextEventCopiesDuration(): void
     {
         $recurring = $this->createRecurringEvent('1 week');
-        $recurring->setDuration(new DateInterval('PT3H'));
+        $recurring->duration = new DateInterval('PT3H');
 
         $event = $recurring->createNextEvent();
 
-        self::assertSame(3, $event->getDuration()->h);
+        self::assertSame(3, $event->duration->h);
     }
 
     public function testCreateNextEventCopiesImage(): void
     {
         $recurring = $this->createRecurringEvent('1 week');
         $image = new Image();
-        $recurring->setImage($image);
+        $recurring->image = $image;
 
         $event = $recurring->createNextEvent();
 
-        self::assertSame($image, $event->getImage());
+        self::assertSame($image, $event->image);
     }
 
     public function testCreateNextEventCopiesTags(): void
     {
         $recurring = $this->createRecurringEvent('1 week');
         $tag = new Tag();
-        $tag->setName('test');
+        $tag->name = 'test';
         $recurring->addTag($tag);
 
         $event = $recurring->createNextEvent();
@@ -339,23 +339,23 @@ class RecurringEventTest extends TestCase
     public function testCopyFromDoesNotCopySubscriptionOpenDate(): void
     {
         $recurring = $this->createRecurringEvent('1 week');
-        $recurring->setSubscriptionOpenDate(new DateTimeImmutable('2025-06-01'));
+        $recurring->subscriptionOpenDate = new DateTimeImmutable('2025-06-01');
 
         $event = $recurring->createNextEvent();
 
         // copyFrom does not include subscriptionOpenDate
-        self::assertNull($event->getSubscriptionOpenDate());
+        self::assertNull($event->subscriptionOpenDate);
     }
 
     public function testCopyFromCopiesSubscriptionDeadline(): void
     {
         $deadline = new DateTimeImmutable('2025-12-31');
         $recurring = $this->createRecurringEvent('1 week');
-        $recurring->setSubscriptionDeadline($deadline);
+        $recurring->subscriptionDeadline = $deadline;
 
         $event = $recurring->createNextEvent();
 
-        self::assertSame($deadline, $event->getSubscriptionDeadline());
+        self::assertSame($deadline, $event->subscriptionDeadline);
     }
 
     // --- getPastEvents ---
@@ -363,7 +363,7 @@ class RecurringEventTest extends TestCase
     public function testGetPastEvents(): void
     {
         $recurring = $this->createRecurringEvent('1 week');
-        $recurring->setStartDate(new DateTimeImmutable('-3 weeks'));
+        $recurring->startDate = new DateTimeImmutable('-3 weeks');
 
         $recurring->createNextEvent(); // -2 weeks
         $recurring->createNextEvent(); // -1 week
@@ -382,7 +382,7 @@ class RecurringEventTest extends TestCase
         $result = $recurring->getRecurringDate(1);
 
         // On invalid rule, getRecurringDate catches the exception and returns the input date
-        self::assertSame($recurring->getStartDate()->format('Y-m-d'), $result->format('Y-m-d'));
+        self::assertSame($recurring->startDate->format('Y-m-d'), $result->format('Y-m-d'));
     }
 
     // --- validateRecurrenceRule ---
@@ -395,7 +395,7 @@ class RecurringEventTest extends TestCase
         $context->method('getObject')->willReturn($recurring);
         $context->expects(self::never())->method('buildViolation');
 
-        RecurringEvent::validateRecurrenceRule($recurring->getRecurrenceRule(), $context, null);
+        RecurringEvent::validateRecurrenceRule($recurring->recurrenceRule, $context, null);
     }
 
     public function testValidateRecurrenceRuleWithInvalidRule(): void
@@ -413,6 +413,6 @@ class RecurringEventTest extends TestCase
             ->with('Invalid recurrence rule')
             ->willReturn($violationBuilder);
 
-        RecurringEvent::validateRecurrenceRule($recurring->getRecurrenceRule(), $context, null);
+        RecurringEvent::validateRecurrenceRule($recurring->recurrenceRule, $context, null);
     }
 }

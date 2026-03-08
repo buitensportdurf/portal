@@ -46,7 +46,7 @@ class SeedTestScenariosCommand extends Command
         $tag = $this->em->getRepository(Tag::class)->findOneBy(['name' => 'test_modals']);
         if (!$tag) {
             $tag = new Tag();
-            $tag->setName('test_modals');
+            $tag->name = 'test_modals';
             $this->em->persist($tag);
         }
 
@@ -75,7 +75,7 @@ class SeedTestScenariosCommand extends Command
             'Test Location',
             'Deadline has passed. Admin unsubscribe should show confirmation modal.',
         );
-        $event2->setSubscriptionDeadline(new DateTimeImmutable('-1 day'));
+        $event2->subscriptionDeadline = new DateTimeImmutable('-1 day');
         $event2->addTag($tag);
         $this->em->persist($event2);
 
@@ -103,7 +103,7 @@ class SeedTestScenariosCommand extends Command
             'Test Location',
             'Guests are allowed to subscribe to this event.',
         );
-        $event4->setGuestsAllowed(true);
+        $event4->guestsAllowed = true;
         $event4->addTag($tag);
         $this->em->persist($event4);
 
@@ -114,11 +114,11 @@ class SeedTestScenariosCommand extends Command
 
         // --- Recurring Event (test delete events modal) ---
         $recurring = new RecurringEvent();
-        $recurring->setName('Modal Test - Recurring Weekly');
-        $recurring->setLocation('Test Location');
-        $recurring->setStartDate(new DateTimeImmutable('-2 weeks'));
-        $recurring->setDuration(new DateInterval('PT2H'));
-        $recurring->setRecurrenceRule('1 week');
+        $recurring->name = 'Modal Test - Recurring Weekly';
+        $recurring->location = 'Test Location';
+        $recurring->startDate = new DateTimeImmutable('-2 weeks');
+        $recurring->duration = new DateInterval('PT2H');
+        $recurring->recurrenceRule = '1 week';
         $recurring->addTag($tag);
         $this->em->persist($recurring);
 
@@ -163,13 +163,13 @@ class SeedTestScenariosCommand extends Command
         }
 
         $user = new User();
-        $user->setUsername($username);
-        $user->setName($name);
-        $user->setEmail($email);
+        $user->username = $username;
+        $user->name = $name;
+        $user->email = $email;
         $user->setRoles($roles);
-        $user->setGuest($guest);
-        $user->setEnabled($enabled);
-        $user->setPassword($this->hasher->hashPassword($user, 'test'));
+        $user->guest = $guest;
+        $user->enabled = $enabled;
+        $user->password = $this->hasher->hashPassword($user, 'test');
         $this->em->persist($user);
 
         return $user;
@@ -178,11 +178,11 @@ class SeedTestScenariosCommand extends Command
     private function createEvent(string $name, string $startDate, string $location, string $description): Event
     {
         $event = new Event();
-        $event->setName($name);
-        $event->setStartDate(new DateTimeImmutable($startDate));
-        $event->setDuration(new DateInterval('PT2H'));
-        $event->setLocation($location);
-        $event->setDescription($description);
+        $event->name = $name;
+        $event->startDate = new DateTimeImmutable($startDate);
+        $event->duration = new DateInterval('PT2H');
+        $event->location = $location;
+        $event->description = $description;
 
         return $event;
     }
@@ -190,10 +190,10 @@ class SeedTestScenariosCommand extends Command
     private function createSubscription(Event $event, User $user): EventSubscription
     {
         $sub = new EventSubscription();
-        $sub->setCreatedUser($user);
+        $sub->createdUser = $user;
         $sub->setCreatedDateNowNoSeconds();
-        $sub->setAmount(1);
-        $sub->setEvent($event);
+        $sub->amount = 1;
+        $sub->event = $event;
 
         return $sub;
     }

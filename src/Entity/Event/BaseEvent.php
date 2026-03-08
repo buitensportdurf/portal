@@ -14,34 +14,37 @@ use Doctrine\ORM\Mapping as ORM;
 abstract class BaseEvent
 {
     #[ORM\Id, ORM\GeneratedValue, ORM\Column]
-    private ?int $id = null;
+    public private(set) ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?DateTimeImmutable $startDate;
+    public ?DateTimeImmutable $startDate;
 
     #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    public ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $description = null;
+    public ?string $description {
+        get => $this->description ?? '';
+        set(?string $value) { $this->description = $value; }
+    }
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?DateTimeImmutable $subscriptionDeadline = null;
+    public ?DateTimeImmutable $subscriptionDeadline = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?DateTimeImmutable $subscriptionOpenDate = null;
+    public ?DateTimeImmutable $subscriptionOpenDate = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $location = null;
+    public ?string $location = null;
 
     #[ORM\ManyToOne(cascade: ['persist'])]
-    private ?Image $image = null;
+    public ?Image $image = null;
 
     #[ORM\Column]
-    private ?DateInterval $duration = null;
+    public ?DateInterval $duration = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $subscriberLimit = null;
+    public ?int $subscriberLimit = null;
 
     #[ORM\Column]
     private int $memberPrice = 0;
@@ -50,10 +53,10 @@ abstract class BaseEvent
     private ?int $guestPrice = null;
 
     #[ORM\Column]
-    private bool $guestsAllowed = false;
+    public bool $guestsAllowed = false;
 
     #[ORM\Column]
-    private bool $published = true;
+    public bool $published = true;
 
     public function __construct()
     {
@@ -66,31 +69,24 @@ abstract class BaseEvent
         return $this->name;
     }
 
-    public function copyFrom(self $event): self
+    public function copyFrom(self $event): void
     {
-        return $this
-            ->setName($event->getName())
-            ->setDescription($event->getDescription())
-            ->setSubscriptionDeadline($event->getSubscriptionDeadline())
-            ->setSubscriberLimit($event->getSubscriberLimit())
-            ->setLocation($event->getLocation())
-            ->setImage($event->getImage())
-            ->setDuration($event->getDuration())
-            ->setTags($event->getTags())
-            ->setStartDate($this->getStartDate()->setTime(
-                $event->getStartDate()->format('H'),
-                $event->getStartDate()->format('i')
-            ))
-            ->setMemberPrice($event->getMemberPrice())
-            ->setGuestPrice($event->getGuestPrice())
-            ->setGuestsAllowed($event->isGuestsAllowed())
-            ->setPublished($event->isPublished())
-        ;
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
+        $this->name = $event->name;
+        $this->description = $event->description;
+        $this->subscriptionDeadline = $event->subscriptionDeadline;
+        $this->subscriberLimit = $event->subscriberLimit;
+        $this->location = $event->location;
+        $this->image = $event->image;
+        $this->duration = $event->duration;
+        $this->setTags($event->getTags());
+        $this->startDate = $this->startDate->setTime(
+            (int) $event->startDate->format('H'),
+            (int) $event->startDate->format('i')
+        );
+        $this->setMemberPrice($event->getMemberPrice());
+        $this->setGuestPrice($event->getGuestPrice());
+        $this->guestsAllowed = $event->guestsAllowed;
+        $this->published = $event->published;
     }
 
     public abstract function getTags(): Collection;
@@ -101,114 +97,6 @@ abstract class BaseEvent
 
     public abstract function removeTag(Tag $tag): static;
 
-    public function getStartDate(): ?DateTimeImmutable
-    {
-        return $this->startDate;
-    }
-
-    public function setStartDate(DateTimeImmutable $startDate): static
-    {
-        $this->startDate = $startDate;
-
-        return $this;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description ?? '';
-    }
-
-    public function setDescription(?string $description): static
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    public function getSubscriptionDeadline(): ?DateTimeImmutable
-    {
-        return $this->subscriptionDeadline;
-    }
-
-    public function setSubscriptionDeadline(?DateTimeImmutable $subscriptionDeadline): static
-    {
-        $this->subscriptionDeadline = $subscriptionDeadline;
-
-        return $this;
-    }
-
-    public function getSubscriptionOpenDate(): ?DateTimeImmutable
-    {
-        return $this->subscriptionOpenDate;
-    }
-
-    public function setSubscriptionOpenDate(?DateTimeImmutable $subscriptionOpenDate): static
-    {
-        $this->subscriptionOpenDate = $subscriptionOpenDate;
-
-        return $this;
-    }
-
-    public function getLocation(): ?string
-    {
-        return $this->location;
-    }
-
-    public function setLocation(string $location): static
-    {
-        $this->location = $location;
-
-        return $this;
-    }
-
-    public function getImage(): ?Image
-    {
-        return $this->image;
-    }
-
-    public function setImage(?Image $image): static
-    {
-        $this->image = $image;
-
-        return $this;
-    }
-
-    public function getDuration(): ?DateInterval
-    {
-        return $this->duration;
-    }
-
-    public function setDuration(DateInterval $duration): static
-    {
-        $this->duration = $duration;
-
-        return $this;
-    }
-
-    public function getSubscriberLimit(): ?int
-    {
-        return $this->subscriberLimit;
-    }
-
-    public function setSubscriberLimit(?int $subscriberLimit): static
-    {
-        $this->subscriberLimit = $subscriberLimit;
-
-        return $this;
-    }
-
     public function getMemberPrice(): float
     {
         return $this->memberPrice / 100;
@@ -216,7 +104,7 @@ abstract class BaseEvent
 
     public function setMemberPrice(float $memberPrice): static
     {
-        $this->memberPrice = $memberPrice * 100;
+        $this->memberPrice = (int) ($memberPrice * 100);
 
         return $this;
     }
@@ -229,30 +117,6 @@ abstract class BaseEvent
     public function setGuestPrice(?float $guestPrice): static
     {
         $this->guestPrice = $guestPrice !== null ? (int) ($guestPrice * 100) : null;
-
-        return $this;
-    }
-
-    public function isGuestsAllowed(): ?bool
-    {
-        return $this->guestsAllowed;
-    }
-
-    public function setGuestsAllowed(bool $guestsAllowed): static
-    {
-        $this->guestsAllowed = $guestsAllowed;
-
-        return $this;
-    }
-
-    public function isPublished(): bool
-    {
-        return $this->published;
-    }
-
-    public function setPublished(bool $published): static
-    {
-        $this->published = $published;
 
         return $this;
     }

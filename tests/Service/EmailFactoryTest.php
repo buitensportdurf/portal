@@ -15,10 +15,10 @@ class EmailFactoryTest extends TestCase
     private function createUser(string $email = 'user@example.com'): User
     {
         $user = new User();
-        $user->setUsername('testuser');
-        $user->setName('Test User');
-        $user->setPassword('hashed');
-        $user->setEmail($email);
+        $user->username = 'testuser';
+        $user->name = 'Test User';
+        $user->password = 'hashed';
+        $user->email = $email;
 
         return $user;
     }
@@ -26,10 +26,10 @@ class EmailFactoryTest extends TestCase
     private function createEvent(): Event
     {
         $event = new Event();
-        $event->setName('Test Event');
-        $event->setLocation('Here');
-        $event->setStartDate(new DateTimeImmutable('+1 week'));
-        $event->setDuration(new DateInterval('PT2H'));
+        $event->name = 'Test Event';
+        $event->location = 'Here';
+        $event->startDate = new DateTimeImmutable('+1 week');
+        $event->duration = new DateInterval('PT2H');
 
         return $event;
     }

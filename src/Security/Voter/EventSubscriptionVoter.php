@@ -44,7 +44,7 @@ class EventSubscriptionVoter extends Voter
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
             case self::EDIT:
-                return $subscription->getCreatedUser() === $user;
+                return $subscription->createdUser === $user;
         }
 
         return false;

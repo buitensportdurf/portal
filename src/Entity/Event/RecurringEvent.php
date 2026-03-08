@@ -24,7 +24,7 @@ class RecurringEvent extends BaseEvent
 
     #[ORM\Column]
     #[Assert\Callback(callback: [self::class, 'validateRecurrenceRule'])]
-    private ?string $recurrenceRule = null;
+    public ?string $recurrenceRule = null;
 
     public function __construct()
     {
@@ -35,7 +35,7 @@ class RecurringEvent extends BaseEvent
 
     public function getRecurringDate(int $index, ?DateTimeImmutable $date = null): \DateTimeInterface
     {
-        $date ??= $this->getStartDate();
+        $date ??= $this->startDate;
 
         try {
             return TimeIntervalService::addIntervalsNTimes(
@@ -49,14 +49,13 @@ class RecurringEvent extends BaseEvent
     public function createNextEvent(): Event
     {
         $previousEvent = $this->getEvents()->last();
-        $previousDate = $previousEvent ? $previousEvent->getStartDate() : $this->getStartDate();
+        $previousDate = $previousEvent ? $previousEvent->startDate : $this->startDate;
 
-        $event = (new Event())
-            ->copyFrom($this)
-            ->setStartDate(TimeIntervalService::addIntervalsNTimes(
-                $previousDate, $this->getRecurrenceIntervals()
-            ))
-        ;
+        $event = new Event();
+        $event->copyFrom($this);
+        $event->startDate = TimeIntervalService::addIntervalsNTimes(
+            $previousDate, $this->getRecurrenceIntervals()
+        );
         $this->addEvent($event);
 
         return $event;
@@ -121,7 +120,7 @@ class RecurringEvent extends BaseEvent
     {
         if (!$this->events->contains($event)) {
             $this->events->add($event);
-            $event->setRecurringEvent($this);
+            $event->recurringEvent = $this;
         }
 
         return $this;
@@ -130,9 +129,8 @@ class RecurringEvent extends BaseEvent
     public function removeEvent(Event $event): static
     {
         if ($this->events->removeElement($event)) {
-            // set the owning side to null (unless already changed)
-            if ($event->getRecurringEvent() === $this) {
-                $event->setRecurringEvent(null);
+            if ($event->recurringEvent === $this) {
+                $event->recurringEvent = null;
             }
         }
 
@@ -145,25 +143,13 @@ class RecurringEvent extends BaseEvent
     public function getFutureEvents(): Collection
     {
         $now = new DateTimeImmutable();
-        return $this->getEvents()->filter(fn(Event $event) => $event->getStartDate() > $now);
+        return $this->getEvents()->filter(fn(Event $event) => $event->startDate > $now);
     }
 
     public function getPastEvents(): Collection
     {
         $now = new DateTimeImmutable();
-        return $this->getEvents()->filter(fn(Event $event) => $event->getStartDate() < $now);
-    }
-
-    public function getRecurrenceRule(): ?string
-    {
-        return $this->recurrenceRule;
-    }
-
-    public function setRecurrenceRule(string $recurrenceRule): static
-    {
-        $this->recurrenceRule = $recurrenceRule;
-
-        return $this;
+        return $this->getEvents()->filter(fn(Event $event) => $event->startDate < $now);
     }
 
     /**
@@ -173,7 +159,7 @@ class RecurringEvent extends BaseEvent
     {
         return array_map(
             fn(string $string) => DateInterval::createFromDateString($string),
-            explode(';', $this->getRecurrenceRule())
+            explode(';', $this->recurrenceRule)
         );
     }
 }

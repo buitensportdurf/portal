@@ -14,35 +14,35 @@ class TagTest extends TestCase
     public function testSetAndGetName(): void
     {
         $tag = new Tag();
-        $tag->setName('climbing');
-        self::assertSame('climbing', $tag->getName());
+        $tag->name = 'climbing';
+        self::assertSame('climbing', $tag->name);
     }
 
     public function testToStringFormatsName(): void
     {
         $tag = new Tag();
-        $tag->setName('rock_climbing');
+        $tag->name = 'rock_climbing';
         self::assertSame('Rock climbing', (string) $tag);
     }
 
     public function testToStringCapitalizesFirstLetter(): void
     {
         $tag = new Tag();
-        $tag->setName('hiking');
+        $tag->name = 'hiking';
         self::assertSame('Hiking', (string) $tag);
     }
 
     public function testDefaultHideFalseByDefault(): void
     {
         $tag = new Tag();
-        self::assertFalse($tag->isDefaultHide());
+        self::assertFalse($tag->defaultHide);
     }
 
     public function testSetDefaultHide(): void
     {
         $tag = new Tag();
-        $tag->setDefaultHide(true);
-        self::assertTrue($tag->isDefaultHide());
+        $tag->defaultHide = true;
+        self::assertTrue($tag->defaultHide);
     }
 
     public function testEventsEmptyByDefault(): void
@@ -54,13 +54,13 @@ class TagTest extends TestCase
     public function testAddEventBidirectional(): void
     {
         $tag = new Tag();
-        $tag->setName('test');
+        $tag->name = 'test';
 
         $event = new Event();
-        $event->setName('Event');
-        $event->setLocation('Here');
-        $event->setStartDate(new DateTimeImmutable('+1 week'));
-        $event->setDuration(new DateInterval('PT1H'));
+        $event->name = 'Event';
+        $event->location = 'Here';
+        $event->startDate = new DateTimeImmutable('+1 week');
+        $event->duration = new DateInterval('PT1H');
 
         $tag->addEvent($event);
 
@@ -71,13 +71,13 @@ class TagTest extends TestCase
     public function testRemoveEventBidirectional(): void
     {
         $tag = new Tag();
-        $tag->setName('test');
+        $tag->name = 'test';
 
         $event = new Event();
-        $event->setName('Event');
-        $event->setLocation('Here');
-        $event->setStartDate(new DateTimeImmutable('+1 week'));
-        $event->setDuration(new DateInterval('PT1H'));
+        $event->name = 'Event';
+        $event->location = 'Here';
+        $event->startDate = new DateTimeImmutable('+1 week');
+        $event->duration = new DateInterval('PT1H');
 
         $tag->addEvent($event);
         $tag->removeEvent($event);
@@ -89,13 +89,13 @@ class TagTest extends TestCase
     public function testAddEventIdempotent(): void
     {
         $tag = new Tag();
-        $tag->setName('test');
+        $tag->name = 'test';
 
         $event = new Event();
-        $event->setName('Event');
-        $event->setLocation('Here');
-        $event->setStartDate(new DateTimeImmutable('+1 week'));
-        $event->setDuration(new DateInterval('PT1H'));
+        $event->name = 'Event';
+        $event->location = 'Here';
+        $event->startDate = new DateTimeImmutable('+1 week');
+        $event->duration = new DateInterval('PT1H');
 
         $tag->addEvent($event);
         $tag->addEvent($event);
@@ -112,14 +112,14 @@ class TagTest extends TestCase
     public function testAddRecurringEventBidirectional(): void
     {
         $tag = new Tag();
-        $tag->setName('test');
+        $tag->name = 'test';
 
         $recurring = new RecurringEvent();
-        $recurring->setName('Recurring');
-        $recurring->setLocation('Here');
-        $recurring->setStartDate(new DateTimeImmutable('+1 week'));
-        $recurring->setDuration(new DateInterval('PT1H'));
-        $recurring->setRecurrenceRule('1 week');
+        $recurring->name = 'Recurring';
+        $recurring->location = 'Here';
+        $recurring->startDate = new DateTimeImmutable('+1 week');
+        $recurring->duration = new DateInterval('PT1H');
+        $recurring->recurrenceRule = '1 week';
 
         $tag->addRecurringEvent($recurring);
 
@@ -130,14 +130,14 @@ class TagTest extends TestCase
     public function testRemoveRecurringEventBidirectional(): void
     {
         $tag = new Tag();
-        $tag->setName('test');
+        $tag->name = 'test';
 
         $recurring = new RecurringEvent();
-        $recurring->setName('Recurring');
-        $recurring->setLocation('Here');
-        $recurring->setStartDate(new DateTimeImmutable('+1 week'));
-        $recurring->setDuration(new DateInterval('PT1H'));
-        $recurring->setRecurrenceRule('1 week');
+        $recurring->name = 'Recurring';
+        $recurring->location = 'Here';
+        $recurring->startDate = new DateTimeImmutable('+1 week');
+        $recurring->duration = new DateInterval('PT1H');
+        $recurring->recurrenceRule = '1 week';
 
         $tag->addRecurringEvent($recurring);
         $tag->removeRecurringEvent($recurring);

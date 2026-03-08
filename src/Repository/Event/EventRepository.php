@@ -49,7 +49,7 @@ class EventRepository extends ServiceEntityRepository
             $qb->setParameter('tag', $tag);
         } else {
             foreach ($hiddenTags as $hiddenTag) {
-                $key = 'hiddenTag' . $hiddenTag->getId();
+                $key = 'hiddenTag' . $hiddenTag->id;
                 $tagAnd->add(":$key NOT MEMBER OF e.tags");
                 $qb->setParameter($key, $hiddenTag);
             }
@@ -78,7 +78,7 @@ class EventRepository extends ServiceEntityRepository
             ->join('e.eventSubscriptions', 's')
             ->join('s.createdUser', 'u')
             ->where('u.id = :user')
-            ->setParameter('user', $user->getId()->toBinary())
+            ->setParameter('user', $user->id->toBinary())
         ;
 
         return $qb->getQuery()->getResult();
@@ -87,8 +87,8 @@ class EventRepository extends ServiceEntityRepository
     public function remove(Event $event): void
     {
         // Check if image needs to be deleted
-        $image = $event->getImage();
-        if ($image && $event->getRecurringEvent()?->getImage() !== $image
+        $image = $event->image;
+        if ($image && $event->recurringEvent?->image !== $image
             && count($this->findBy(['image' => $image])) === 1) {
             $this->getEntityManager()->remove($image);
         }

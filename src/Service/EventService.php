@@ -30,7 +30,7 @@ class EventService
         $newEventCount = 0;
         $nextYear = new \DateTimeImmutable('+1 year');
         $recurringTag = $this->tagRepository->find(Tag::ID_RECURRING);
-        while ($event = $recurringEvent->createNextEvent() and $event->getStartDate() < $nextYear) {
+        while ($event = $recurringEvent->createNextEvent() and $event->startDate < $nextYear) {
             $event->addTag($recurringTag);
             $this->em->persist($event);
             $newEventCount++;

@@ -14,7 +14,6 @@ use App\Security\Voter\EventSubscriptionVoter;
 use App\Security\Voter\EventVoter;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -44,7 +43,7 @@ class EventSubscriptionController extends AbstractController
         // Redirect if already subscribed
         if ($user && $event->isSubscribed($user) && !$this->isGranted('ROLE_EVENT_ADMIN')) {
             return $this->redirectToRoute('event_subscription_edit', [
-                'id' => $event->getSubscription($user)->getId(),
+                'id' => $event->getSubscription($user)->id,
             ]);
         }
 
@@ -53,22 +52,20 @@ class EventSubscriptionController extends AbstractController
             if ($user) {
                 $this->addFlash('error', 'You cannot subscribe to this event');
                 return $this->redirectToRoute('event_event_show', [
-                    'id' => $event->getId(),
+                    'id' => $event->id,
                 ]);
             } else {
                 return $this->redirectToRoute('event_subscription_nologin', [
-                    'id' => $event->getId(),
+                    'id' => $event->id,
                 ]);
             }
         }
 
         $subscription = new EventSubscription();
-        $subscription
-            ->setCreatedDateNowNoSeconds()
-            ->setEvent($event)
-            ->setAmount(1)
-            ->setCreatedUser($user)
-        ;
+        $subscription->setCreatedDateNowNoSeconds();
+        $subscription->event = $event;
+        $subscription->amount = 1;
+        $subscription->createdUser = $user;
 
         foreach ($event->questions as $question) {
             $answer = new QuestionAnswer();
@@ -88,14 +85,14 @@ class EventSubscriptionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if (!$this->isGranted('ROLE_EVENT_ADMIN') && $user !== $subscription->getCreatedUser()) {
+            if (!$this->isGranted('ROLE_EVENT_ADMIN') && $user !== $subscription->createdUser) {
                 $this->addFlash('error', 'You can only subscribe to your own events');
-                return $this->redirectToRoute('event_event_show', ['id' => $event->getId()]);
+                return $this->redirectToRoute('event_event_show', ['id' => $event->id]);
             }
 
             $this->repository->save($subscription);
             $this->addFlash('success', sprintf('You have subscribed to %s', $event));
-            return $this->redirectToRoute('event_event_show', ['id' => $event->getId()]);
+            return $this->redirectToRoute('event_event_show', ['id' => $event->id]);
         }
 
         return $this->render('event/subscription/subscribe.html.twig', [
@@ -106,13 +103,13 @@ class EventSubscriptionController extends AbstractController
 
     #[Route('/unsubscribe/{id}', name: '_unsubscribe')]
     #[IsGranted('ROLE_USER')]
-    #[IsGranted(EventVoter::UNSUBSCRIBE, subject: new Expression('args["subscription"].getEvent()'))]
     public function unsubscribe(EventSubscription $subscription): Response
     {
-        $event = $subscription->getEvent();
+        $this->denyAccessUnlessGranted(EventVoter::UNSUBSCRIBE, $subscription->event);
+        $event = $subscription->event;
         $this->repository->delete($subscription);
         $this->addFlash('success', sprintf('You have unsubscribed from %s', $event));
-        return $this->redirectToRoute('event_event_show', ['id' => $event->getId()]);
+        return $this->redirectToRoute('event_event_show', ['id' => $event->id]);
     }
 
     #[Route('/{id}/edit', name: '_edit')]
@@ -121,7 +118,7 @@ class EventSubscriptionController extends AbstractController
     public function edit(EventSubscription $subscription, Request $request): Response
     {
         // Add missing question answers
-        foreach ($subscription->getEvent()->questions as $question) {
+        foreach ($subscription->event->questions as $question) {
             $found = false;
             foreach ($subscription->questionAnswers as $answer) {
                 if ($answer->question === $question) {
@@ -143,8 +140,8 @@ class EventSubscriptionController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->repository->save($subscription);
-            $this->addFlash('success', sprintf('Updated subscription to %s', $subscription->getEvent()));
-            return $this->redirectToRoute('event_event_show', ['id' => $subscription->getEvent()->getId()]);
+            $this->addFlash('success', sprintf('Updated subscription to %s', $subscription->event));
+            return $this->redirectToRoute('event_event_show', ['id' => $subscription->event->id]);
         }
 
         return $this->render('event/subscription/edit.html.twig', [

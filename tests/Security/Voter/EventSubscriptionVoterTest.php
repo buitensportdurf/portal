@@ -37,9 +37,9 @@ class EventSubscriptionVoterTest extends TestCase
     private function createUser(string $name = 'user'): User
     {
         $user = new User();
-        $user->setUsername($name);
-        $user->setName($name);
-        $user->setPassword('hashed');
+        $user->username = $name;
+        $user->name = $name;
+        $user->password = 'hashed';
 
         return $user;
     }
@@ -47,15 +47,15 @@ class EventSubscriptionVoterTest extends TestCase
     private function createSubscription(User $owner): EventSubscription
     {
         $event = new Event();
-        $event->setName('Event');
-        $event->setLocation('Here');
-        $event->setStartDate(new DateTimeImmutable('+1 week'));
-        $event->setDuration(new DateInterval('PT2H'));
+        $event->name = 'Event';
+        $event->location = 'Here';
+        $event->startDate = new DateTimeImmutable('+1 week');
+        $event->duration = new DateInterval('PT2H');
 
         $sub = new EventSubscription();
-        $sub->setCreatedUser($owner);
-        $sub->setAmount(1);
-        $sub->setEvent($event);
+        $sub->createdUser = $owner;
+        $sub->amount = 1;
+        $sub->event = $event;
 
         return $sub;
     }

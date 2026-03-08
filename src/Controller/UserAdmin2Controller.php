@@ -30,10 +30,10 @@ class UserAdmin2Controller extends AbstractController
     #[Route('/{id}/enable', name: '_enable')]
     public function enable(User $user, MailerInterface $mailer): Response
     {
-        $user->setEnabled(true);
+        $user->enabled = true;
         $this->userRepository->add($user);
         $mailer->send(EmailFactory::userEnabled($user));
-        $this->addFlash('success', sprintf('%s is now enabled', $user->getName()));
+        $this->addFlash('success', sprintf('%s is now enabled', $user->name));
 
         return $this->redirectToRoute('admin2_user_index');
     }
@@ -41,7 +41,7 @@ class UserAdmin2Controller extends AbstractController
     #[Route('/{id}/switch', name: '_switch')]
     public function switch(User $user): Response
     {
-        $this->addFlash('success', sprintf('Now impersonating %s', $user->getName()));
-        return $this->redirectToRoute('home', ['_switch_user' => $user->getUsername()]);
+        $this->addFlash('success', sprintf('Now impersonating %s', $user->name));
+        return $this->redirectToRoute('home', ['_switch_user' => $user->username]);
     }
 }

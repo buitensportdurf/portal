@@ -37,7 +37,7 @@ class RecurringEventController extends AbstractController
     public function new(Request $request): Response
     {
         $recurringEvent = new RecurringEvent();
-        $recurringEvent->setDuration(new DateInterval('PT0S'));
+        $recurringEvent->duration = new DateInterval('PT0S');
         $form = $this->createForm(RecurringEventType::class, $recurringEvent);
         $form->add('Save', SubmitType::class);
         $form->handleRequest($request);
@@ -61,13 +61,13 @@ class RecurringEventController extends AbstractController
         RecurringEvent $recurringEvent,
     ): Response
     {
-        $currentRecurrenceRule = $recurringEvent->getRecurrenceRule();
+        $currentRecurrenceRule = $recurringEvent->recurrenceRule;
         $form = $this->createForm(RecurringEventType::class, $recurringEvent);
         $form->add('Save', SubmitType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $newRecurrenceRule = $recurringEvent->getRecurrenceRule();
+            $newRecurrenceRule = $recurringEvent->recurrenceRule;
             if ($currentRecurrenceRule !== $newRecurrenceRule) {
                 $this->addFlash('error', sprintf('Recurrence rule changed, to proceed with this update, delete all events and create new ones'));
             }
@@ -78,7 +78,7 @@ class RecurringEventController extends AbstractController
             $this->em->flush();
 
             $this->addFlash('success', sprintf('Updated event "%s"', $recurringEvent));
-            return $this->redirectToRoute('event_recurring_event_show', ['id' => $recurringEvent->getId()]);
+            return $this->redirectToRoute('event_recurring_event_show', ['id' => $recurringEvent->id]);
         }
 
         return $this->render('event/recurring_event/edit.html.twig', [
@@ -113,7 +113,7 @@ class RecurringEventController extends AbstractController
         $this->em->flush();
 
         $this->addFlash('success', sprintf('Deleted %d events', $count));
-        return $this->redirectToRoute('event_recurring_event_show', ['id' => $recurringEvent->getId()]);
+        return $this->redirectToRoute('event_recurring_event_show', ['id' => $recurringEvent->id]);
     }
 
     #[Route('/{id}/create_events', name: '_create_events')]
@@ -123,6 +123,6 @@ class RecurringEventController extends AbstractController
         $this->em->flush();
         $this->addFlash('success', sprintf('Created %d events', $count));
 
-        return $this->redirectToRoute('event_recurring_event_show', ['id' => $recurringEvent->getId()]);
+        return $this->redirectToRoute('event_recurring_event_show', ['id' => $recurringEvent->id]);
     }
 }
