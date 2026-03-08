@@ -9,7 +9,7 @@
 {% block body %}
     <p class="text-muted small mb-3">Copy a URL and import it into your calendar app to stay up to date.</p>
 
-    <h6>General</h6>
+    <h5>General</h5>
     <div class="input-group mb-2">
         <span class="input-group-text">All events</span>
         <input type="text" class="form-control" value="{{ url('event_calendar_all') }}" disabled>
@@ -22,7 +22,7 @@
     {% endif %}
 
     {% if tags is not empty %}
-        <h6 class="mt-3">By tag</h6>
+        <h5 class="mt-3">By tag</h5>
         {% for tag in tags %}
             <div class="input-group mb-2">
                 <span class="input-group-text">{{ tag }}</span>
