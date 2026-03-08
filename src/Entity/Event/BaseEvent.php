@@ -52,6 +52,9 @@ abstract class BaseEvent
     #[ORM\Column]
     private bool $guestsAllowed = false;
 
+    #[ORM\Column]
+    private bool $published = true;
+
     public function __construct()
     {
         $this->startDate = new DateTimeImmutable()->setTime(18, 0);
@@ -81,6 +84,7 @@ abstract class BaseEvent
             ->setMemberPrice($event->getMemberPrice())
             ->setGuestPrice($event->getGuestPrice())
             ->setGuestsAllowed($event->isGuestsAllowed())
+            ->setPublished($event->isPublished())
         ;
     }
 
@@ -237,6 +241,18 @@ abstract class BaseEvent
     public function setGuestsAllowed(bool $guestsAllowed): static
     {
         $this->guestsAllowed = $guestsAllowed;
+
+        return $this;
+    }
+
+    public function isPublished(): bool
+    {
+        return $this->published;
+    }
+
+    public function setPublished(bool $published): static
+    {
+        $this->published = $published;
 
         return $this;
     }

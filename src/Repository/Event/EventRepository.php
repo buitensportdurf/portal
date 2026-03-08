@@ -27,7 +27,7 @@ class EventRepository extends ServiceEntityRepository
      * @param array<Tag> $hiddenTags
      * @return array<Event>
      */
-    public function findByTag(?Tag $tag, array $hiddenTags = []): array
+    public function findByTag(?Tag $tag, array $hiddenTags = [], bool $includeUnpublished = false): array
     {
         $qb = $this
             ->createQueryBuilder('e')
@@ -36,6 +36,10 @@ class EventRepository extends ServiceEntityRepository
             ->setParameter('now', new \DateTimeImmutable())
             ->addOrderBy('e.startDate', 'ASC')
         ;
+
+        if (!$includeUnpublished) {
+            $qb->andWhere('e.published = true');
+        }
 
         $tagAnd = $qb->expr()->andX();
         $totalTagOr = $qb->expr()->orX();
@@ -92,7 +96,7 @@ class EventRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
-    public function findPast(?int $year = null): array
+    public function findPast(?int $year = null, bool $includeUnpublished = false): array
     {
         $qb = $this->createQueryBuilder('e');
         $qb
@@ -100,6 +104,10 @@ class EventRepository extends ServiceEntityRepository
             ->setParameter('now', new \DateTimeImmutable())
             ->addOrderBy('e.startDate', 'DESC')
         ;
+
+        if (!$includeUnpublished) {
+            $qb->andWhere('e.published = true');
+        }
 
         if ($year !== null) {
             $qb
