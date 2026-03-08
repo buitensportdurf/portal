@@ -1,17 +1,21 @@
 {% extends 'base/single.column.html.twig' %}
 
-{% set title %}Edit Event {{ event }}{% endset %}
+{% set title %}Edit {{ event }}{% endset %}
+
+{% block actions %}
+    <div class="btn-group btn-group-sm">
+        <a class="btn btn-outline-primary" href="{{ path('event_event_index') }}">Back to list</a>
+        <a class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteEvent">Delete</a>
+        {{ include('components/_confirm_modal.html.twig', {
+            id: 'confirmDeleteEvent',
+            title: 'Delete event',
+            message: 'Are you sure you want to delete event "' ~ event ~ '"?',
+            action_url: path('event_event_delete', {id: event.id}),
+            action_label: 'Delete',
+        }) }}
+    </div>
+{% endblock %}
 
 {% block body %}
-    <a class="btn btn-primary" href="{{ path('event_event_index') }}">Back to list</a>
-    <a class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteEvent">Delete</a>
-    {{ include('components/_confirm_modal.html.twig', {
-        id: 'confirmDeleteEvent',
-        title: 'Delete event',
-        message: 'Are you sure you want to delete event "' ~ event ~ '"?',
-        action_url: path('event_event_delete', {id: event.id}),
-        action_label: 'Delete',
-    }) }}
-
     {{ form(form) }}
 {% endblock %}

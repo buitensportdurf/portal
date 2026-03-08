@@ -14,19 +14,18 @@
 <body class="bg-light">
 {{ include('base/navbar.html.twig') }}
 
-{# alert block #}
 <div class="container">
     <div class="row">
         <div class="col-sm mx-auto">
             {% block flashes %}
                 {% for msg in app.session.flashBag.get('error') %}
                     <div class="alert alert-danger my-2" role="alert">
-                        <strong>Error: </strong> {{ msg|raw }}
+                        {{ msg|raw }}
                     </div>
                 {% endfor %}
                 {% for msg in app.session.flashBag.get('success') %}
                     <div class="alert alert-success my-2">
-                        <strong>Success: </strong> {{ msg|raw }}
+                        {{ msg|raw }}
                     </div>
                 {% endfor %}
             {% endblock %}
@@ -34,7 +33,6 @@
     </div>
 </div>
 
-{# body blocks #}
 {% block content %}
 {% endblock %}
 
@@ -48,12 +46,8 @@
     </div>
 </div>
 
-{# javascript block #}
 {% block js %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"
-            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-            crossorigin="anonymous"></script>
 {% endblock %}
 </body>
 </html>

@@ -2,8 +2,10 @@
 
 {% set title %}Create Recurring Event{% endset %}
 
-{% block body %}
-    <a class="btn btn-primary" href="{{ path('event_recurring_event_index') }}">Back to list</a>
+{% block actions %}
+    <a class="btn btn-sm btn-outline-primary" href="{{ path('event_recurring_event_index') }}">Back to list</a>
+{% endblock %}
 
+{% block body %}
     {{ form(form) }}
 {% endblock %}

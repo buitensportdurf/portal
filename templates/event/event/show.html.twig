@@ -1,198 +1,202 @@
 {% extends 'base/single.column.html.twig' %}
 
-{% set title %}Event {{ event }}{% endset %}
+{% set title %}{{ event }}{% endset %}
+
+{% block actions %}
+    <div class="btn-group btn-group-sm">
+        <a class="btn btn-outline-primary" href="{{ path('event_event_index') }}">Back to list</a>
+        {% if event.recurringEvent and is_granted('ROLE_EVENT_RECURRING') %}
+            <a class="btn btn-outline-info"
+               href="{{ path('event_recurring_event_show', {'id': event.recurringEvent.id}) }}">Recurring parent</a>
+        {% endif %}
+        {% if is_granted('ROLE_EVENT_EDIT') %}
+            <a class="btn btn-outline-warning" href="{{ path('event_event_edit', {'id': event.id}) }}">Edit</a>
+            <a class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteEvent">Delete</a>
+            {{ include('components/_confirm_modal.html.twig', {
+                id: 'confirmDeleteEvent',
+                title: 'Delete event',
+                message: 'Are you sure you want to delete event "' ~ event ~ '"?',
+                action_url: path('event_event_delete', {id: event.id}),
+                action_label: 'Delete',
+            }) }}
+        {% endif %}
+    </div>
+{% endblock %}
 
 {% block body %}
-    <a class="btn btn-primary" href="{{ path('event_event_index') }}">Back to list</a>
-
-    {% if is_granted('ROLE_EVENT_EDIT') %}
-        <a class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteEvent">Delete</a>
-        {{ include('components/_confirm_modal.html.twig', {
-            id: 'confirmDeleteEvent',
-            title: 'Delete event',
-            message: 'Are you sure you want to delete event "' ~ event ~ '"?',
-            action_url: path('event_event_delete', {id: event.id}),
-            action_label: 'Delete',
-        }) }}
-    {% endif %}
-    {% if event.recurringEvent and is_granted('ROLE_EVENT_RECURRING') %}
-        <a class="btn btn-info"
-           href="{{ path('event_recurring_event_show', {'id': event.recurringEvent.id}) }}">Parent</a>
-    {% endif %}
-    <br><br>
-
-    <div class="row">
+    <div class="row g-4">
         <div class="col-md-4">
             {{ include('event/event/card.html.twig', {event: event}) }}
         </div>
-        <div class="col-md-8">
-            <div class="table-responsive">
-                <table class="table">
-                    <tbody>
-                    {% if event.subscriptionOpenDate %}
-                        <tr>
-                            <th>Subscriptions open</th>
-                            <td>{{ event.subscriptionOpenDate|fdate_time }}</td>
-                        </tr>
-                    {% endif %}
-                    {% if event.subscriptionDeadline %}
-                        <tr>
-                            <th>Subscription deadline</th>
-                            <td>{{ event.subscriptionDeadline ? event.subscriptionDeadline|fdate : '' }}</td>
-                        </tr>
-                    {% endif %}
-                    {% if event.subscriberLimit > 0 %}
-                        <tr>
-                            <th>Subscriber limit</th>
-                            <td>{{ event.subscriberLimit ?? 'None' }}</td>
-                        </tr>
-                    {% endif %}
-                    {% if event.recurringEvent and is_granted('ROLE_EVENT_ADMIN') %}
-                        <tr>
-                            <th>Recurring every</th>
-                            <td>{{ event.recurringEvent.recurrenceRule }}</td>
-                        </tr>
-                    {% endif %}
-                    <tr>
-                        <th>Member Price</th>
-                        <td>
-                            {% if event.memberPrice %}
-                                € {{ event.memberPrice }}
-                            {% else %}
-                                Free
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% if event.guestsAllowed %}
-                        <tr>
-                            <th>Guest Price</th>
-                            <td>
-                                {% if event.guestPrice %}
-                                    € {{ event.guestPrice }}
-                                {% else %}
-                                    Free
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endif %}
-                    <tr>
-                        <th colspan="2">
-                            {% if event.guestsAllowed %}
-                                Open for guests
-                            {% else %}
-                                Only for members
-                            {% endif %}
-                        </th>
-                    </tr>
-                    <tr>
-                        <th>Description</th>
-                        <td>{{ event.description|markdown_to_html }}</td>
-                    </tr>
-                    {% if is_granted('ROLE_USER') %}
-                        <tr>
-                            <th>Subscribers</th>
-                            <td>
-                                <ol class="list-group list-group-flush">
-                                    {% for subscription in event.eventSubscriptions %}
-                                        <li class="list-group-item d-flex justify-content-between {% if subscription.createdUser is same as(app.user) %}list-group-item-success{% endif %}">
-                                            {% if is_granted('edit', subscription) %}
-                                                <div class="ms-2 me-2">
-                                                    <a class="btn btn-sm btn-warning"
-                                                       href="{{ path('event_subscription_edit', {'id': subscription.id}) }}">Edit</a>
-                                                    {% if is_granted('ROLE_EVENT_ADMIN') %}
-                                                        <a class="btn btn-sm btn-danger" data-bs-toggle="modal"
-                                                           data-bs-target="#confirmUnsubscribe{{ subscription.id }}">Unsubscribe</a>
-                                                        {{ include('components/_confirm_modal.html.twig', {
-                                                            id: 'confirmUnsubscribe' ~ subscription.id,
-                                                            title: 'Unsubscribe ' ~ subscription.createdUser,
-                                                            message: 'Are you sure you want to unsubscribe "' ~ subscription.createdUser ~ '" from "' ~ event ~ '"?',
-                                                            action_url: path('event_subscription_unsubscribe', {id: subscription.id}),
-                                                            action_label: 'Unsubscribe',
-                                                        }) }}
-                                                    {% endif %}
-                                                </div>
-                                            {% endif %}
-                                            <div class="ms-2 me-auto">
-                                                {{ subscription.createdUser }}
-                                            </div>
-                                            <div class="ms-2 me-auto">
-                                                {% if subscription.note %}
-                                                    <strong>Note:</strong><br>
-                                                    {{ subscription.note|nl2br }}
-                                                {% endif %}
 
-                                                {% for question in event.questions %}
-                                                    <div>
-                                                        <strong>{{ question }}</strong><br>
-                                                        {{ question.answers[subscription.id] ?? '-' }}
-                                                    </div>
-                                                {% endfor %}
-                                            </div>
-                                            <span>
-                                                {% if subscription.createdUser.guest %}
-                                                    <span class="badge bg-secondary">guest</span>
-                                                {% endif %}
-                                                <span class="badge bg-primary rounded-pill">{{ subscription.amount }}</span>
-                                            </span>
-                                        </li>
-                                    {% endfor %}
-                                </ol>
-                            </td>
-                        </tr>
-                    {% endif %}
-                    {% if is_granted('ROLE_EVENT_ADMIN') %}
+        <div class="col-md-8">
+            {# Event details card #}
+            <div class="card mb-4">
+                <div class="card-header">Details</div>
+                <div class="card-body">
+                    <table class="table table-borderless mb-0">
+                        <tbody>
+                        {% if event.subscriptionOpenDate %}
+                            <tr>
+                                <th class="text-muted" style="width: 40%">Subscriptions open</th>
+                                <td>{{ event.subscriptionOpenDate|fdate_time }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if event.subscriptionDeadline %}
+                            <tr>
+                                <th class="text-muted">Subscription deadline</th>
+                                <td>{{ event.subscriptionDeadline|fdate }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if event.subscriberLimit > 0 %}
+                            <tr>
+                                <th class="text-muted">Subscriber limit</th>
+                                <td>{{ event.subscriberLimit }}</td>
+                            </tr>
+                        {% endif %}
+                        {% if event.recurringEvent and is_granted('ROLE_EVENT_ADMIN') %}
+                            <tr>
+                                <th class="text-muted">Recurring every</th>
+                                <td>{{ event.recurringEvent.recurrenceRule }}</td>
+                            </tr>
+                        {% endif %}
                         <tr>
-                            <th>Subscriber emails</th>
+                            <th class="text-muted">Price</th>
                             <td>
-                                <p>
-                                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#collapseEmails" aria-expanded="false"
-                                            aria-controls="collapseEmails">
-                                        Show all subscriber emails
-                                    </button>
-                                </p>
-                                <div class="collapse" id="collapseEmails">
-                                    <div class="card card-body">
-                                        {% for subscription in event.eventSubscriptions %}
-                                            {{ subscription.createdUser.email }}<br>
-                                        {% endfor %}
-                                    </div>
-                                </div>
+                                {% if event.memberPrice %}€ {{ event.memberPrice }}{% else %}Free{% endif %}
+                                {% if event.guestsAllowed and event.guestPrice %}
+                                    <span class="text-muted">(guest: € {{ event.guestPrice }})</span>
+                                {% endif %}
                             </td>
                         </tr>
-                    {% endif %}
-                    <tr>
-                        <th>Questions</th>
-                        <td>
-                            <p>
-                                {% if is_granted('ROLE_EVENT_EDIT') %}
-                                    <a class="btn btn-primary"
-                                       href="{{ path('event_question_create', {'id': event.id}) }}">
-                                        Add question
-                                    </a>
+                        <tr>
+                            <th class="text-muted">Access</th>
+                            <td>
+                                {% if event.guestsAllowed %}
+                                    <span class="badge bg-success">Open for guests</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Members only</span>
                                 {% endif %}
-                            </p>
-                            <ol class="list-group list-group-flush">
-                                {% for question in event.questions %}
-                                    <li class="list-group-item d-flex justify-content-between">
-                                        {{ question }}
-                                        <div class="btn-group">
-                                            <a class="btn btn-sm btn-warning"
-                                               href="{{ path('event_question_edit', {'id': question.id}) }}">
-                                                Edit
-                                            </a>
-                                            <a class="btn btn-sm btn-danger"
-                                               href="{{ path('event_question_delete', {'id': question.id}) }}">
-                                                Delete
-                                            </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {# Description card #}
+            {% if event.description %}
+                <div class="card mb-4">
+                    <div class="card-header">Description</div>
+                    <div class="card-body">
+                        {{ event.description|markdown_to_html }}
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Subscribers card #}
+            {% if is_granted('ROLE_USER') %}
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        Subscribers
+                        <span class="badge bg-primary rounded-pill">{{ event.amountOfSubscriptions }}</span>
+                    </div>
+                    {% if event.eventSubscriptions is empty %}
+                        <div class="card-body text-muted">No subscribers yet.</div>
+                    {% else %}
+                        <ol class="list-group list-group-flush">
+                            {% for subscription in event.eventSubscriptions %}
+                                <li class="list-group-item {% if subscription.createdUser is same as(app.user) %}list-group-item-success{% endif %}">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <strong>{{ subscription.createdUser }}</strong>
+                                            {% if subscription.createdUser.guest %}
+                                                <span class="badge bg-secondary">guest</span>
+                                            {% endif %}
+                                            <span class="badge bg-primary rounded-pill">{{ subscription.amount }}</span>
                                         </div>
-                                    </li>
-                                {% endfor %}
-                            </ol>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                                        {% if is_granted('edit', subscription) %}
+                                            <div class="btn-group btn-group-sm">
+                                                <a class="btn btn-outline-warning"
+                                                   href="{{ path('event_subscription_edit', {'id': subscription.id}) }}">Edit</a>
+                                                {% if is_granted('ROLE_EVENT_ADMIN') %}
+                                                    <a class="btn btn-outline-danger" data-bs-toggle="modal"
+                                                       data-bs-target="#confirmUnsubscribe{{ subscription.id }}">Unsubscribe</a>
+                                                    {{ include('components/_confirm_modal.html.twig', {
+                                                        id: 'confirmUnsubscribe' ~ subscription.id,
+                                                        title: 'Unsubscribe ' ~ subscription.createdUser,
+                                                        message: 'Are you sure you want to unsubscribe "' ~ subscription.createdUser ~ '" from "' ~ event ~ '"?',
+                                                        action_url: path('event_subscription_unsubscribe', {id: subscription.id}),
+                                                        action_label: 'Unsubscribe',
+                                                    }) }}
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    {% if subscription.note %}
+                                        <div class="mt-1 small text-muted">
+                                            {{ subscription.note|nl2br }}
+                                        </div>
+                                    {% endif %}
+                                    {% for question in event.questions %}
+                                        <div class="mt-1 small">
+                                            <strong>{{ question }}:</strong> {{ question.answers[subscription.id] ?? '-' }}
+                                        </div>
+                                    {% endfor %}
+                                </li>
+                            {% endfor %}
+                        </ol>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {# Subscriber emails (admin) #}
+            {% if is_granted('ROLE_EVENT_ADMIN') %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <a class="text-decoration-none" data-bs-toggle="collapse" href="#collapseEmails"
+                           role="button" aria-expanded="false" aria-controls="collapseEmails">
+                            Subscriber emails
+                        </a>
+                    </div>
+                    <div class="collapse" id="collapseEmails">
+                        <div class="card-body">
+                            {% for subscription in event.eventSubscriptions %}
+                                {{ subscription.createdUser.email }}<br>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Questions card #}
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    Questions
+                    {% if is_granted('ROLE_EVENT_EDIT') %}
+                        <a class="btn btn-sm btn-outline-primary"
+                           href="{{ path('event_question_create', {'id': event.id}) }}">Add question</a>
+                    {% endif %}
+                </div>
+                {% if event.questions is empty %}
+                    <div class="card-body text-muted">No questions configured.</div>
+                {% else %}
+                    <ol class="list-group list-group-flush">
+                        {% for question in event.questions %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ question }}
+                                {% if is_granted('ROLE_EVENT_EDIT') %}
+                                    <div class="btn-group btn-group-sm">
+                                        <a class="btn btn-outline-warning"
+                                           href="{{ path('event_question_edit', {'id': question.id}) }}">Edit</a>
+                                        <a class="btn btn-outline-danger"
+                                           href="{{ path('event_question_delete', {'id': question.id}) }}">Delete</a>
+                                    </div>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ol>
+                {% endif %}
             </div>
         </div>
     </div>

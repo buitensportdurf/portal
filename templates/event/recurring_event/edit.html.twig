@@ -1,29 +1,35 @@
 {% extends 'base/single.column.html.twig' %}
 
-{% set title %}Edit recurring event {{ recurringEvent }}{% endset %}
+{% set title %}Edit {{ recurringEvent }}{% endset %}
+
+{% block actions %}
+    <div class="btn-group btn-group-sm">
+        <a class="btn btn-outline-primary" href="{{ path('event_recurring_event_index') }}">Back to list</a>
+        <a class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteRecurring">Delete</a>
+        {{ include('components/_confirm_modal.html.twig', {
+            id: 'confirmDeleteRecurring',
+            title: 'Delete recurring event',
+            message: 'Are you sure you want to delete recurring event "' ~ recurringEvent ~ '"?',
+            action_url: path('event_recurring_event_delete', {id: recurringEvent.id}),
+            action_label: 'Delete',
+        }) }}
+    </div>
+{% endblock %}
 
 {% block body %}
-    <a class="btn btn-primary" href="{{ path('event_recurring_event_index') }}">Back to list</a>
-    <a class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteRecurring">Delete</a>
-    {{ include('components/_confirm_modal.html.twig', {
-        id: 'confirmDeleteRecurring',
-        title: 'Delete recurring event',
-        message: 'Are you sure you want to delete recurring event "' ~ recurringEvent ~ '"?',
-        action_url: path('event_recurring_event_delete', {id: recurringEvent.id}),
-        action_label: 'Delete',
-    }) }}
-
-    <br><br>
-    <div class="row">
+    <div class="row mt-3">
         <div class="col-md-8">
             {{ form(form) }}
         </div>
         <div class="col-md-4">
-            <h5>Next recurring dates</h5>
-            {% for i in 1..5 %}
-                {{ i }}. {{ recurringEvent.recurringDate(i)|date('l jS \\of F Y H:i') }}<br>
-            {% endfor %}
+            <div class="card">
+                <div class="card-header">Next recurring dates</div>
+                <ol class="list-group list-group-flush list-group-numbered">
+                    {% for i in 1..5 %}
+                        <li class="list-group-item">{{ recurringEvent.recurringDate(i)|date('l jS \\of F Y H:i') }}</li>
+                    {% endfor %}
+                </ol>
+            </div>
         </div>
     </div>
-
 {% endblock %}

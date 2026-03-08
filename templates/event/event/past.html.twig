@@ -2,12 +2,20 @@
 
 {% set title %}Past events{% endset %}
 
+{% block actions %}{% endblock %}
+
 {% block body %}
-    <div class="row row-cols-1 row-cols-md-3 g-3">
-        {% for event in events %}
-            <div class="col">
-                {{ include('event/event/card.html.twig', {event: event}) }}
-            </div>
-        {% endfor %}
-    </div>
+    {% if events is empty %}
+        <div class="text-center py-5 text-muted">
+            <p class="fs-5">No past events</p>
+        </div>
+    {% else %}
+        <div class="row row-cols-1 row-cols-md-3 g-3">
+            {% for event in events %}
+                <div class="col">
+                    {{ include('event/event/card.html.twig', {event: event}) }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 {% endblock %}
