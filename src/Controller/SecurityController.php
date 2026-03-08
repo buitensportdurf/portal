@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Form\User\GuestForm;
 use App\Form\User\RegistrationFormType;
 use App\Repository\UserRepository;
+use App\Service\CommissionMailer;
 use App\Service\EmailFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -42,7 +43,8 @@ class SecurityController extends AbstractController
         Request                     $request,
         UserPasswordHasherInterface $userPasswordHasher,
         UserRepository              $repository,
-        MailerInterface             $mailer
+        MailerInterface             $mailer,
+        CommissionMailer            $commissionMailer,
     ): Response
     {
         $user = new User();
@@ -76,6 +78,7 @@ class SecurityController extends AbstractController
 
             $repository->add($user);
             $mailer->send(EmailFactory::signupEmail($user));
+            $commissionMailer->send(EmailFactory::newUserNotification($user));
 
             $this->addFlash('success', sprintf('Successfully registered user %s', $user->getUsername()));
 
@@ -92,7 +95,8 @@ class SecurityController extends AbstractController
         Request         $request,
         Event           $event,
         UserRepository  $repository,
-        MailerInterface $mailer
+        MailerInterface  $mailer,
+        CommissionMailer $commissionMailer,
     ): Response
     {
         if ($this->getUser()) {
@@ -128,6 +132,8 @@ class SecurityController extends AbstractController
             }
 
             $mailer->send(EmailFactory::eventGuestSignupEmail($user, $event));
+            $commissionMailer->send(EmailFactory::newUserNotification($user));
+
             $this->addFlash('success', sprintf('Successfully registered guest user %s', $user->getName()));
 
             return $this->redirectToRoute('event_event_show', [
