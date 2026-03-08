@@ -9,3 +9,5 @@
 ###< symfony/framework-bundle ###
 release.json
 public/uploads
+.phpunit.result.cache
+tools/
