@@ -14,12 +14,13 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class EventVoterTest extends TestCase
 {
-    private function createVoter(bool $isEventAdmin = false): EventVoter
+    private function createVoter(bool $isEventAdmin = false, bool $isEventEdit = false): EventVoter
     {
         $security = $this->createMock(Security::class);
         $security->method('isGranted')
             ->willReturnCallback(fn(string $role) => match ($role) {
                 'ROLE_EVENT_ADMIN' => $isEventAdmin,
+                'ROLE_EVENT_EDIT' => $isEventEdit || $isEventAdmin,
                 default => false,
             });
 
@@ -50,6 +51,7 @@ class EventVoterTest extends TestCase
         ?string $deadline = null,
         ?string $openDate = null,
         bool $guestsAllowed = false,
+        bool $published = true,
     ): Event {
         $event = new Event();
         $event->setName('Event');
@@ -57,6 +59,7 @@ class EventVoterTest extends TestCase
         $event->setStartDate(new DateTimeImmutable($startDate));
         $event->setDuration(new DateInterval('PT2H'));
         $event->setGuestsAllowed($guestsAllowed);
+        $event->setPublished($published);
 
         if ($deadline !== null) {
             $event->setSubscriptionDeadline(new DateTimeImmutable($deadline));
@@ -398,6 +401,110 @@ class EventVoterTest extends TestCase
         // not subscribed - admin bypass doesn't check
 
         self::assertTrue($this->vote($voter, 'unsubscribe', $event, $user));
+    }
+
+    // ==========================================
+    // PUBLISH
+    // ==========================================
+
+    public function testPublishAllowedForEditorOnUnpublishedEvent(): void
+    {
+        $voter = $this->createVoter(isEventEdit: true);
+        $user = $this->createUser();
+        $event = $this->createEvent(published: false);
+
+        self::assertTrue($this->vote($voter, 'publish', $event, $user));
+    }
+
+    public function testPublishDeniedForEditorOnPublishedEvent(): void
+    {
+        $voter = $this->createVoter(isEventEdit: true);
+        $user = $this->createUser();
+        $event = $this->createEvent(published: true);
+
+        self::assertFalse($this->vote($voter, 'publish', $event, $user));
+    }
+
+    public function testPublishDeniedForRegularUser(): void
+    {
+        $voter = $this->createVoter();
+        $user = $this->createUser();
+        $event = $this->createEvent(published: false);
+
+        self::assertFalse($this->vote($voter, 'publish', $event, $user));
+    }
+
+    // ==========================================
+    // UNPUBLISH
+    // ==========================================
+
+    public function testUnpublishAllowedForEditorOnPublishedEventWithNoSubscribers(): void
+    {
+        $voter = $this->createVoter(isEventEdit: true);
+        $user = $this->createUser();
+        $event = $this->createEvent(published: true);
+
+        self::assertTrue($this->vote($voter, 'unpublish', $event, $user));
+    }
+
+    public function testUnpublishDeniedForEditorOnUnpublishedEvent(): void
+    {
+        $voter = $this->createVoter(isEventEdit: true);
+        $user = $this->createUser();
+        $event = $this->createEvent(published: false);
+
+        self::assertFalse($this->vote($voter, 'unpublish', $event, $user));
+    }
+
+    public function testUnpublishDeniedForEditorWhenEventHasSubscribers(): void
+    {
+        $voter = $this->createVoter(isEventEdit: true);
+        $user = $this->createUser();
+        $event = $this->createEvent(published: true);
+        $this->subscribeUser($event, $user);
+
+        self::assertFalse($this->vote($voter, 'unpublish', $event, $user));
+    }
+
+    public function testUnpublishDeniedForRegularUser(): void
+    {
+        $voter = $this->createVoter();
+        $user = $this->createUser();
+        $event = $this->createEvent(published: true);
+
+        self::assertFalse($this->vote($voter, 'unpublish', $event, $user));
+    }
+
+    // ==========================================
+    // SUBSCRIBE/UNSUBSCRIBE on unpublished events
+    // ==========================================
+
+    public function testSubscribeDeniedOnUnpublishedEvent(): void
+    {
+        $voter = $this->createVoter();
+        $user = $this->createUser();
+        $event = $this->createEvent(published: false);
+
+        self::assertFalse($this->vote($voter, 'subscribe', $event, $user));
+    }
+
+    public function testUnsubscribeDeniedOnUnpublishedEvent(): void
+    {
+        $voter = $this->createVoter();
+        $user = $this->createUser();
+        $event = $this->createEvent(published: false);
+        $this->subscribeUser($event, $user);
+
+        self::assertFalse($this->vote($voter, 'unsubscribe', $event, $user));
+    }
+
+    public function testAdminCanSubscribeToUnpublishedEvent(): void
+    {
+        $voter = $this->createVoter(isEventAdmin: true);
+        $user = $this->createUser();
+        $event = $this->createEvent(published: false);
+
+        self::assertTrue($this->vote($voter, 'subscribe', $event, $user));
     }
 
     // ==========================================
