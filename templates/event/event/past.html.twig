@@ -5,9 +5,19 @@
 {% block actions %}{% endblock %}
 
 {% block body %}
+    {% if years is not empty %}
+        <div class="mb-3">
+            <small class="text-muted d-block mb-1">Filter by year</small>
+            {% for y in years %}
+                <a class="btn btn-sm {% if y == year %}btn-primary{% else %}btn-outline-primary{% endif %}"
+                   href="{{ path('event_event_past', {year: y}) }}">{{ y }}</a>
+            {% endfor %}
+        </div>
+    {% endif %}
+
     {% if events is empty %}
         <div class="text-center py-5 text-muted">
-            <p class="fs-5">No past events</p>
+            <p class="fs-5">No past events{% if year %} in {{ year }}{% endif %}</p>
         </div>
     {% else %}
         <div class="row row-cols-1 row-cols-md-3 g-3">

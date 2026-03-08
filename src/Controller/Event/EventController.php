@@ -36,10 +36,15 @@ class EventController extends AbstractController
     }
 
     #[Route('/past', name: '_past')]
-    public function past(EventRepository $eventRepository): Response
+    public function past(Request $request, EventRepository $eventRepository): Response
     {
+        $years = $eventRepository->findPastYears();
+        $year = $request->query->getInt('year') ?: ($years[0] ?? null);
+
         return $this->render('event/event/past.html.twig', [
-            'events' => $eventRepository->findPast(),
+            'events' => $eventRepository->findPast($year),
+            'years' => $years,
+            'year' => $year,
         ]);
     }
 
