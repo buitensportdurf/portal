@@ -1,6 +1,10 @@
-sentry:
-    dsn: '%env(SENTRY_DSN)%'
-    options:
-        ignore_exceptions:
-            - Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-            - Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException
+when@prod:
+    sentry:
+        dsn: '%env(SENTRY_DSN)%'
+        options:
+            send_default_pii: true
+            ignore_exceptions:
+                - 'Symfony\Component\ErrorHandler\Error\FatalError'
+                - 'Symfony\Component\Debug\Exception\FatalErrorException'
+                - 'Symfony\Component\HttpKernel\Exception\NotFoundHttpException'
+                - 'Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException'
