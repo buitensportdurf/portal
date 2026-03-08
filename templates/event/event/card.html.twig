@@ -41,14 +41,6 @@
         {% if subscription and is_granted('unsubscribe', event) %}
             <a class="btn btn-sm btn-outline-danger w-100" data-bs-toggle="modal"
                data-bs-target="#confirmUnsubscribe{{ event.id }}">Unsubscribe</a>
-            {{ include('components/_confirm_modal.html.twig', {
-                id: 'confirmUnsubscribe' ~ event.id,
-                title: 'Unsubscribe from ' ~ event,
-                message: 'Are you sure you want to unsubscribe from "' ~ event ~ '"?',
-                action_url: path('event_subscription_unsubscribe', {id: subscription.id}),
-                action_label: 'Unsubscribe',
-                action_class: 'btn-warning',
-            }) }}
         {% elseif is_granted('subscribe', event) or not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
             <a class="btn btn-sm btn-success w-100"
                href="{{ path('event_subscription_subscribe', {'id': event.id}) }}">Subscribe</a>
@@ -57,3 +49,13 @@
         {% endif %}
     </div>
 </div>
+{% if subscription and is_granted('unsubscribe', event) %}
+    {{ include('components/_confirm_modal.html.twig', {
+        id: 'confirmUnsubscribe' ~ event.id,
+        title: 'Unsubscribe from ' ~ event,
+        message: 'Are you sure you want to unsubscribe from "' ~ event ~ '"?',
+        action_url: path('event_subscription_unsubscribe', {id: subscription.id}),
+        action_label: 'Unsubscribe',
+        action_class: 'btn-warning',
+    }) }}
+{% endif %}
