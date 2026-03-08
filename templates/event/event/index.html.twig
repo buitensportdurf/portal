@@ -10,12 +10,15 @@
 
 {% block body %}
     <div class="mb-3">
+        <small class="text-muted d-block mb-1">Filter by tag</small>
         {% for tagOption in tags %}
             {% if tagOption == tag %}
-                <a class="btn btn-sm btn-success" href="{{ path('event_event_index') }}">{{ tagOption }}</a>
+                <a class="btn btn-sm btn-success" href="{{ path('event_event_index') }}"
+                   title="Showing only '{{ tagOption }}' events — click to clear filter">{{ tagOption }}</a>
             {% else %}
                 <a class="btn btn-sm btn-{% if tagOption.defaultHide %}outline-danger{% else %}outline-primary{% endif %}"
-                   href="{{ path('event_event_index', {tag: tagOption.name}) }}">{{ tagOption }}</a>
+                   href="{{ path('event_event_index', {tag: tagOption.name}) }}"
+                   title="{% if tagOption.defaultHide %}Hidden by default — click to show only '{{ tagOption }}' events{% else %}Click to show only '{{ tagOption }}' events{% endif %}">{{ tagOption }}</a>
             {% endif %}
         {% endfor %}
     </div>
