@@ -26,27 +26,10 @@ security:
         lifetime: 2419200 # 4 weeks in seconds
       switch_user: { role: ROLE_ALLOWED_TO_SWITCH }
 
-  # Easy way to control access for large sections of your site
-  # Note: Only the *first* access control that matches will be used
+  # Role enforcement is primarily done via #[IsGranted] attributes on controllers.
+  # access_control is only used for routes without controller-level attributes.
   access_control:
-    - { path: ^/admin/user, roles: ROLE_ADMIN_USER }
     - { path: ^/admin, roles: ROLE_ADMIN }
-    - { path: ^/user, roles: ROLE_USER }
-    - { path: ^/register, roles: PUBLIC_ACCESS }
-    - { path: ^/reset-password, roles: PUBLIC_ACCESS }
-    - { path: ^/(loginEventGuest|login), roles: PUBLIC_ACCESS }
-
-    - { path: ^/event/event/(index|past), roles: PUBLIC_ACCESS }
-    - { path: ^/event/event/[ 0-9 ]+/show, roles: PUBLIC_ACCESS }
-    - { path: ^/event/event/new, roles: ROLE_EVENT_EDIT }
-    - { path: ^/event/event/[ 0-9 ]+/(edit|delete), roles: ROLE_EVENT_EDIT }
-    - { path: ^/event/recurring_event, roles: ROLE_EVENT_RECURRING }
-    - { path: ^/event/subscription/(subscribe|nologin), roles: PUBLIC_ACCESS }
-    - { path: ^/event/subscription, roles: ROLE_USER }
-    - { path: ^/event/calendar, roles: PUBLIC_ACCESS }
-    - { path: ^/event/question, roles: ROLE_EVENT_EDIT }
-    - { path: ^/event, roles: ROLE_EVENT_ADMIN }
-
     - { path: ^/, roles: PUBLIC_ACCESS }
 
   role_hierarchy:

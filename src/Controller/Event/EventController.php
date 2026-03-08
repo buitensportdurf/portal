@@ -14,6 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/event/event', name: 'event_event')]
 class EventController extends AbstractController
@@ -51,6 +52,7 @@ class EventController extends AbstractController
     }
 
     #[Route('/new', name: '_new')]
+    #[IsGranted('ROLE_EVENT_EDIT')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $event = new Event();
@@ -86,6 +88,7 @@ class EventController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: '_edit')]
+    #[IsGranted('ROLE_EVENT_EDIT')]
     public function edit(Request $request, Event $event, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(EventType::class, $event);
@@ -105,10 +108,9 @@ class EventController extends AbstractController
     }
 
     #[Route('/{id}/publish', name: '_publish')]
+    #[IsGranted('publish', subject: 'event')]
     public function publish(Event $event, EntityManagerInterface $entityManager): Response
     {
-        $this->denyAccessUnlessGranted('publish', $event);
-
         $event->setPublished(true);
         $entityManager->flush();
 
@@ -117,10 +119,9 @@ class EventController extends AbstractController
     }
 
     #[Route('/{id}/unpublish', name: '_unpublish')]
+    #[IsGranted('unpublish', subject: 'event')]
     public function unpublish(Event $event, EntityManagerInterface $entityManager): Response
     {
-        $this->denyAccessUnlessGranted('unpublish', $event);
-
         $event->setPublished(false);
         $entityManager->flush();
 
@@ -129,6 +130,7 @@ class EventController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: '_delete')]
+    #[IsGranted('ROLE_EVENT_EDIT')]
     public function delete(Event $event, EventRepository $repository): Response
     {
         $repository->remove($event);
