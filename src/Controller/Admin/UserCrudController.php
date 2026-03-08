@@ -43,7 +43,7 @@ class UserCrudController extends AbstractCrudController
             ->add(
                 Crud::PAGE_INDEX,
                 Action::new('impersonate', 'Impersonate', 'fa fa-user')
-                      ->linkToRoute('admin2_user_switch', fn(User $user) => ['id' => $user->getId()])
+                      ->linkToRoute('admin2_user_switch', fn(User $user) => ['id' => $user->id])
                       ->displayIf(fn(User $user) => $this->isGranted('ROLE_ALLOWED_TO_SWITCH'))
             )
         ;
@@ -110,7 +110,7 @@ class UserCrudController extends AbstractCrudController
             }
 
             $hash = $this->userPasswordHasher->hashPassword($this->getUser(), $password);
-            $form->getData()->setPassword($hash);
+            $form->getData()->password = $hash;
         };
     }
 }

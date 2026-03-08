@@ -13,7 +13,7 @@ class EmailFactory
     {
         $title = 'Durf - ' . $title;
         return new TemplatedEmail()
-            ->to($user->getEmail())
+            ->to($user->email)
             ->subject($title)
             ->context(['user' => $user, 'title' => $title] + $context)
         ;
@@ -49,7 +49,7 @@ class EmailFactory
 
     public static function newUserNotification(User $user): Email
     {
-        $title = 'Durf - New user registered: ' . $user->getName();
+        $title = 'Durf - New user registered: ' . $user->name;
         return (new TemplatedEmail())
             ->subject($title)
             ->context(['user' => $user, 'title' => $title])

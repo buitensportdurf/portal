@@ -40,7 +40,7 @@ class ResetPasswordRequestRepository extends ServiceEntityRepository
         ;
 
         if (null !== $resetPasswordRequest && !$resetPasswordRequest->isExpired()) {
-            return $resetPasswordRequest->getRequestedAt();
+            return $resetPasswordRequest->requestedAt;
         }
 
         return null;
@@ -51,7 +51,7 @@ class ResetPasswordRequestRepository extends ServiceEntityRepository
         $this->createQueryBuilder('t')
             ->delete()
             ->where('t.user = :user')
-            ->setParameter('user', $resetPasswordRequest->getUser())
+            ->setParameter('user', $resetPasswordRequest->user)
             ->getQuery()
             ->execute()
         ;

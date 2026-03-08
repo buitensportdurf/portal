@@ -30,7 +30,7 @@ class UserController extends AbstractController
         $user = $this->getUser();
         $form = $this->createForm(ProfileType::class, $user);
 
-        if ($user->isGuest()) {
+        if ($user->guest) {
             throw $this->createAccessDeniedException('You cannot access this page with a guest account');
         }
 
@@ -41,11 +41,9 @@ class UserController extends AbstractController
                     $this->addFlash('error', 'Password and password repeated must be the same, password not changed');
                 } else {
                     $this->addFlash('success', 'Password updated successfully');
-                    $user->setPassword(
-                        $userPasswordHasher->hashPassword(
-                            $user,
-                            $form->get('plainPassword')->getData()
-                        )
+                    $user->password = $userPasswordHasher->hashPassword(
+                        $user,
+                        $form->get('plainPassword')->getData()
                     );
                 }
             }

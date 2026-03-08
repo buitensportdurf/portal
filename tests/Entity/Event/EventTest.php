@@ -14,10 +14,10 @@ class EventTest extends TestCase
     private function createEvent(): Event
     {
         $event = new Event();
-        $event->setName('Test Event');
-        $event->setLocation('Test Location');
-        $event->setStartDate(new DateTimeImmutable('+1 week'));
-        $event->setDuration(new DateInterval('PT2H'));
+        $event->name = 'Test Event';
+        $event->location = 'Test Location';
+        $event->startDate = new DateTimeImmutable('+1 week');
+        $event->duration = new DateInterval('PT2H');
 
         return $event;
     }
@@ -25,9 +25,9 @@ class EventTest extends TestCase
     private function createUser(string $name = 'testuser'): User
     {
         $user = new User();
-        $user->setUsername($name);
-        $user->setName($name);
-        $user->setPassword('hashed');
+        $user->username = $name;
+        $user->name = $name;
+        $user->password = 'hashed';
 
         return $user;
     }
@@ -35,9 +35,9 @@ class EventTest extends TestCase
     private function subscribeUser(Event $event, User $user, int $amount = 1): EventSubscription
     {
         $subscription = new EventSubscription();
-        $subscription->setCreatedUser($user);
-        $subscription->setAmount($amount);
-        $subscription->setEvent($event);
+        $subscription->createdUser = $user;
+        $subscription->amount = $amount;
+        $subscription->event = $event;
 
         return $subscription;
     }
@@ -47,28 +47,28 @@ class EventTest extends TestCase
     public function testIsPastSubscriptionOpenDateNullMeansOpen(): void
     {
         $event = $this->createEvent();
-        self::assertNull($event->getSubscriptionOpenDate());
+        self::assertNull($event->subscriptionOpenDate);
         self::assertTrue($event->isPastSubscriptionOpenDate());
     }
 
     public function testIsPastSubscriptionOpenDateInThePast(): void
     {
         $event = $this->createEvent();
-        $event->setSubscriptionOpenDate(new DateTimeImmutable('-1 day'));
+        $event->subscriptionOpenDate = new DateTimeImmutable('-1 day');
         self::assertTrue($event->isPastSubscriptionOpenDate());
     }
 
     public function testIsPastSubscriptionOpenDateInTheFuture(): void
     {
         $event = $this->createEvent();
-        $event->setSubscriptionOpenDate(new DateTimeImmutable('+1 day'));
+        $event->subscriptionOpenDate = new DateTimeImmutable('+1 day');
         self::assertFalse($event->isPastSubscriptionOpenDate());
     }
 
     public function testIsPastSubscriptionOpenDateWithExplicitDate(): void
     {
         $event = $this->createEvent();
-        $event->setSubscriptionOpenDate(new DateTimeImmutable('2025-06-01'));
+        $event->subscriptionOpenDate = new DateTimeImmutable('2025-06-01');
 
         $before = new \DateTime('2025-05-31');
         $after = new \DateTime('2025-06-02');
@@ -82,21 +82,21 @@ class EventTest extends TestCase
     public function testIsNotPastSubscriptionDeadlineNullMeansOpen(): void
     {
         $event = $this->createEvent();
-        self::assertNull($event->getSubscriptionDeadline());
+        self::assertNull($event->subscriptionDeadline);
         self::assertTrue($event->isNotPastSubscriptionDeadline());
     }
 
     public function testIsNotPastSubscriptionDeadlineInTheFuture(): void
     {
         $event = $this->createEvent();
-        $event->setSubscriptionDeadline(new DateTimeImmutable('+1 day'));
+        $event->subscriptionDeadline = new DateTimeImmutable('+1 day');
         self::assertTrue($event->isNotPastSubscriptionDeadline());
     }
 
     public function testIsNotPastSubscriptionDeadlineInThePast(): void
     {
         $event = $this->createEvent();
-        $event->setSubscriptionDeadline(new DateTimeImmutable('-1 day'));
+        $event->subscriptionDeadline = new DateTimeImmutable('-1 day');
         self::assertFalse($event->isNotPastSubscriptionDeadline());
     }
 
@@ -111,7 +111,7 @@ class EventTest extends TestCase
     public function testIsNotPastStartDatePastEvent(): void
     {
         $event = $this->createEvent();
-        $event->setStartDate(new DateTimeImmutable('-1 day'));
+        $event->startDate = new DateTimeImmutable('-1 day');
         self::assertFalse($event->isNotPastStartDate());
     }
 
@@ -186,14 +186,14 @@ class EventTest extends TestCase
     public function testSubscriberLimitNullByDefault(): void
     {
         $event = $this->createEvent();
-        self::assertNull($event->getSubscriberLimit());
+        self::assertNull($event->subscriberLimit);
     }
 
     public function testSubscriberLimitCanBeSet(): void
     {
         $event = $this->createEvent();
-        $event->setSubscriberLimit(10);
-        self::assertSame(10, $event->getSubscriberLimit());
+        $event->subscriberLimit = 10;
+        self::assertSame(10, $event->subscriberLimit);
     }
 
     // --- Guests ---
@@ -201,14 +201,14 @@ class EventTest extends TestCase
     public function testGuestsNotAllowedByDefault(): void
     {
         $event = $this->createEvent();
-        self::assertFalse($event->isGuestsAllowed());
+        self::assertFalse($event->guestsAllowed);
     }
 
     public function testGuestsAllowed(): void
     {
         $event = $this->createEvent();
-        $event->setGuestsAllowed(true);
-        self::assertTrue($event->isGuestsAllowed());
+        $event->guestsAllowed = true;
+        self::assertTrue($event->guestsAllowed);
     }
 
     // --- Pricing ---
@@ -237,36 +237,36 @@ class EventTest extends TestCase
     public function testCopyFromCopiesProperties(): void
     {
         $source = $this->createEvent();
-        $source->setName('Source Event');
-        $source->setDescription('A description');
-        $source->setLocation('Source Location');
+        $source->name = 'Source Event';
+        $source->description = 'A description';
+        $source->location = 'Source Location';
         $source->setMemberPrice(5.00);
-        $source->setGuestsAllowed(true);
-        $source->setSubscriberLimit(20);
-        $source->setSubscriptionDeadline(new DateTimeImmutable('+3 days'));
+        $source->guestsAllowed = true;
+        $source->subscriberLimit = 20;
+        $source->subscriptionDeadline = new DateTimeImmutable('+3 days');
 
         $target = new Event();
         $target->copyFrom($source);
 
-        self::assertSame('Source Event', $target->getName());
-        self::assertSame('A description', $target->getDescription());
-        self::assertSame('Source Location', $target->getLocation());
+        self::assertSame('Source Event', $target->name);
+        self::assertSame('A description', $target->description);
+        self::assertSame('Source Location', $target->location);
         self::assertSame(5.00, $target->getMemberPrice());
-        self::assertTrue($target->isGuestsAllowed());
-        self::assertSame(20, $target->getSubscriberLimit());
-        self::assertNotNull($target->getSubscriptionDeadline());
+        self::assertTrue($target->guestsAllowed);
+        self::assertSame(20, $target->subscriberLimit);
+        self::assertNotNull($target->subscriptionDeadline);
     }
 
     public function testCopyFromCopiesStartTime(): void
     {
         $source = $this->createEvent();
-        $source->setStartDate(new DateTimeImmutable('2025-06-01 14:30:00'));
+        $source->startDate = new DateTimeImmutable('2025-06-01 14:30:00');
 
         $target = new Event();
         $target->copyFrom($source);
 
-        self::assertSame('14', $target->getStartDate()->format('H'));
-        self::assertSame('30', $target->getStartDate()->format('i'));
+        self::assertSame('14', $target->startDate->format('H'));
+        self::assertSame('30', $target->startDate->format('i'));
     }
 
     // --- Tags ---
@@ -282,7 +282,7 @@ class EventTest extends TestCase
     public function testRecurringEventNullByDefault(): void
     {
         $event = $this->createEvent();
-        self::assertNull($event->getRecurringEvent());
+        self::assertNull($event->recurringEvent);
     }
 
     // --- Description ---
@@ -290,14 +290,15 @@ class EventTest extends TestCase
     public function testDescriptionDefaultsToEmptyString(): void
     {
         $event = $this->createEvent();
-        self::assertSame('', $event->getDescription());
+        self::assertSame('', $event->description);
     }
 
     public function testDescriptionCanBeSetToNull(): void
     {
         $event = $this->createEvent();
-        $event->setDescription(null);
-        self::assertSame('', $event->getDescription());
+        $event->description = 'something';
+        $event->description = null;
+        self::assertSame('', $event->description);
     }
 
     // --- Published ---
@@ -305,17 +306,17 @@ class EventTest extends TestCase
     public function testPublishedTrueByDefault(): void
     {
         $event = new Event();
-        self::assertTrue($event->isPublished());
+        self::assertTrue($event->published);
     }
 
     public function testCopyFromCopiesPublishedState(): void
     {
         $source = $this->createEvent();
-        $source->setPublished(false);
+        $source->published = false;
 
         $target = new Event();
         $target->copyFrom($source);
 
-        self::assertFalse($target->isPublished());
+        self::assertFalse($target->published);
     }
 }

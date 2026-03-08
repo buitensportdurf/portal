@@ -28,11 +28,11 @@ class EventServiceTest extends TestCase
     private function createRecurringEvent(string $startDate = '-2 weeks', string $rule = '1 week'): RecurringEvent
     {
         $recurring = new RecurringEvent();
-        $recurring->setName('Test Recurring');
-        $recurring->setLocation('Test');
-        $recurring->setStartDate(new DateTimeImmutable($startDate));
-        $recurring->setDuration(new DateInterval('PT2H'));
-        $recurring->setRecurrenceRule($rule);
+        $recurring->name = 'Test Recurring';
+        $recurring->location = 'Test';
+        $recurring->startDate = new DateTimeImmutable($startDate);
+        $recurring->duration = new DateInterval('PT2H');
+        $recurring->recurrenceRule = $rule;
 
         return $recurring;
     }
@@ -95,7 +95,7 @@ class EventServiceTest extends TestCase
         $recurring = $this->createRecurringEvent('now', '1 month');
 
         $recurringTag = new Tag();
-        $recurringTag->setName('recurring');
+        $recurringTag->name = 'recurring';
         $this->tagRepository->method('find')->with(Tag::ID_RECURRING)->willReturn($recurringTag);
 
         $this->em->expects(self::atLeastOnce())->method('persist');
@@ -112,7 +112,7 @@ class EventServiceTest extends TestCase
         $recurring = $this->createRecurringEvent('now', '1 month');
 
         $recurringTag = new Tag();
-        $recurringTag->setName('recurring');
+        $recurringTag->name = 'recurring';
         $this->tagRepository->method('find')->with(Tag::ID_RECURRING)->willReturn($recurringTag);
 
         $persisted = [];
@@ -135,7 +135,7 @@ class EventServiceTest extends TestCase
         $recurring = $this->createRecurringEvent('now', '1 month');
 
         $recurringTag = new Tag();
-        $recurringTag->setName('recurring');
+        $recurringTag->name = 'recurring';
         $this->tagRepository->method('find')->with(Tag::ID_RECURRING)->willReturn($recurringTag);
 
         $created = $this->service->createNewEvents($recurring);
@@ -150,7 +150,7 @@ class EventServiceTest extends TestCase
         $recurring = $this->createRecurringEvent('now', '1 week');
 
         $recurringTag = new Tag();
-        $recurringTag->setName('recurring');
+        $recurringTag->name = 'recurring';
         $this->tagRepository->method('find')->with(Tag::ID_RECURRING)->willReturn($recurringTag);
 
         $created = $this->service->createNewEvents($recurring);

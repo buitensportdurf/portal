@@ -14,12 +14,12 @@ class EventSubscriptionTest extends TestCase
     private function createEvent(int $limit = 0): Event
     {
         $event = new Event();
-        $event->setName('Test Event');
-        $event->setLocation('Location');
-        $event->setStartDate(new DateTimeImmutable('+1 week'));
-        $event->setDuration(new DateInterval('PT2H'));
+        $event->name = 'Test Event';
+        $event->location = 'Location';
+        $event->startDate = new DateTimeImmutable('+1 week');
+        $event->duration = new DateInterval('PT2H');
         if ($limit > 0) {
-            $event->setSubscriberLimit($limit);
+            $event->subscriberLimit = $limit;
         }
 
         return $event;
@@ -28,9 +28,9 @@ class EventSubscriptionTest extends TestCase
     private function createUser(string $name = 'user'): User
     {
         $user = new User();
-        $user->setUsername($name);
-        $user->setName($name);
-        $user->setPassword('hashed');
+        $user->username = $name;
+        $user->name = $name;
+        $user->password = 'hashed';
 
         return $user;
     }
@@ -38,9 +38,9 @@ class EventSubscriptionTest extends TestCase
     private function createSubscription(Event $event, User $user, int $amount = 1): EventSubscription
     {
         $sub = new EventSubscription();
-        $sub->setCreatedUser($user);
-        $sub->setAmount($amount);
-        $sub->setEvent($event);
+        $sub->createdUser = $user;
+        $sub->amount = $amount;
+        $sub->event = $event;
 
         return $sub;
     }
@@ -51,9 +51,9 @@ class EventSubscriptionTest extends TestCase
     {
         $event = $this->createEvent();
         $sub = new EventSubscription();
-        $sub->setEvent($event);
+        $sub->event = $event;
 
-        self::assertSame($event, $sub->getEvent());
+        self::assertSame($event, $sub->event);
     }
 
     public function testSetEventAlsoAddsToEventCollection(): void
@@ -68,21 +68,21 @@ class EventSubscriptionTest extends TestCase
     public function testSetAndGetAmount(): void
     {
         $sub = new EventSubscription();
-        $sub->setAmount(3);
-        self::assertSame(3, $sub->getAmount());
+        $sub->amount = 3;
+        self::assertSame(3, $sub->amount);
     }
 
     public function testSetAndGetNote(): void
     {
         $sub = new EventSubscription();
-        $sub->setNote('A note');
-        self::assertSame('A note', $sub->getNote());
+        $sub->note = 'A note';
+        self::assertSame('A note', $sub->note);
     }
 
     public function testNoteNullByDefault(): void
     {
         $sub = new EventSubscription();
-        self::assertNull($sub->getNote());
+        self::assertNull($sub->note);
     }
 
     // --- Validation (unit level, without Symfony validator) ---
@@ -91,9 +91,9 @@ class EventSubscriptionTest extends TestCase
     {
         $user = $this->createUser();
         $sub = new EventSubscription();
-        $sub->setCreatedUser($user);
+        $sub->createdUser = $user;
 
-        self::assertSame($user, $sub->getCreatedUser());
+        self::assertSame($user, $sub->createdUser);
     }
 
     public function testQuestionAnswersEmptyByDefault(): void

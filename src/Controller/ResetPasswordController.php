@@ -45,7 +45,7 @@ class ResetPasswordController extends AbstractController
                 $this->addFlash('error', 'No user found with this email address.');
                 return $this->redirectToRoute('login');
             }
-            if ($user->isGuest()) {
+            if ($user->guest) {
                 $this->addFlash('error', 'You cannot reset the password for a guest account.');
                 return $this->redirectToRoute('login');
             }
@@ -69,7 +69,7 @@ class ResetPasswordController extends AbstractController
                 return $this->redirectToRoute('login');
             }
 
-            $mailer->send(EmailFactory::resetPassword($user, $resetToken->getToken()));
+            $mailer->send(EmailFactory::resetPassword($user, $resetToken->token));
 
             return $this->redirectToRoute('login');
         }
@@ -150,9 +150,9 @@ class ResetPasswordController extends AbstractController
             throw new InvalidResetPasswordTokenException();
         }
 
-        $user = $resetRequest->getUser();
+        $user = $resetRequest->user;
 
-        if (false === hash_equals($resetRequest->getToken(), $token)) {
+        if (false === hash_equals($resetRequest->token, $token)) {
             throw new InvalidResetPasswordTokenException();
         }
 
@@ -168,15 +168,16 @@ class ResetPasswordController extends AbstractController
         }
 
         $resetRequestLifetime = 2592000;
-        $expiresAt = new \DateTime(sprintf('+%d seconds', $resetRequestLifetime));
+        $expiresAt = new \DateTimeImmutable(sprintf('+%d seconds', $resetRequestLifetime));
         $token = bin2hex(random_bytes(20));
 
-        return (new ResetPasswordRequest())
-            ->setUser($user)
-            ->setExpiresAt($expiresAt)
-            ->setToken($token)
-            ->setRequestedAt(new \DateTime())
-        ;
+        $request = new ResetPasswordRequest();
+        $request->user = $user;
+        $request->expiresAt = $expiresAt;
+        $request->token = $token;
+        $request->requestedAt = new \DateTimeImmutable();
+
+        return $request;
     }
 
     private function hasUserHitThrottling(User $user): ?\DateTimeInterface
@@ -188,9 +189,9 @@ class ResetPasswordController extends AbstractController
             return null;
         }
 
-        $availableAt = (clone $lastRequestDate)->add(new \DateInterval("PT{$requestThrottleTime}S"));
+        $availableAt = $lastRequestDate->modify("+{$requestThrottleTime} seconds");
 
-        if ($availableAt > new \DateTime('now')) {
+        if ($availableAt > new \DateTimeImmutable('now')) {
             return $availableAt;
         }
 

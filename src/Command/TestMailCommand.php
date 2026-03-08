@@ -47,7 +47,7 @@ class TestMailCommand extends Command
 
         $this->mailer->send($email);
 
-        $io->success('Send test email to ' . $user->getEmail());
+        $io->success('Send test email to ' . $user->email);
 
         return Command::SUCCESS;
     }

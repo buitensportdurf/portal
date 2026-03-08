@@ -56,8 +56,8 @@ class EventController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $event = new Event();
-        $event->setDuration(new DateInterval('PT0S'));
-        $event->setPublished(false);
+        $event->duration = new DateInterval('PT0S');
+        $event->published = false;
         $form = $this->createForm(EventType::class, $event);
         $form->add('Save', SubmitType::class);
         $form->handleRequest($request);
@@ -78,7 +78,7 @@ class EventController extends AbstractController
     #[Route('/{id}/show', name: '_show')]
     public function show(Event $event): Response
     {
-        if (!$event->isPublished() && !$this->isGranted('ROLE_EVENT_EDIT')) {
+        if (!$event->published && !$this->isGranted('ROLE_EVENT_EDIT')) {
             throw $this->createNotFoundException();
         }
 
@@ -98,7 +98,7 @@ class EventController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('event_event_show', ['id' => $event->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('event_event_show', ['id' => $event->id], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('event/event/edit.html.twig', [
@@ -111,22 +111,22 @@ class EventController extends AbstractController
     #[IsGranted('publish', subject: 'event')]
     public function publish(Event $event, EntityManagerInterface $entityManager): Response
     {
-        $event->setPublished(true);
+        $event->published = true;
         $entityManager->flush();
 
         $this->addFlash('success', sprintf('Event "%s" has been published.', $event));
-        return $this->redirectToRoute('event_event_show', ['id' => $event->getId()]);
+        return $this->redirectToRoute('event_event_show', ['id' => $event->id]);
     }
 
     #[Route('/{id}/unpublish', name: '_unpublish')]
     #[IsGranted('unpublish', subject: 'event')]
     public function unpublish(Event $event, EntityManagerInterface $entityManager): Response
     {
-        $event->setPublished(false);
+        $event->published = false;
         $entityManager->flush();
 
         $this->addFlash('success', sprintf('Event "%s" has been moved to draft.', $event));
-        return $this->redirectToRoute('event_event_show', ['id' => $event->getId()]);
+        return $this->redirectToRoute('event_event_show', ['id' => $event->id]);
     }
 
     #[Route('/{id}/delete', name: '_delete')]

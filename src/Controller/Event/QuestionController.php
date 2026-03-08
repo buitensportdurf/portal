@@ -34,7 +34,7 @@ class QuestionController extends AbstractController
             $this->questionRepository->save($question);
 
             $this->addFlash('success', sprintf('Added question "%s" to event "%s"', $question->question, $event));
-            return $this->redirectToRoute('event_event_show', ['id' => $event->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('event_event_show', ['id' => $event->id], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('event/question/create.html.twig', [
@@ -54,7 +54,7 @@ class QuestionController extends AbstractController
             $this->questionRepository->save($question);
 
             $this->addFlash('success', sprintf('Saved question "%s" to event "%s"', $question->question, $question->event));
-            return $this->redirectToRoute('event_event_show', ['id' => $question->event->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('event_event_show', ['id' => $question->event->id], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('event/question/edit.html.twig', [
@@ -72,6 +72,6 @@ class QuestionController extends AbstractController
         $this->questionRepository->remove($question);
 
         $this->addFlash('success', sprintf('Deleted question "%s" from event "%s"', $questionText, $question->event));
-        return $this->redirectToRoute('event_event_show', ['id' => $event->getId()], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('event_event_show', ['id' => $event->id], Response::HTTP_SEE_OTHER);
     }
 }

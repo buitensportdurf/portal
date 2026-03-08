@@ -11,9 +11,9 @@ class UserTest extends TestCase
     private function createUser(): User
     {
         $user = new User();
-        $user->setUsername('testuser');
-        $user->setName('Test User');
-        $user->setPassword('hashed');
+        $user->username = 'testuser';
+        $user->name = 'Test User';
+        $user->password = 'hashed';
 
         return $user;
     }
@@ -45,8 +45,8 @@ class UserTest extends TestCase
     {
         $user = $this->createUser();
         $group = new Group();
-        $group->setName('Event Managers');
-        $group->setRoles(['ROLE_EVENT_EDIT']);
+        $group->name = 'Event Managers';
+        $group->roles = ['ROLE_EVENT_EDIT'];
         $user->addGroup($group);
 
         self::assertContains('ROLE_EVENT_EDIT', $user->getRoles());
@@ -67,12 +67,12 @@ class UserTest extends TestCase
         $user = $this->createUser();
 
         $group1 = new Group();
-        $group1->setName('Group 1');
-        $group1->setRoles(['ROLE_EVENT_EDIT']);
+        $group1->name = 'Group 1';
+        $group1->roles = ['ROLE_EVENT_EDIT'];
 
         $group2 = new Group();
-        $group2->setName('Group 2');
-        $group2->setRoles(['ROLE_ADMIN_USER']);
+        $group2->name = 'Group 2';
+        $group2->roles = ['ROLE_ADMIN_USER'];
 
         $user->addGroup($group1);
         $user->addGroup($group2);
@@ -88,14 +88,14 @@ class UserTest extends TestCase
     public function testNotGuestByDefault(): void
     {
         $user = $this->createUser();
-        self::assertFalse($user->isGuest());
+        self::assertFalse($user->guest);
     }
 
     public function testCanBeSetAsGuest(): void
     {
         $user = $this->createUser();
-        $user->setGuest(true);
-        self::assertTrue($user->isGuest());
+        $user->guest = true;
+        self::assertTrue($user->guest);
     }
 
     // --- Enabled / Active ---
@@ -103,15 +103,15 @@ class UserTest extends TestCase
     public function testEnabledByDefault(): void
     {
         $user = $this->createUser();
-        self::assertTrue($user->isEnabled());
+        self::assertTrue($user->enabled);
         self::assertTrue($user->isActive());
     }
 
     public function testCanBeDisabled(): void
     {
         $user = $this->createUser();
-        $user->setEnabled(false);
-        self::assertFalse($user->isEnabled());
+        $user->enabled = false;
+        self::assertFalse($user->enabled);
         self::assertFalse($user->isActive());
     }
 
@@ -134,14 +134,14 @@ class UserTest extends TestCase
     public function testEmailNullByDefault(): void
     {
         $user = $this->createUser();
-        self::assertNull($user->getEmail());
+        self::assertNull($user->email);
     }
 
     public function testSetEmail(): void
     {
         $user = $this->createUser();
-        $user->setEmail('test@example.com');
-        self::assertSame('test@example.com', $user->getEmail());
+        $user->email = 'test@example.com';
+        self::assertSame('test@example.com', $user->email);
     }
 
     // --- API Key ---
@@ -149,14 +149,14 @@ class UserTest extends TestCase
     public function testApiKeyNullByDefault(): void
     {
         $user = $this->createUser();
-        self::assertNull($user->getApiKey());
+        self::assertNull($user->apiKey);
     }
 
     public function testSetApiKey(): void
     {
         $user = $this->createUser();
-        $user->setApiKey('abc123');
-        self::assertSame('abc123', $user->getApiKey());
+        $user->apiKey = 'abc123';
+        self::assertSame('abc123', $user->apiKey);
     }
 
     // --- Groups ---
@@ -171,8 +171,8 @@ class UserTest extends TestCase
     {
         $user = $this->createUser();
         $group = new Group();
-        $group->setName('Test');
-        $group->setRoles([]);
+        $group->name = 'Test';
+        $group->roles = [];
 
         $user->addGroup($group);
         $user->addGroup($group);
@@ -184,8 +184,8 @@ class UserTest extends TestCase
     {
         $user = $this->createUser();
         $group = new Group();
-        $group->setName('Test');
-        $group->setRoles([]);
+        $group->name = 'Test';
+        $group->roles = [];
 
         $user->addGroup($group);
         $user->removeGroup($group);

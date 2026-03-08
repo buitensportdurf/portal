@@ -11,8 +11,8 @@ class GroupTest extends TestCase
     private function createGroup(string $name = 'Test Group', array $roles = []): Group
     {
         $group = new Group();
-        $group->setName($name);
-        $group->setRoles($roles);
+        $group->name = $name;
+        $group->roles = $roles;
 
         return $group;
     }
@@ -20,9 +20,9 @@ class GroupTest extends TestCase
     private function createUser(string $name = 'user'): User
     {
         $user = new User();
-        $user->setUsername($name);
-        $user->setName($name);
-        $user->setPassword('hashed');
+        $user->username = $name;
+        $user->name = $name;
+        $user->password = 'hashed';
 
         return $user;
     }
@@ -30,7 +30,7 @@ class GroupTest extends TestCase
     public function testSetAndGetName(): void
     {
         $group = $this->createGroup('Admins');
-        self::assertSame('Admins', $group->getName());
+        self::assertSame('Admins', $group->name);
     }
 
     public function testToString(): void
@@ -42,13 +42,13 @@ class GroupTest extends TestCase
     public function testSetAndGetRoles(): void
     {
         $group = $this->createGroup('Admins', ['ROLE_ADMIN', 'ROLE_EVENT_EDIT']);
-        self::assertSame(['ROLE_ADMIN', 'ROLE_EVENT_EDIT'], $group->getRoles());
+        self::assertSame(['ROLE_ADMIN', 'ROLE_EVENT_EDIT'], $group->roles);
     }
 
     public function testRolesEmptyByDefault(): void
     {
         $group = new Group();
-        self::assertSame([], $group->getRoles());
+        self::assertSame([], $group->roles);
     }
 
     public function testUsersEmptyByDefault(): void

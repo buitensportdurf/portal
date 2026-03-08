@@ -16,20 +16,20 @@ class QuestionAnswerTest extends TestCase
     private function createSubscription(): EventSubscription
     {
         $event = new Event();
-        $event->setName('Event');
-        $event->setLocation('Here');
-        $event->setStartDate(new DateTimeImmutable('+1 week'));
-        $event->setDuration(new DateInterval('PT2H'));
+        $event->name = 'Event';
+        $event->location = 'Here';
+        $event->startDate = new DateTimeImmutable('+1 week');
+        $event->duration = new DateInterval('PT2H');
 
         $user = new User();
-        $user->setUsername('user');
-        $user->setName('User');
-        $user->setPassword('hashed');
+        $user->username = 'user';
+        $user->name = 'User';
+        $user->password = 'hashed';
 
         $sub = new EventSubscription();
-        $sub->setCreatedUser($user);
-        $sub->setAmount(1);
-        $sub->setEvent($event);
+        $sub->createdUser = $user;
+        $sub->amount = 1;
+        $sub->event = $event;
 
         return $sub;
     }

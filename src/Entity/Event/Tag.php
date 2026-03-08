@@ -15,15 +15,13 @@ class Tag
 {
     public const ID_RECURRING = 1;
 
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Id, ORM\GeneratedValue, ORM\Column]
+    public private(set) ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Please enter a name')]
     #[Assert\Regex(pattern: '/^[a-z0-9_]+$/', message: 'Only lowercase letters, numbers and underscores are allowed')]
-    private ?string $name = null;
+    public ?string $name = null;
 
     #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'tags')]
     private Collection $events;
@@ -32,7 +30,7 @@ class Tag
     private Collection $recurringEvents;
 
     #[ORM\Column]
-    private ?bool $defaultHide = false;
+    public bool $defaultHide = false;
 
     public function __construct()
     {
@@ -43,23 +41,6 @@ class Tag
     public function __toString(): string
     {
         return ucfirst(str_replace('_', ' ', $this->name));
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-
-        return $this;
     }
 
     /**
@@ -112,18 +93,6 @@ class Tag
         if ($this->recurringEvents->removeElement($recurringEvent)) {
             $recurringEvent->removeTag($this);
         }
-
-        return $this;
-    }
-
-    public function isDefaultHide(): bool
-    {
-        return $this->defaultHide ?? false;
-    }
-
-    public function setDefaultHide(bool $defaultHide): static
-    {
-        $this->defaultHide = $defaultHide;
 
         return $this;
     }
