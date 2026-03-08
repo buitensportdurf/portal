@@ -1,12 +1,13 @@
 <nav class="navbar navbar-expand-md navbar-light bg-white shadow px-5">
-    {% if app.request.attributes.get('_route') == 'event_event_index' %}
-        <a class="navbar-brand" href="{{ main_website }}">
-            <img src="{{ asset('/logo.svg') }}" alt="Logo" height="90px"
-                 style="margin-top: -10px; margin-bottom: -10px">
-        </a>
-    {% else %}
-        <a class="btn btn-primary" href="{{ path('event_event_index') }}">Back to events</a>
-    {% endif %}
+    <div style="width: 160px; height: 80px" class="d-flex align-items-center">
+        {% if app.request.attributes.get('_route') == 'event_event_index' %}
+            <a class="navbar-brand m-0" href="{{ main_website }}">
+                <img src="{{ asset('/logo.svg') }}" alt="Logo" height="80">
+            </a>
+        {% else %}
+            <a class="btn btn-primary" href="{{ path('event_event_index') }}">Back to events</a>
+        {% endif %}
+    </div>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar"
             aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -15,44 +16,59 @@
 
     <div class="collapse navbar-collapse" id="navbar">
         <ul class="navbar-nav me-auto mb-2 mb-md-0">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('event_event_past') }}">Past events</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('event_calendar_index') }}">Calendars</a>
+            </li>
+            {% if is_granted('ROLE_EVENT_RECURRING') %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('event_recurring_event_index') }}">Recurring</a>
+                </li>
+            {% endif %}
             {% if is_granted("ROLE_ADMIN_USER") %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('admin2_user_index') }}">User activation</a>
                 </li>
-            {% endif %}
-        </ul>
-        <ul class="navbar-nav my-2 my-lg-0">
-            {% if app.environment == 'dev' %}
-                <li class="nav-item">
-                    <a class="btn navbar-text bg-danger" href="#">dev</a> &nbsp;
-                </li>
-            {% endif %}
-            {% if is_granted('IS_IMPERSONATOR') %}
-                <a class="btn navbar-text bg-warning" href="{{ impersonation_exit_path(
-                    path(app.request.attributes.get('_route'),app.request.attributes.get('_route_params')
-                    ) ) }}">Exit impersonation</a>
             {% endif %}
             {% if is_granted("ROLE_ADMIN") %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('admin') }}">Admin</a>
                 </li>
             {% endif %}
+        </ul>
+        <ul class="navbar-nav my-2 my-lg-0 align-items-center">
+            {% if app.environment == 'dev' %}
+                <li class="nav-item">
+                    <span class="badge bg-danger">dev</span>
+                </li>
+            {% endif %}
+            {% if is_granted('IS_IMPERSONATOR') %}
+                <li class="nav-item">
+                    <a class="badge bg-warning text-decoration-none" href="{{ impersonation_exit_path(
+                        path(app.request.attributes.get('_route'),app.request.attributes.get('_route_params')
+                        ) ) }}">Exit impersonation</a>
+                </li>
+            {% endif %}
             {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                 {% if app.user.guest %}
                     <li class="nav-item">
-                        <a class="btn navbar-text bg-danger" href="#">Guest account</a> &nbsp;
+                        <span class="badge bg-secondary">Guest</span>
                     </li>
                 {% endif %}
-                <span class="nav-item navbar-text mr-sm-2">Logged in as</span>
-                {% if not app.user.guest %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('user_profile') }}">{{ app.user.name }}</a>
-                    </li>
-                {% else %}
-                    <span class="nav-item navbar-text mr-sm-2">&nbsp;{{ app.user.name }}</span>
-                {% endif %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('_logout_main') }}">Logout</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        {{ app.user.name }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        {% if not app.user.guest %}
+                            <li><a class="dropdown-item" href="{{ path('user_profile') }}">Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                        {% endif %}
+                        <li><a class="dropdown-item" href="{{ path('_logout_main') }}">Logout</a></li>
+                    </ul>
                 </li>
             {% else %}
                 <li class="nav-item">

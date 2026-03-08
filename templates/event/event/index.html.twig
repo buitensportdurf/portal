@@ -2,52 +2,43 @@
 
 {% set title %}Upcoming events{% endset %}
 
-{% block body %}
-    <p>
-        Welcome to the event page of BuitenSport Durf. Here you can find all the upcoming events.
-        If you want to add the events to your own calendar, click on the calendars button.
-        To see the past events, click on the button below.
-    </p>
-    <a class="btn btn-primary" href="{{ path('event_calendar_index') }}">Calendars</a>
-    <a class="btn btn-secondary" href="{{ path('event_event_past') }}">Past events</a>
+{% block actions %}
     {% if is_granted('ROLE_EVENT_EDIT') %}
-        <a class="btn btn-success" href="{{ path('event_event_new') }}">Create new</a>
+        <a class="btn btn-sm btn-outline-success" href="{{ path('event_event_new') }}">Create new</a>
     {% endif %}
-    {% if is_granted('ROLE_EVENT_RECURRING') %}
-        <a class="btn btn-warning" href="{{ path('event_recurring_event_index') }}">Recurring events</a>
-    {% endif %}
+{% endblock %}
 
-    <h5>Tags</h5>
-    <p>
-        Below you can find all the tags that are used for events.
-        Click on a tag to filter the events by that tag.
-        The red tags are hidden by default.
-    </p>
-    {% for tagOption in tags %}
-        {% if tagOption == tag %}
-            <a class="btn btn-success" href="{{ path('event_event_index') }}">{{ tagOption }}</a>
-        {% else %}
-            <a class="btn btn-{% if tagOption.defaultHide %}danger{% else %}primary{% endif %}"
-               href="{{ path('event_event_index', {tag: tagOption.name}) }}">{{ tagOption }}</a>
-        {% endif %}
-    {% endfor %}
-    <br><br>
-
-    <h5>Events</h5>
-    <p>
-        Below you can find all the upcoming events.
-        Click on an event to see more information about it.
-        {% if not app.user %}
-            If you want to subscribe to an event, please
-            <a href="{{ path('register') }}">register</a>
-            or <a href="{{ path('login') }}">login</a>.
-        {% endif %}
-    </p>
-    <div class="row row-cols-1 row-cols-md-3 g-3">
-        {% for event in events %}
-            <div class="col">
-                {{ include('event/event/card.html.twig', {event: event}) }}
-            </div>
+{% block body %}
+    <div class="mb-3">
+        {% for tagOption in tags %}
+            {% if tagOption == tag %}
+                <a class="btn btn-sm btn-success" href="{{ path('event_event_index') }}">{{ tagOption }}</a>
+            {% else %}
+                <a class="btn btn-sm btn-{% if tagOption.defaultHide %}outline-danger{% else %}outline-primary{% endif %}"
+                   href="{{ path('event_event_index', {tag: tagOption.name}) }}">{{ tagOption }}</a>
+            {% endif %}
         {% endfor %}
     </div>
+
+    {% if events is empty %}
+        <div class="text-center py-5 text-muted">
+            <p class="fs-5">No upcoming events</p>
+            {% if not app.user %}
+                <p><a href="{{ path('register') }}">Register</a> or <a href="{{ path('login') }}">login</a> to subscribe to events.</p>
+            {% endif %}
+        </div>
+    {% else %}
+        {% if not app.user %}
+            <p class="text-muted small mb-3">
+                <a href="{{ path('register') }}">Register</a> or <a href="{{ path('login') }}">login</a> to subscribe to events.
+            </p>
+        {% endif %}
+        <div class="row row-cols-1 row-cols-md-3 g-3">
+            {% for event in events %}
+                <div class="col">
+                    {{ include('event/event/card.html.twig', {event: event}) }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 {% endblock %}

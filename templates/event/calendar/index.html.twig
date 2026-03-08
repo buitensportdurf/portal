@@ -1,28 +1,33 @@
 {% extends 'base/single.column.html.twig' %}
 
-{% set title %}All event calendars{% endset %}
+{% set title %}Event calendars{% endset %}
+
+{% block actions %}
+    <a class="btn btn-sm btn-outline-primary" href="{{ path('event_event_index') }}">Back to events</a>
+{% endblock %}
 
 {% block body %}
-    <p>
-        This page lists all event calendars. You can view all events, your own events or events by tag. <br>
-        Copy the url, this can then be imported to your calendar application to keep it up to date.
-    </p>
-    <h5>Generic</h5>
-    <div class="input-group mb-3">
-        <span class="input-group-text" id="basic-addon1">All events</span>
-        <input type="text" class="form-control" aria-describedby="allEvents" value="{{ url('event_calendar_all') }}" disabled>
+    <p class="text-muted small mb-3">Copy a URL and import it into your calendar app to stay up to date.</p>
+
+    <h6>General</h6>
+    <div class="input-group mb-2">
+        <span class="input-group-text">All events</span>
+        <input type="text" class="form-control" value="{{ url('event_calendar_all') }}" disabled>
     </div>
     {% if app.user %}
-        <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon1">Your events</span>
-            <input type="text" class="form-control" aria-describedby="yourEvents" value="{{ url('event_calendar_user', {user: app.user.id}) }}" disabled>
+        <div class="input-group mb-2">
+            <span class="input-group-text">Your events</span>
+            <input type="text" class="form-control" value="{{ url('event_calendar_user', {user: app.user.id}) }}" disabled>
         </div>
     {% endif %}
-    <h5>By tag</h5>
-    {% for tag in tags %}
-        <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon1">{{ tag }}</span>
-            <input type="text" class="form-control" aria-describedby="{{ tag.name }}" value="{{ url('event_calendar_tag', {tag: tag.id}) }}" disabled>
-        </div>
-    {% endfor %}
+
+    {% if tags is not empty %}
+        <h6 class="mt-3">By tag</h6>
+        {% for tag in tags %}
+            <div class="input-group mb-2">
+                <span class="input-group-text">{{ tag }}</span>
+                <input type="text" class="form-control" value="{{ url('event_calendar_tag', {tag: tag.id}) }}" disabled>
+            </div>
+        {% endfor %}
+    {% endif %}
 {% endblock %}

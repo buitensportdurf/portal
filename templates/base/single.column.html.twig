@@ -1,9 +1,14 @@
 {% extends 'base/container.html.twig' %}
 
 {% block container %}
-    <div class="row my-5">
+    <div class="row my-4">
         <div class="col-sm mx-auto">
-            {% if title is defined %}<h3>{{ title }}</h3>{% endif %}
+            {% if title is defined %}
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="mb-0">{{ title }}</h3>
+                    {% block actions %}{% endblock %}
+                </div>
+            {% endif %}
             {% block body %}{% endblock %}
         </div>
     </div>
