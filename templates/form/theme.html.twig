@@ -1,0 +1,6 @@
+{% use 'bootstrap_5_layout.html.twig' %}
+
+{% block form_start -%}
+    {% set attr = attr|merge({novalidate: 'novalidate'}) %}
+    {{- parent() -}}
+{%- endblock form_start %}

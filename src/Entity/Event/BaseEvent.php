@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\MappedSuperclass]
 abstract class BaseEvent
@@ -17,9 +18,11 @@ abstract class BaseEvent
     public private(set) ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Assert\NotNull]
     public ?DateTimeImmutable $startDate;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     public ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -35,12 +38,14 @@ abstract class BaseEvent
     public ?DateTimeImmutable $subscriptionOpenDate = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     public ?string $location = null;
 
     #[ORM\ManyToOne(cascade: ['persist'])]
     public ?Image $image = null;
 
     #[ORM\Column]
+    #[Assert\NotNull]
     public ?DateInterval $duration = null;
 
     #[ORM\Column(nullable: true)]
@@ -60,7 +65,7 @@ abstract class BaseEvent
 
     public function __construct()
     {
-        $this->startDate = new DateTimeImmutable()->setTime(18, 0);
+        $this->startDate = new DateTimeImmutable('tomorrow 18:00');
         $this->setTags(new ArrayCollection());
     }
 
