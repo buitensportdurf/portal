@@ -3,7 +3,6 @@
 namespace App\Controller\Event;
 
 use App\Entity\Event\RecurringEvent;
-use App\Form\ConfirmationType;
 use App\Form\Event\RecurringEventType;
 use App\Repository\Event\RecurringEventRepository;
 use App\Service\EventService;
@@ -95,43 +94,24 @@ class RecurringEventController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: '_delete')]
-    public function delete(Request $request, RecurringEvent $recurringEvent): Response
+    public function delete(RecurringEvent $recurringEvent): Response
     {
-        $form = $this->createForm(ConfirmationType::class);
-        $form->handleRequest($request);
+        $this->eventService->deleteFutureEvents($recurringEvent);
+        $this->em->remove($recurringEvent);
+        $this->em->flush();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->eventService->deleteFutureEvents($recurringEvent);
-            $this->em->remove($recurringEvent);
-            $this->em->flush();
-
-            $this->addFlash('success', sprintf('Deleted event "%s"', $recurringEvent));
-            return $this->redirectToRoute('event_recurring_event_index');
-        }
-
-        return $this->render('general/confirmation.form.html.twig', [
-            'message' => sprintf('Are you sure you want to delete recurring event "%s"?', $recurringEvent),
-            'form' => $form->createView(),
-        ]);
+        $this->addFlash('success', sprintf('Deleted event "%s"', $recurringEvent));
+        return $this->redirectToRoute('event_recurring_event_index');
     }
 
     #[Route('/{id}/delete_events', name: '_delete_events')]
-    public function deleteEvents(RecurringEvent $recurringEvent, Request $request): Response
+    public function deleteEvents(RecurringEvent $recurringEvent): Response
     {
-        $form = $this->createForm(ConfirmationType::class);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $count = $this->eventService->deleteFutureEvents($recurringEvent);
-            $this->em->flush();
+        $count = $this->eventService->deleteFutureEvents($recurringEvent);
+        $this->em->flush();
 
-            $this->addFlash('success', sprintf('Deleted %d events', $count));
-            return $this->redirectToRoute('event_recurring_event_show', ['id' => $recurringEvent->getId()]);
-        }
-
-        return $this->render('general/confirmation.form.html.twig', [
-            'message' => sprintf('You are about to delete all future events for "%s", this will delete all subscriptions as well, are you sure?', $recurringEvent),
-            'form' => $form->createView(),
-        ]);
+        $this->addFlash('success', sprintf('Deleted %d events', $count));
+        return $this->redirectToRoute('event_recurring_event_show', ['id' => $recurringEvent->getId()]);
     }
 
     #[Route('/{id}/create_events', name: '_create_events')]

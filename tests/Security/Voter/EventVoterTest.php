@@ -203,6 +203,43 @@ class EventVoterTest extends TestCase
         self::assertFalse($this->vote($voter, 'subscribe', $event, $user));
     }
 
+    public function testSubscribeDeniedForGuestBeforeOpenDate(): void
+    {
+        $voter = $this->createVoter();
+        $user = $this->createUser('guest', guest: true);
+        $event = $this->createEvent('+2 weeks', null, '+1 week', guestsAllowed: true);
+
+        self::assertFalse($this->vote($voter, 'subscribe', $event, $user));
+    }
+
+    public function testSubscribeDeniedForGuestAfterEventStarted(): void
+    {
+        $voter = $this->createVoter();
+        $user = $this->createUser('guest', guest: true);
+        $event = $this->createEvent('-1 day', guestsAllowed: true);
+
+        self::assertFalse($this->vote($voter, 'subscribe', $event, $user));
+    }
+
+    public function testSubscribeDeniedForGuestWhenAlreadySubscribed(): void
+    {
+        $voter = $this->createVoter();
+        $user = $this->createUser('guest', guest: true);
+        $event = $this->createEvent('+1 week', guestsAllowed: true);
+        $this->subscribeUser($event, $user);
+
+        self::assertFalse($this->vote($voter, 'subscribe', $event, $user));
+    }
+
+    public function testSubscribeAllowedForGuestWithOpenDatePassed(): void
+    {
+        $voter = $this->createVoter();
+        $user = $this->createUser('guest', guest: true);
+        $event = $this->createEvent('+2 weeks', null, '-1 day', guestsAllowed: true);
+
+        self::assertTrue($this->vote($voter, 'subscribe', $event, $user));
+    }
+
     // ==========================================
     // SUBSCRIBE - Admin Bypass
     // ==========================================
@@ -277,6 +314,60 @@ class EventVoterTest extends TestCase
         self::assertFalse($this->vote($voter, 'unsubscribe', $event, $user));
     }
 
+    public function testUnsubscribeAllowedAfterDeadlineButBeforeStart(): void
+    {
+        $voter = $this->createVoter();
+        $user = $this->createUser();
+        $event = $this->createEvent('+1 week', '-1 day');
+        $this->subscribeUser($event, $user);
+
+        self::assertTrue($this->vote($voter, 'unsubscribe', $event, $user));
+    }
+
+    // ==========================================
+    // UNSUBSCRIBE - Guest Users
+    // ==========================================
+
+    public function testUnsubscribeAllowedForGuestWhenSubscribedAndGuestsAllowed(): void
+    {
+        $voter = $this->createVoter();
+        $user = $this->createUser('guest', guest: true);
+        $event = $this->createEvent('+1 week', guestsAllowed: true);
+        $this->subscribeUser($event, $user);
+
+        self::assertTrue($this->vote($voter, 'unsubscribe', $event, $user));
+    }
+
+    public function testUnsubscribeDeniedForGuestWhenGuestsNotAllowed(): void
+    {
+        $voter = $this->createVoter();
+        $user = $this->createUser('guest', guest: true);
+        $event = $this->createEvent('+1 week', guestsAllowed: false);
+        $this->subscribeUser($event, $user);
+
+        self::assertFalse($this->vote($voter, 'unsubscribe', $event, $user));
+    }
+
+    public function testUnsubscribeDeniedForGuestAfterEventStarted(): void
+    {
+        $voter = $this->createVoter();
+        $user = $this->createUser('guest', guest: true);
+        $event = $this->createEvent('-1 day', guestsAllowed: true);
+        $this->subscribeUser($event, $user);
+
+        self::assertFalse($this->vote($voter, 'unsubscribe', $event, $user));
+    }
+
+    public function testUnsubscribeAllowedForGuestAfterDeadlineButBeforeStart(): void
+    {
+        $voter = $this->createVoter();
+        $user = $this->createUser('guest', guest: true);
+        $event = $this->createEvent('+1 week', '-1 day', guestsAllowed: true);
+        $this->subscribeUser($event, $user);
+
+        self::assertTrue($this->vote($voter, 'unsubscribe', $event, $user));
+    }
+
     // ==========================================
     // UNSUBSCRIBE - Admin
     // ==========================================
@@ -286,6 +377,25 @@ class EventVoterTest extends TestCase
         $voter = $this->createVoter(isEventAdmin: true);
         $user = $this->createUser();
         $event = $this->createEvent('-1 day'); // past event
+
+        self::assertTrue($this->vote($voter, 'unsubscribe', $event, $user));
+    }
+
+    public function testUnsubscribeAllowedForAdminPastDeadline(): void
+    {
+        $voter = $this->createVoter(isEventAdmin: true);
+        $user = $this->createUser();
+        $event = $this->createEvent('+1 week', '-1 day');
+
+        self::assertTrue($this->vote($voter, 'unsubscribe', $event, $user));
+    }
+
+    public function testUnsubscribeAllowedForAdminWhenNotSubscribed(): void
+    {
+        $voter = $this->createVoter(isEventAdmin: true);
+        $user = $this->createUser();
+        $event = $this->createEvent('+1 week');
+        // not subscribed - admin bypass doesn't check
 
         self::assertTrue($this->vote($voter, 'unsubscribe', $event, $user));
     }

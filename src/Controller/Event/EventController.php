@@ -4,7 +4,6 @@ namespace App\Controller\Event;
 
 use App\Entity\Event\Event;
 use App\Entity\User;
-use App\Form\ConfirmationType;
 use App\Form\Event\EventType;
 use App\Repository\Event\EventRepository;
 use App\Repository\Event\TagRepository;
@@ -94,21 +93,11 @@ class EventController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: '_delete')]
-    public function delete(Request $request, Event $event, EventRepository $repository): Response
+    public function delete(Event $event, EventRepository $repository): Response
     {
-        $form = $this->createForm(ConfirmationType::class);
-        $form->handleRequest($request);
+        $repository->remove($event);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $repository->remove($event);
-
-            $this->addFlash('success', sprintf('Deleted event "%s"', $event));
-            return $this->redirectToRoute('event_event_index');
-        }
-
-        return $this->render('general/confirmation.form.html.twig', [
-            'message' => sprintf('Are you sure you want to delete event "%s"?', $event),
-            'form' => $form->createView(),
-        ]);
+        $this->addFlash('success', sprintf('Deleted event "%s"', $event));
+        return $this->redirectToRoute('event_event_index');
     }
 }

@@ -10,8 +10,15 @@
                href="{{ path('event_recurring_event_edit', {'id': recurringEvent.id}) }}">Edit</a>
             <a class="btn btn-success"
                href="{{ path('event_recurring_event_create_events', {'id': recurringEvent.id}) }}">Create events</a>
-            <a class="btn btn-danger"
-               href="{{ path('event_recurring_event_delete_events', {'id': recurringEvent.id}) }}">Delete events</a>
+            <a class="btn btn-danger" data-bs-toggle="modal"
+               data-bs-target="#confirmDeleteEvents">Delete events</a>
+            {{ include('components/_confirm_modal.html.twig', {
+                id: 'confirmDeleteEvents',
+                title: 'Delete future events',
+                message: 'You are about to delete all future events for "' ~ recurringEvent ~ '", this will delete all subscriptions as well. Are you sure?',
+                action_url: path('event_recurring_event_delete_events', {id: recurringEvent.id}),
+                action_label: 'Delete events',
+            }) }}
         {% endif %}
     </div>
     <h5>Upcoming events</h5>

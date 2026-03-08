@@ -1,0 +1,32 @@
+{#
+    Reusable Bootstrap 5 confirmation modal.
+
+    Usage:
+        {{ include('components/_confirm_modal.html.twig', {
+            id: 'confirmDelete',
+            title: 'Delete event',
+            message: 'Are you sure you want to delete this event?',
+            action_url: path('event_event_delete', {id: event.id}),
+            action_label: 'Delete',
+            action_class: 'btn-danger',
+        }) }}
+
+        <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete" class="btn btn-danger">Delete</a>
+#}
+<div class="modal fade" id="{{ id }}" tabindex="-1" aria-labelledby="{{ id }}Label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="{{ id }}Label">{{ title|default('Confirm') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{ message }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href="{{ action_url }}" class="btn {{ action_class|default('btn-danger') }}">{{ action_label|default('Confirm') }}</a>
+            </div>
+        </div>
+    </div>
+</div>
