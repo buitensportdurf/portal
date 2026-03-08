@@ -92,7 +92,7 @@ class EventRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
-    public function findPast(): array
+    public function findPast(?int $year = null): array
     {
         $qb = $this->createQueryBuilder('e');
         $qb
@@ -101,7 +101,27 @@ class EventRepository extends ServiceEntityRepository
             ->addOrderBy('e.startDate', 'DESC')
         ;
 
+        if ($year !== null) {
+            $qb
+                ->andWhere('e.startDate >= :yearStart')
+                ->andWhere('e.startDate < :yearEnd')
+                ->setParameter('yearStart', new \DateTimeImmutable("$year-01-01"))
+                ->setParameter('yearEnd', new \DateTimeImmutable(($year + 1) . '-01-01'))
+            ;
+        }
+
         return $qb->getQuery()->getResult();
+    }
+
+    /** @return int[] */
+    public function findPastYears(): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $rows = $conn->fetchFirstColumn(
+            'SELECT DISTINCT YEAR(start_date) AS y FROM event WHERE start_date < NOW() ORDER BY y DESC'
+        );
+
+        return array_map(intval(...), $rows);
     }
 
 }
