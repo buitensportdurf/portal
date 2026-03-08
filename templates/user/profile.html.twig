@@ -13,7 +13,7 @@
             <br/>
             {% if is_granted('ROLE_ADMIN') %}
                 <br/><br/>
-                <h4>Latest release stats</h4>
+                <h3>Latest release stats</h3>
                 Branch: {{ release.branch }} <br/>
                 Date: {{ release.date }} <br/>
                 Hash short: {{ release.commitHashShort }} <br/>
@@ -22,7 +22,7 @@
             {% endif %}
         </div>
         <div class="col-sm">
-            <h4>Change profile</h4>
+            <h3>Change profile</h3>
             {{ form(form) }}
         </div>
     </div>

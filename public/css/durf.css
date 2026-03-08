@@ -34,12 +34,14 @@
 
 /* Cards */
 .card {
-    border: none;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: none;
     transition: box-shadow 0.2s ease;
 }
 .card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 .card-header {
     background-color: var(--durf-blue-1);
@@ -70,10 +72,12 @@
     background-color: var(--durf-blue-4) !important;
 }
 
-/* Page headings */
-h3 {
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    font-family: "NAL Hand", sans-serif;
     color: var(--durf-dark);
-    font-weight: 700;
+    letter-spacing: 1px;
+    font-weight: normal;
 }
 
 /* Footer */

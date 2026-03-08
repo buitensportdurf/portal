@@ -25,7 +25,7 @@
 
 {% block body %}
     {% if recurringEvent.futureEvents is not empty %}
-        <h5 class="mt-3">Upcoming events</h5>
+        <h4 class="mt-3">Upcoming events</h4>
         <div class="row row-cols-1 row-cols-md-3 g-3">
             {% for event in recurringEvent.futureEvents %}
                 <div class="col">
@@ -36,7 +36,7 @@
     {% endif %}
 
     {% if recurringEvent.pastEvents is not empty %}
-        <h5 class="mt-4">Past events</h5>
+        <h4 class="mt-4">Past events</h4>
         <div class="row row-cols-1 row-cols-md-3 g-3">
             {% for event in recurringEvent.pastEvents %}
                 <div class="col">
