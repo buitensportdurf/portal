@@ -10,7 +10,7 @@
         "doctrine/doctrine-bundle": "^3.2",
         "doctrine/doctrine-migrations-bundle": "^4.0",
         "doctrine/orm": "^3.0",
-        "easycorp/easyadmin-bundle": "^4.7",
+        "easycorp/easyadmin-bundle": "^5.0",
         "eluceo/ical": "^2.12",
         "league/commonmark": "^2.4",
         "league/flysystem-bundle": "^3.2",
