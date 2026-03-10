@@ -53,13 +53,13 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linktoRoute('Back to home', 'fas fa-home', 'home');
 
         yield MenuItem::section('Administration', 'fas fa-folder-open');
-        yield MenuItem::linkToCrud('Users', 'fas fa-list', User::class);
-        yield MenuItem::linkToCrud('Groups', 'fas fa-list', Group::class);
+        yield MenuItem::linkTo(UserCrudController::class, 'Users', 'fas fa-list');
+        yield MenuItem::linkTo(GroupCrudController::class, 'Groups', 'fas fa-list');
 
         yield MenuItem::section('Events', 'fas fa-folder-open');
-        yield MenuItem::linkToCrud('Events', 'fas fa-list', Event::class);
-        yield MenuItem::linkToCrud('Event subscriptions', 'fas fa-list', EventSubscription::class);
-        yield MenuItem::linkToCrud('Tags', 'fas fa-list', Tag::class);
+        yield MenuItem::linkTo(EventCrudController::class, 'Events', 'fas fa-list');
+        yield MenuItem::linkTo(EventSubscriptionCrudController::class, 'Event subscriptions', 'fas fa-list');
+        yield MenuItem::linkTo(TagCrudController::class, 'Tags', 'fas fa-list');
     }
 
     public function configureCrud(): Crud
