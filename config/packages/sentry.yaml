@@ -11,5 +11,6 @@ when@prod:
                 - 'Symfony\Component\HttpKernel\Exception\NotAcceptableHttpException'
                 - 'Symfony\Component\HttpKernel\Exception\BadRequestHttpException'
                 - 'Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException'
+                - 'Symfony\Component\Security\Core\Exception\AccessDeniedException'
                 - 'Symfony\Component\HttpKernel\Exception\GoneHttpException'
                 - 'Symfony\Component\HttpKernel\Exception\UnsupportedMediaTypeHttpException'
