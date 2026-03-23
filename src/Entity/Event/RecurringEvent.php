@@ -53,9 +53,11 @@ class RecurringEvent extends BaseEvent
 
         $event = new Event();
         $event->copyFrom($this);
+        $duration = $this->getDuration();
         $event->startDate = TimeIntervalService::addIntervalsNTimes(
             $previousDate, $this->getRecurrenceIntervals()
         );
+        $event->endDate = $duration ? $event->startDate->add($duration) : $event->startDate;
         $this->addEvent($event);
 
         return $event;

@@ -7,7 +7,6 @@ use App\Form\ImageType;
 use App\Form\SwitchType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -29,14 +28,7 @@ class BaseEventType extends AbstractType
                 'expanded' => true,
             ])
             ->add('startDate')
-            ->add('duration', DateIntervalType::class, [
-                'widget' => 'integer',
-                'with_years' => false,
-                'with_months' => false,
-                'with_days' => true,
-                'with_hours' => true,
-                'with_minutes' => true,
-            ])
+            ->add('endDate')
             ->add('subscriptionOpenDate', null, [
                 'required' => false,
                 'widget' => 'single_text',

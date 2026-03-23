@@ -7,7 +7,6 @@ use App\Entity\Event\RecurringEvent;
 use App\Entity\Event\Tag;
 use App\Repository\Event\TagRepository;
 use App\Service\EventService;
-use DateInterval;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
@@ -31,7 +30,7 @@ class EventServiceTest extends TestCase
         $recurring->name = 'Test Recurring';
         $recurring->location = 'Test';
         $recurring->startDate = new DateTimeImmutable($startDate);
-        $recurring->duration = new DateInterval('PT2H');
+        $recurring->endDate = $recurring->startDate->modify('+2 hours');
         $recurring->recurrenceRule = $rule;
 
         return $recurring;

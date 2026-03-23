@@ -7,7 +7,6 @@ use App\Entity\User;
 use App\Form\Event\EventType;
 use App\Repository\Event\EventRepository;
 use App\Repository\Event\TagRepository;
-use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -56,7 +55,6 @@ class EventController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $event = new Event();
-        $event->duration = new DateInterval('PT0S');
         $event->published = false;
         $form = $this->createForm(EventType::class, $event);
         $form->add('Save', SubmitType::class);

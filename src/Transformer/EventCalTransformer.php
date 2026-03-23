@@ -21,15 +21,16 @@ readonly class EventCalTransformer
 
     public function transform(Event $event): IcalEvent
     {
-        if ($event->duration->d < 2) {
+        $duration = $event->getDuration();
+        if ($duration === null || $duration->d < 2) {
             $timeSpan = new TimeSpan(
                 new DateTime($event->startDate, false),
-                new DateTime($event->startDate->add($event->duration), false)
+                new DateTime($event->endDate, false)
             );
         } else {
             $timeSpan = new MultiDay(
                 new Date($event->startDate),
-                new Date($event->startDate->add($event->duration))
+                new Date($event->endDate)
             );
         }
 

@@ -18,7 +18,7 @@ class RecurringEventTest extends TestCase
         $event->name = 'Weekly Event';
         $event->location = 'Club';
         $event->startDate = new DateTimeImmutable('2025-01-06 18:00:00');
-        $event->duration = new DateInterval('PT2H');
+        $event->endDate = $event->startDate->modify('+2 hours');
         $event->recurrenceRule = $rule;
 
         return $event;
@@ -245,7 +245,7 @@ class RecurringEventTest extends TestCase
         $event->name = 'Child';
         $event->location = 'Here';
         $event->startDate = new DateTimeImmutable('+1 week');
-        $event->duration = new DateInterval('PT1H');
+        $event->endDate = $event->startDate->modify('+1 hour');
 
         $recurring->addEvent($event);
         self::assertCount(1, $recurring->getEvents());
@@ -284,11 +284,11 @@ class RecurringEventTest extends TestCase
     public function testCreateNextEventCopiesDuration(): void
     {
         $recurring = $this->createRecurringEvent('1 week');
-        $recurring->duration = new DateInterval('PT3H');
+        $recurring->endDate = $recurring->startDate->modify('+3 hours');
 
         $event = $recurring->createNextEvent();
 
-        self::assertSame(3, $event->duration->h);
+        self::assertSame(3, $event->getDuration()->h);
     }
 
     public function testCreateNextEventCopiesImage(): void
