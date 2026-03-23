@@ -19,3 +19,8 @@
 {% block body %}
     {{ form(form) }}
 {% endblock %}
+
+{% block js %}
+    {{ parent() }}
+    {{ include('event/_duration_sync.html.twig') }}
+{% endblock %}

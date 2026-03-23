@@ -7,7 +7,6 @@ use App\Entity\Event\EventSubscription;
 use App\Entity\Event\RecurringEvent;
 use App\Entity\Event\Tag;
 use App\Entity\User;
-use DateInterval;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -117,7 +116,7 @@ class SeedTestScenariosCommand extends Command
         $recurring->name = 'Modal Test - Recurring Weekly';
         $recurring->location = 'Test Location';
         $recurring->startDate = new DateTimeImmutable('-2 weeks');
-        $recurring->duration = new DateInterval('PT2H');
+        $recurring->endDate = $recurring->startDate->modify('+2 hours');
         $recurring->recurrenceRule = '1 week';
         $recurring->addTag($tag);
         $this->em->persist($recurring);
@@ -180,7 +179,7 @@ class SeedTestScenariosCommand extends Command
         $event = new Event();
         $event->name = $name;
         $event->startDate = new DateTimeImmutable($startDate);
-        $event->duration = new DateInterval('PT2H');
+        $event->endDate = $event->startDate->modify('+2 hours');
         $event->location = $location;
         $event->description = $description;
 

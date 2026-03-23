@@ -6,7 +6,6 @@ use App\Entity\Event\RecurringEvent;
 use App\Form\Event\RecurringEventType;
 use App\Repository\Event\RecurringEventRepository;
 use App\Service\EventService;
-use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -37,7 +36,6 @@ class RecurringEventController extends AbstractController
     public function new(Request $request): Response
     {
         $recurringEvent = new RecurringEvent();
-        $recurringEvent->duration = new DateInterval('PT0S');
         $form = $this->createForm(RecurringEventType::class, $recurringEvent);
         $form->add('Save', SubmitType::class);
         $form->handleRequest($request);

@@ -1,0 +1,21 @@
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const startInput = document.querySelector('input[name$="[startDate]"][type="datetime-local"]');
+    const endInput = document.querySelector('input[name$="[endDate]"][type="datetime-local"]');
+    if (!startInput || !endInput) return;
+
+    let previousStart = startInput.valueAsNumber;
+
+    startInput.addEventListener('change', function () {
+        const newStart = startInput.valueAsNumber;
+        const end = endInput.valueAsNumber;
+        if (isNaN(previousStart) || isNaN(end) || isNaN(newStart)) {
+            previousStart = newStart;
+            return;
+        }
+        const duration = end - previousStart;
+        endInput.valueAsNumber = newStart + duration;
+        previousStart = newStart;
+    });
+});
+</script>

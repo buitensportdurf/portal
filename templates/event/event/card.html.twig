@@ -19,7 +19,7 @@
         </p>
         <ul class="list-unstyled small mb-2">
             <li><i class="fas fa-calendar fa-fw"></i> {{ event.startDate ? event.startDate|fdate_time : '' }}</li>
-            <li><i class="fas fa-clock fa-fw"></i> {{ event.duration|time_duration }}</li>
+            <li><i class="fas fa-clock fa-fw"></i> {{ event.duration ? event.duration|time_duration : '' }}</li>
             <li><i class="fas fa-map-marker-alt fa-fw"></i> {{ event.location }}</li>
             {% if event.amountOfSubscriptions > 0 %}
                 <li><i class="fas fa-users fa-fw"></i> {{ event.amountOfSubscriptions }} subscribed</li>
