@@ -38,7 +38,17 @@
             {% if is_granted("ROLE_ADMIN_USER") %}
                 <li class="nav-item">
                     <a class="nav-link {% if route starts with 'admin2_user' %}active{% endif %}"
-                       href="{{ path('admin2_user_index') }}">User activation</a>
+                       href="{{ path('admin2_user_index') }}">
+                        <span class="position-relative d-inline-block">
+                            User activation
+                            {% set pending_count = pending_activation_count() %}
+                            {% if pending_count > 0 %}
+                                <span class="position-absolute top-0 start-100 translate-middle d-flex gap-1 navbar-corner-badges">
+                                    <span class="badge rounded-pill bg-danger navbar-corner-badge">{{ pending_count }}</span>
+                                </span>
+                            {% endif %}
+                        </span>
+                    </a>
                 </li>
             {% endif %}
             {% if is_granted("ROLE_ADMIN") %}
