@@ -48,6 +48,11 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $this->findBy(['enabled' => false]);
     }
 
+    public function countDisabled(): int
+    {
+        return $this->count(['enabled' => false]);
+    }
+
     public function findByEmail(string $email): ?User
     {
         return $this->findOneBy(['email' => $email]);
