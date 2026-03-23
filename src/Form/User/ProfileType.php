@@ -23,12 +23,11 @@ class ProfileType extends AbstractType
                 'attr' => ['autocomplete' => 'new-password'],
                 'label' => 'Password',
                 'constraints' => [
-                    new Length([
-                        'min' => 8,
-                        'minMessage' => 'Your password should be at least {{ limit }} characters',
-                        // max length allowed by Symfony for security reasons
-                        'max' => 4096,
-                    ]),
+                    new Length(
+                        min: 8,
+                        minMessage: 'Your password should be at least {{ limit }} characters',
+                        max: 4096,
+                    ),
                 ],
             ])
             ->add('plainPasswordRepeated', PasswordType::class, [
