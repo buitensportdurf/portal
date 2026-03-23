@@ -19,12 +19,12 @@ class Image
     public private(set) ?int $id = null;
 
     #[Vich\UploadableField(mapping: 'images', fileNameProperty: 'imageName', size: 'imageSize')]
-    private ?File $imageFile;
+    private ?File $imageFile = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     public ?string $imageName = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     public ?int $imageSize = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
