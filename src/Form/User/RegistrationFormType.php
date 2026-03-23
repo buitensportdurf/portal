@@ -33,15 +33,14 @@ class RegistrationFormType extends AbstractType
                 'first_options' => ['label' => 'Password'],
                 'second_options' => ['label' => 'Repeat Password'],
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Please enter a password',
-                    ]),
-                    new Length([
-                        'min' => 8,
-                        'minMessage' => 'Your password should be at least {{ limit }} characters',
-                        // max length allowed by Symfony for security reasons
-                        'max' => 4096,
-                    ]),
+                    new NotBlank(
+                        message: 'Please enter a password',
+                    ),
+                    new Length(
+                        min: 8,
+                        minMessage: 'Your password should be at least {{ limit }} characters',
+                        max: 4096,
+                    ),
                 ],
             ])
             ->add('memberCheck', TextType::class, [
@@ -49,21 +48,21 @@ class RegistrationFormType extends AbstractType
                 'mapped' => false,
                 'label' => 'Vul de naam van de vereniging waar je lid van bent (buitensportverenigingdurf)',
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Vul iets in',
-                    ]),
-                    new IdenticalTo([
-                        'value' => 'buitensportverenigingdurf',
-                        'message' => 'Je moet de naam van de vereniging correct invullen.',
-                    ]),
+                    new NotBlank(
+                        message: 'Vul iets in',
+                    ),
+                    new IdenticalTo(
+                        value: 'buitensportverenigingdurf',
+                        message: 'Je moet de naam van de vereniging correct invullen.',
+                    ),
                 ],
             ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'constraints' => [
-                    new IsTrue([
-                        'message' => 'You should agree to our terms.',
-                    ]),
+                    new IsTrue(
+                        message: 'You should agree to our terms.',
+                    ),
                 ],
                 'label' => 'I agree to the privacy statement found below',
             ])
