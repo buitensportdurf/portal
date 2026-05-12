@@ -53,6 +53,7 @@ abstract class BaseEvent
     public ?int $subscriberLimit = null;
 
     #[ORM\Column]
+    #[Assert\PositiveOrZero]
     private int $memberPrice = 0;
 
     #[ORM\Column(nullable: true)]
@@ -129,9 +130,9 @@ abstract class BaseEvent
         return $this->memberPrice / 100;
     }
 
-    public function setMemberPrice(float $memberPrice): static
+    public function setMemberPrice(?float $memberPrice): static
     {
-        $this->memberPrice = (int) ($memberPrice * 100);
+        $this->memberPrice = (int) (($memberPrice ?? 0) * 100);
 
         return $this;
     }
