@@ -115,7 +115,7 @@ class ResetPasswordController extends AbstractController
                 $form->get('plainPassword')->getData()
             );
 
-            $user->setPassword($encodedPassword);
+            $user->password = $encodedPassword;
             $this->userRepository->add($user);
 
             return $this->redirectToRoute('login');
