@@ -64,6 +64,33 @@ class Event extends BaseEvent
     }
 
     /**
+     * Explains why a regular member cannot subscribe, or null when subscribing is possible.
+     *
+     * Mirrors the conditions in EventVoter::voteOnSubscription(). The "subscriptions open later"
+     * case is intentionally left to the template, which shows the formatted open date.
+     */
+    public function getSubscriptionUnavailableReason(?User $user): ?string
+    {
+        if (!$this->published) {
+            return 'This event is not published yet.';
+        }
+        if ($user !== null && $user->guest && !$this->guestsAllowed) {
+            return 'This event is for members only.';
+        }
+        if (!$this->isNotPastStartDate()) {
+            return 'This event has already taken place.';
+        }
+        if (!$this->isNotPastSubscriptionDeadline()) {
+            return 'The subscription deadline has passed.';
+        }
+        if ($user !== null && $this->isSubscribed($user)) {
+            return 'You are already subscribed.';
+        }
+
+        return null;
+    }
+
+    /**
      * @return Collection<int, EventSubscription>
      */
     public function getEventSubscriptions(): Collection

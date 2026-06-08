@@ -319,4 +319,67 @@ class EventTest extends TestCase
 
         self::assertFalse($target->published);
     }
+
+    // --- Subscription unavailable reason ---
+
+    public function testNoReasonWhenSubscribingIsPossible(): void
+    {
+        $event = $this->createEvent();
+        $user = $this->createUser();
+
+        self::assertNull($event->getSubscriptionUnavailableReason($user));
+    }
+
+    public function testReasonWhenNotPublished(): void
+    {
+        $event = $this->createEvent();
+        $event->published = false;
+
+        self::assertSame('This event is not published yet.', $event->getSubscriptionUnavailableReason($this->createUser()));
+    }
+
+    public function testReasonForGuestWhenGuestsNotAllowed(): void
+    {
+        $event = $this->createEvent();
+        $event->guestsAllowed = false;
+        $user = $this->createUser();
+        $user->guest = true;
+
+        self::assertSame('This event is for members only.', $event->getSubscriptionUnavailableReason($user));
+    }
+
+    public function testNoMembersOnlyReasonForGuestWhenGuestsAllowed(): void
+    {
+        $event = $this->createEvent();
+        $event->guestsAllowed = true;
+        $user = $this->createUser();
+        $user->guest = true;
+
+        self::assertNull($event->getSubscriptionUnavailableReason($user));
+    }
+
+    public function testReasonWhenEventHasStarted(): void
+    {
+        $event = $this->createEvent();
+        $event->startDate = new DateTimeImmutable('-1 day');
+
+        self::assertSame('This event has already taken place.', $event->getSubscriptionUnavailableReason($this->createUser()));
+    }
+
+    public function testReasonWhenDeadlineHasPassed(): void
+    {
+        $event = $this->createEvent();
+        $event->subscriptionDeadline = new DateTimeImmutable('-1 day');
+
+        self::assertSame('The subscription deadline has passed.', $event->getSubscriptionUnavailableReason($this->createUser()));
+    }
+
+    public function testReasonWhenAlreadySubscribed(): void
+    {
+        $event = $this->createEvent();
+        $user = $this->createUser();
+        $this->subscribeUser($event, $user);
+
+        self::assertSame('You are already subscribed.', $event->getSubscriptionUnavailableReason($user));
+    }
 }
