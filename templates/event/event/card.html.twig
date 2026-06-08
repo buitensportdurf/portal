@@ -45,7 +45,12 @@
             <a class="btn btn-sm btn-success w-100"
                href="{{ path('event_subscription_subscribe', {'id': event.id}) }}">Subscribe</a>
         {% elseif event.subscriptionOpenDate and not event.isPastSubscriptionOpenDate %}
-            <small class="text-muted">Subscriptions open {{ event.subscriptionOpenDate|fdate_time }}</small>
+            <small class="text-muted"><i class="fas fa-clock fa-fw"></i> Subscriptions open {{ event.subscriptionOpenDate|fdate_time }}</small>
+        {% else %}
+            {% set reason = event.getSubscriptionUnavailableReason(app.user) %}
+            {% if reason %}
+                <small class="text-muted"><i class="fas fa-info-circle fa-fw"></i> {{ reason }}</small>
+            {% endif %}
         {% endif %}
     </div>
 </div>
