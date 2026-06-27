@@ -17,7 +17,7 @@ class EventSubscriptionTest extends TestCase
         $event->name = 'Test Event';
         $event->location = 'Location';
         $event->startDate = new DateTimeImmutable('+1 week');
-        $event->duration = new DateInterval('PT2H');
+        $event->endDate = $event->startDate->add(new DateInterval('PT2H'));
         if ($limit > 0) {
             $event->subscriberLimit = $limit;
         }

@@ -19,7 +19,7 @@ class QuestionAnswerTest extends TestCase
         $event->name = 'Event';
         $event->location = 'Here';
         $event->startDate = new DateTimeImmutable('+1 week');
-        $event->duration = new DateInterval('PT2H');
+        $event->endDate = $event->startDate->add(new DateInterval('PT2H'));
 
         $user = new User();
         $user->username = 'user';
