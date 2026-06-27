@@ -2,33 +2,39 @@
 
 namespace App\Service;
 
-use Symfony\Component\Security\Core\Role\RoleHierarchyInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class RoleService
 {
-    private array $roles = [];
-
+    /**
+     * @param array<string, list<string>> $hierarchy Role hierarchy from security.yaml.
+     */
     public function __construct(
-        private readonly RoleHierarchyInterface $hierarchy,
-    )
-    {
-    }
+        #[Autowire(param: 'security.role_hierarchy.roles')]
+        private readonly array $hierarchy,
+    ) {}
 
+    /**
+     * @return array<string, string> Map of human-readable label to role identifier.
+     */
     public function getRoleChoices(): array
     {
-        array_walk($this->hierarchy, [$this, 'rolesRecursive']);
-        return $this->roles;
+        $roles = array_unique(array_merge(
+            array_keys($this->hierarchy),
+            ...array_values($this->hierarchy),
+        ));
+        sort($roles);
+
+        $choices = [];
+        foreach ($roles as $role) {
+            $choices[$this->toLabel($role)] = $role;
+        }
+
+        return $choices;
     }
 
-    private function rolesRecursive($roles, $key): void
+    private function toLabel(string $role): string
     {
-        if (is_string($key) && str_starts_with($key, 'ROLE_')) {
-            $this->roles[strtolower(str_replace(['ROLE_', '_'], ['', ' '], $key))] = $key;
-        }
-        if (is_array($roles)) {
-            array_walk($roles, [$this, 'rolesRecursive']);
-        } else {
-            $this->roles[strtolower(str_replace(['ROLE_', '_'], ['', ' '], $roles))] = $roles;
-        }
+        return strtolower(str_replace(['ROLE_', '_'], ['', ' '], $role));
     }
 }
