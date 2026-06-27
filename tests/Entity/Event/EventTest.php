@@ -17,7 +17,7 @@ class EventTest extends TestCase
         $event->name = 'Test Event';
         $event->location = 'Test Location';
         $event->startDate = new DateTimeImmutable('+1 week');
-        $event->duration = new DateInterval('PT2H');
+        $event->endDate = $event->startDate->add(new DateInterval('PT2H'));
 
         return $event;
     }

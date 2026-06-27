@@ -20,7 +20,7 @@ class EventServiceTest extends TestCase
     protected function setUp(): void
     {
         $this->em = $this->createMock(EntityManagerInterface::class);
-        $this->tagRepository = $this->createMock(TagRepository::class);
+        $this->tagRepository = $this->createStub(TagRepository::class);
         $this->service = new EventService($this->em, $this->tagRepository);
     }
 
@@ -95,7 +95,7 @@ class EventServiceTest extends TestCase
 
         $recurringTag = new Tag();
         $recurringTag->name = 'recurring';
-        $this->tagRepository->method('find')->with(Tag::ID_RECURRING)->willReturn($recurringTag);
+        $this->tagRepository->method('find')->willReturn($recurringTag);
 
         $this->em->expects(self::atLeastOnce())->method('persist');
 
@@ -112,7 +112,7 @@ class EventServiceTest extends TestCase
 
         $recurringTag = new Tag();
         $recurringTag->name = 'recurring';
-        $this->tagRepository->method('find')->with(Tag::ID_RECURRING)->willReturn($recurringTag);
+        $this->tagRepository->method('find')->willReturn($recurringTag);
 
         $persisted = [];
         $this->em->method('persist')->willReturnCallback(function ($entity) use (&$persisted) {
@@ -135,7 +135,7 @@ class EventServiceTest extends TestCase
 
         $recurringTag = new Tag();
         $recurringTag->name = 'recurring';
-        $this->tagRepository->method('find')->with(Tag::ID_RECURRING)->willReturn($recurringTag);
+        $this->tagRepository->method('find')->willReturn($recurringTag);
 
         $created = $this->service->createNewEvents($recurring);
 
@@ -150,7 +150,7 @@ class EventServiceTest extends TestCase
 
         $recurringTag = new Tag();
         $recurringTag->name = 'recurring';
-        $this->tagRepository->method('find')->with(Tag::ID_RECURRING)->willReturn($recurringTag);
+        $this->tagRepository->method('find')->willReturn($recurringTag);
 
         $created = $this->service->createNewEvents($recurring);
 

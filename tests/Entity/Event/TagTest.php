@@ -60,7 +60,7 @@ class TagTest extends TestCase
         $event->name = 'Event';
         $event->location = 'Here';
         $event->startDate = new DateTimeImmutable('+1 week');
-        $event->duration = new DateInterval('PT1H');
+        $event->endDate = $event->startDate->add(new DateInterval('PT1H'));
 
         $tag->addEvent($event);
 
@@ -77,7 +77,7 @@ class TagTest extends TestCase
         $event->name = 'Event';
         $event->location = 'Here';
         $event->startDate = new DateTimeImmutable('+1 week');
-        $event->duration = new DateInterval('PT1H');
+        $event->endDate = $event->startDate->add(new DateInterval('PT1H'));
 
         $tag->addEvent($event);
         $tag->removeEvent($event);
@@ -95,7 +95,7 @@ class TagTest extends TestCase
         $event->name = 'Event';
         $event->location = 'Here';
         $event->startDate = new DateTimeImmutable('+1 week');
-        $event->duration = new DateInterval('PT1H');
+        $event->endDate = $event->startDate->add(new DateInterval('PT1H'));
 
         $tag->addEvent($event);
         $tag->addEvent($event);
@@ -118,7 +118,7 @@ class TagTest extends TestCase
         $recurring->name = 'Recurring';
         $recurring->location = 'Here';
         $recurring->startDate = new DateTimeImmutable('+1 week');
-        $recurring->duration = new DateInterval('PT1H');
+        $recurring->endDate = $recurring->startDate->add(new DateInterval('PT1H'));
         $recurring->recurrenceRule = '1 week';
 
         $tag->addRecurringEvent($recurring);
@@ -136,7 +136,7 @@ class TagTest extends TestCase
         $recurring->name = 'Recurring';
         $recurring->location = 'Here';
         $recurring->startDate = new DateTimeImmutable('+1 week');
-        $recurring->duration = new DateInterval('PT1H');
+        $recurring->endDate = $recurring->startDate->add(new DateInterval('PT1H'));
         $recurring->recurrenceRule = '1 week';
 
         $tag->addRecurringEvent($recurring);

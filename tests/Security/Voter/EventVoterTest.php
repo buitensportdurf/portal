@@ -57,7 +57,7 @@ class EventVoterTest extends TestCase
         $event->name = 'Event';
         $event->location = 'Here';
         $event->startDate = new DateTimeImmutable($startDate);
-        $event->duration = new DateInterval('PT2H');
+        $event->endDate = $event->startDate->add(new DateInterval('PT2H'));
         $event->guestsAllowed = $guestsAllowed;
         $event->published = $published;
 
