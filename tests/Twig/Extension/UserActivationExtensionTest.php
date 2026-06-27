@@ -13,8 +13,8 @@ class UserActivationExtensionTest extends TestCase
     public function testRegistersPendingActivationCountFunction(): void
     {
         $ext = new UserActivationExtension(
-            $this->createMock(UserRepository::class),
-            $this->createMock(CacheInterface::class),
+            $this->createStub(UserRepository::class),
+            $this->createStub(CacheInterface::class),
         );
 
         $names = array_map(fn ($f) => $f->getName(), $ext->getFunctions());
