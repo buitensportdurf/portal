@@ -3,9 +3,11 @@
 namespace App\Tests\Form;
 
 use App\Form\SwitchType;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Test\TypeTestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class SwitchTypeTest extends TypeTestCase
 {
     public function testInheritsFromCheckbox(): void

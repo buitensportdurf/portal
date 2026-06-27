@@ -16,7 +16,7 @@ class EventVoterTest extends TestCase
 {
     private function createVoter(bool $isEventAdmin = false, bool $isEventEdit = false): EventVoter
     {
-        $security = $this->createMock(Security::class);
+        $security = $this->createStub(Security::class);
         $security->method('isGranted')
             ->willReturnCallback(fn(string $role) => match ($role) {
                 'ROLE_EVENT_ADMIN' => $isEventAdmin,
@@ -29,7 +29,7 @@ class EventVoterTest extends TestCase
 
     private function createToken(User $user): TokenInterface
     {
-        $token = $this->createMock(TokenInterface::class);
+        $token = $this->createStub(TokenInterface::class);
         $token->method('getUser')->willReturn($user);
 
         return $token;
@@ -514,7 +514,7 @@ class EventVoterTest extends TestCase
     public function testAnonymousUserDenied(): void
     {
         $voter = $this->createVoter();
-        $token = $this->createMock(TokenInterface::class);
+        $token = $this->createStub(TokenInterface::class);
         $token->method('getUser')->willReturn(null);
 
         $method = new \ReflectionMethod(EventVoter::class, 'voteOnAttribute');

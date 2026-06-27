@@ -5,8 +5,10 @@ namespace App\Tests\Form\Event;
 use App\Entity\Event\Question;
 use App\Entity\Event\QuestionAnswer;
 use App\Form\Event\QuestionAnswerType;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Symfony\Component\Form\Test\TypeTestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class QuestionAnswerTypeTest extends TypeTestCase
 {
     private function answerFor(string $text, bool $required): QuestionAnswer

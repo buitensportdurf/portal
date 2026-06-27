@@ -26,7 +26,7 @@ class EventCalTransformerTest extends TestCase
 
     private function transformer(): EventCalTransformer
     {
-        $url = $this->createMock(UrlGeneratorInterface::class);
+        $url = $this->createStub(UrlGeneratorInterface::class);
         $url->method('generate')->willReturn('https://example.test/event/42');
 
         return new EventCalTransformer($url);

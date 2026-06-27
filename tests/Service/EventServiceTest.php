@@ -9,8 +9,10 @@ use App\Repository\Event\TagRepository;
 use App\Service\EventService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class EventServiceTest extends TestCase
 {
     private EntityManagerInterface $em;
