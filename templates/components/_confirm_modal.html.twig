@@ -12,6 +12,8 @@
         }) }}
 
         <a href="#" data-bs-toggle="modal" data-bs-target="#confirmDelete" class="btn btn-danger">Delete</a>
+
+    Pass csrf_id to submit the action as a POST with a CSRF token instead of following a link.
 #}
 <div class="modal fade" id="{{ id }}" tabindex="-1" aria-labelledby="{{ id }}Label" aria-hidden="true">
     <div class="modal-dialog">
@@ -25,7 +27,14 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <a href="{{ action_url }}" class="btn {{ action_class|default('btn-danger') }}">{{ action_label|default('Confirm') }}</a>
+                {% if csrf_id is defined %}
+                    <form method="post" action="{{ action_url }}" class="d-inline">
+                        <input type="hidden" name="_token" value="{{ csrf_token(csrf_id) }}">
+                        <button class="btn {{ action_class|default('btn-danger') }}">{{ action_label|default('Confirm') }}</button>
+                    </form>
+                {% else %}
+                    <a href="{{ action_url }}" class="btn {{ action_class|default('btn-danger') }}">{{ action_label|default('Confirm') }}</a>
+                {% endif %}
             </div>
         </div>
     </div>
