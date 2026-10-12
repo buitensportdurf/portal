@@ -16,13 +16,17 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 use function Symfony\Component\Translation\t;
 
 #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
 class DashboardController extends AbstractDashboardController
 {
-    public function __construct(private readonly AdminUrlGenerator $adminUrlGenerator) {}
+    public function __construct(
+        private readonly AdminUrlGenerator   $adminUrlGenerator,
+        private readonly TranslatorInterface $translator,
+    ) {}
 
     public function index(): Response
     {
@@ -47,7 +51,7 @@ class DashboardController extends AbstractDashboardController
 
     public function configureDashboard(): Dashboard
     {
-        return Dashboard::new()->setTitle(t('Durf Portal Admin Page'));
+        return Dashboard::new()->setTitle($this->translator->trans('Durf Portal Admin Page'));
     }
 
     public function configureMenuItems(): iterable
