@@ -7,7 +7,6 @@ use App\Repository\Event\RecurringEventRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\Common\Collections\Order;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -26,7 +25,7 @@ class RecurringEvent extends BaseEvent
     private Collection $tags;
 
     #[ORM\OneToMany(mappedBy: 'recurringEvent', targetEntity: Event::class)]
-    #[ORM\OrderBy(['startDate' => Order::Ascending->value])]
+    #[ORM\OrderBy(['startDate' => \SortDirection::Ascending])]
     private Collection $events;
 
     /**
