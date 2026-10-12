@@ -94,7 +94,7 @@ final readonly class SeriesPlan
     {
         $count = 0;
         foreach ($this->notifications() as $change) {
-            $count += $change->event->getEventSubscriptions()->count();
+            $count += count($change->recipients());
         }
 
         return $count;

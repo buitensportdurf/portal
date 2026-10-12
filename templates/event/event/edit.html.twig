@@ -30,10 +30,10 @@
             {% endif %}
         </div>
     {% endif %}
-    {% if event.eventSubscriptions is not empty and not event.cancelled %}
+    {% if notified_count > 0 and not event.cancelled %}
         <div class="alert alert-warning">
             <i class="fas fa-envelope"></i>
-            {{ event.eventSubscriptions|length }} subscriber(s) get an email when you change the date, time or location.
+            {{ notified_count }} subscriber(s) get an email when you change the date, time or location.
         </div>
     {% endif %}
     {{ form(form) }}

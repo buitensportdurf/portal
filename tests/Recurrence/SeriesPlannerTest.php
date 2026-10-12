@@ -48,11 +48,15 @@ class SeriesPlannerTest extends TestCase
         return $series;
     }
 
-    private function subscribe(Event $event): void
+    private function subscribe(Event $event, bool $wantsChanges = true): void
     {
         $subscription = new EventSubscription();
         $subscription->amount = 1;
         $subscription->createdUser = new User();
+        $subscription->createdUser->email = 'subscriber@example.com';
+        if (!$wantsChanges) {
+            $subscription->createdUser->emailNotifications = [];
+        }
         $event->addEventSubscription($subscription);
     }
 
@@ -199,6 +203,20 @@ class SeriesPlannerTest extends TestCase
         self::assertSame(['2026-12-05'], self::dates($plan->ofType(ChangeType::Cancel)));
         self::assertSame(5, $plan->count(ChangeType::Delete));
         self::assertSame(6, $plan->count(ChangeType::Unchanged));
+        self::assertSame(1, $plan->notifiedSubscriberCount());
+    }
+
+    public function testSubscribersWhoSwitchedChangeEmailsOffAreNotNotified(): void
+    {
+        $series = $this->createSeries();
+        $event = $this->eventOn($series, '2026-12-05');
+        $this->subscribe($event);
+        $this->subscribe($event, wantsChanges: false);
+
+        $draft = clone $series;
+        $draft->location = 'Somewhere else';
+        $plan = $this->planner->plan($series, $draft, now: $this->now);
+
         self::assertSame(1, $plan->notifiedSubscriberCount());
     }
 

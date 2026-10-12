@@ -1,0 +1,8 @@
+{% extends 'base/single.column.html.twig' %}
+
+{% set title %}Email settings{% endset %}
+
+{% block body %}
+    <p>Choose which emails we send to <strong>{{ user.email }}</strong> about events you subscribed to.</p>
+    {{ form(form) }}
+{% endblock %}

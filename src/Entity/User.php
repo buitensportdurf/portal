@@ -51,6 +51,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     public bool $guest = false;
 
+    /**
+     * Stored as the switched-off emails, so a new kind of email is on by default.
+     *
+     * @var list<string>
+     */
+    #[ORM\Column(options: ['default' => '[]'])]
+    private array $disabledEmails = [];
+
+    /**
+     * @var list<EmailNotification>
+     */
+    public array $emailNotifications {
+        get => array_values(array_filter(
+            EmailNotification::cases(),
+            fn(EmailNotification $notification) => !in_array($notification->value, $this->disabledEmails, true),
+        ));
+        set(array $value) {
+            $this->disabledEmails = array_values(array_map(
+                fn(EmailNotification $notification) => $notification->value,
+                array_filter(EmailNotification::cases(), fn(EmailNotification $notification) => !in_array($notification, $value, true)),
+            ));
+        }
+    }
+
     public function __construct()
     {
         $this->groups = new ArrayCollection();
@@ -59,6 +83,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString(): string
     {
         return $this->name;
+    }
+
+    public function wantsEmail(EmailNotification $notification): bool
+    {
+        return !in_array($notification->value, $this->disabledEmails, true);
     }
 
     public function isActive(): bool

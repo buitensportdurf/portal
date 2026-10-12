@@ -2,6 +2,8 @@
 
 namespace App\Command;
 
+use App\Entity\EmailNotification;
+use App\Entity\Event\EventSubscription;
 use App\Repository\Event\EventRepository;
 use App\Service\SubscriptionMailer;
 use DateTimeImmutable;
@@ -52,7 +54,9 @@ class SendEventRemindersCommand extends Command
 
         $rows = [];
         foreach ($this->repository->findNeedingReminder(new DateTimeImmutable(self::AHEAD)) as $event) {
-            $subscriptions = $event->getEventSubscriptions();
+            $subscriptions = $event->getEventSubscriptions()->filter(
+                fn(EventSubscription $subscription) => $this->mailer->wants($subscription, EmailNotification::Reminder),
+            );
             $rows[] = [$event->name, $event->startDate->format('Y-m-d H:i'), $subscriptions->count()];
             if ($dryRun) {
                 continue;

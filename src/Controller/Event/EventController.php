@@ -135,7 +135,7 @@ class EventController extends AbstractController
             $change = new OccurrenceChange(ChangeType::Update, $event, $event->occurrenceStart ?? $event->startDate, $changes);
             if (!$event->isCancelled() && $event->isNotPastStartDate() && $change->notifiesSubscribers()) {
                 $notifier->notify($change);
-                $this->addFlash('success', sprintf('Saved. %d subscriber(s) were emailed about the change.', $event->getEventSubscriptions()->count()));
+                $this->addFlash('success', sprintf('Saved. %d subscriber(s) were emailed about the change.', count($change->recipients())));
             }
 
             return $this->redirectToRoute('event_event_show', ['id' => $event->id], Response::HTTP_SEE_OTHER);
@@ -144,6 +144,7 @@ class EventController extends AbstractController
         return $this->render('event/event/edit.html.twig', [
             'event' => $event,
             'form' => $form,
+            'notified_count' => count(new OccurrenceChange(ChangeType::Update, $event, $event->startDate)->recipients()),
         ]);
     }
 

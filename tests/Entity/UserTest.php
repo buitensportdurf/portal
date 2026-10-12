@@ -2,6 +2,7 @@
 
 namespace App\Tests\Entity;
 
+use App\Entity\EmailNotification;
 use App\Entity\Group;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
@@ -16,6 +17,26 @@ class UserTest extends TestCase
         $user->password = 'hashed';
 
         return $user;
+    }
+
+    // --- Email notifications ---
+
+    public function testAllEmailNotificationsAreOnByDefault(): void
+    {
+        $user = $this->createUser();
+        self::assertSame(EmailNotification::cases(), $user->emailNotifications);
+        self::assertTrue($user->wantsEmail(EmailNotification::Reminder));
+    }
+
+    public function testSwitchingEmailNotificationsOff(): void
+    {
+        $user = $this->createUser();
+        $user->emailNotifications = [EmailNotification::EventChanged];
+
+        self::assertSame([EmailNotification::EventChanged], $user->emailNotifications);
+        self::assertTrue($user->wantsEmail(EmailNotification::EventChanged));
+        self::assertFalse($user->wantsEmail(EmailNotification::Reminder));
+        self::assertFalse($user->wantsEmail(EmailNotification::SubscriptionConfirmed));
     }
 
     // --- Roles ---

@@ -2,7 +2,9 @@
 
 namespace App\Recurrence\Plan;
 
+use App\Entity\EmailNotification;
 use App\Entity\Event\Event;
+use App\Entity\User;
 use App\Recurrence\SeriesField;
 use DateTimeImmutable;
 
@@ -29,11 +31,29 @@ final readonly class OccurrenceChange
     }
 
     /**
+     * Subscribers who want to hear about changes.
+     *
+     * @return list<User>
+     */
+    public function recipients(): array
+    {
+        $users = [];
+        foreach ($this->event?->getEventSubscriptions() ?? [] as $subscription) {
+            $user = $subscription->createdUser;
+            if ($user?->email && $user->wantsEmail(EmailNotification::EventChanged)) {
+                $users[] = $user;
+            }
+        }
+
+        return $users;
+    }
+
+    /**
      * Whether subscribers get an email about this change.
      */
     public function notifiesSubscribers(): bool
     {
-        if ($this->event === null || $this->event->getEventSubscriptions()->isEmpty()) {
+        if ($this->recipients() === []) {
             return false;
         }
         if ($this->type === ChangeType::Cancel) {
