@@ -45,6 +45,12 @@ class Event extends BaseEvent
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     public ?DateTimeImmutable $cancelledAt = null;
 
+    /**
+     * When subscribers got their reminder, so nobody gets it twice.
+     */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    public ?DateTimeImmutable $reminderSentAt = null;
+
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     public ?DateTimeImmutable $subscriptionDeadline = null;
 
