@@ -16,6 +16,8 @@ final class LocalDate
     public const string SHORT_DATE = 'd MMM y';
     public const string DAY_MONTH = 'd MMM';
     public const string DAY_MONTH_TIME = 'EEE d MMM, HH:mm';
+    public const string LONG_DATE_TIME = 'EEEE d MMMM y, HH:mm';
+    public const string LONG_DAY_MONTH_TIME = 'EEEE d MMMM, HH:mm';
 
     public static function format(DateTimeInterface $date, string $pattern, ?string $locale = null): string
     {

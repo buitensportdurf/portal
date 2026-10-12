@@ -2,7 +2,7 @@
 <table role="presentation" cellpadding="0" cellspacing="0" style="margin: 0 0 12px; border-collapse: collapse;">
     <tr>
         <th align="left" style="padding: 4px 16px 4px 0; vertical-align: top;">{{ 'When'|trans }}</th>
-        <td style="padding: 4px 0;">{{ event.startDate|date('l j F Y, H:i') }} – {{ event.endDate|date(event.startDate|date('Y-m-d') == event.endDate|date('Y-m-d') ? 'H:i' : 'l j F H:i') }}</td>
+        <td style="padding: 4px 0;">{{ event.startDate|fdate_long }} – {{ event.startDate|date('Y-m-d') == event.endDate|date('Y-m-d') ? event.endDate|date('H:i') : event.endDate|fday_month_long }}</td>
     </tr>
     <tr>
         <th align="left" style="padding: 4px 16px 4px 0; vertical-align: top;">{{ 'Where'|trans }}</th>

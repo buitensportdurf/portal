@@ -302,6 +302,7 @@ Subscribe: Aanmelden
 'Subscribe in your calendar app': 'Abonneren in je agenda-app'
 'Subscribe to <strong>{event}</strong> without an account. Enter your name and email and we send you a link to finish subscribing.': 'Meld je zonder account aan voor <strong>{event}</strong>. Vul je naam en e-mailadres in, dan sturen we je een link om je aanmelding af te ronden.'
 'Subscribe to a calendar to see Durf events in your own calendar app. It updates automatically, including changes and cancellations.': 'Abonneer je op een agenda om Durf-activiteiten in je eigen agenda-app te zien. Die werkt zichzelf bij, ook bij wijzigingen en annuleringen.'
+'Subscribe to calendar': Abonneren
 'Subscribe to {event}': 'Aanmelden voor {event}'
 'Subscribed to {event}': 'Aangemeld voor {event}'
 'Subscriber emails': 'E-mails aan aangemelde deelnemers'
