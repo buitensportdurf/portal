@@ -85,6 +85,42 @@ class EventRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * How far back calendar feeds go. Calendar apps drop events that leave a feed, so this keeps
+     * recent history visible without the feed growing forever.
+     */
+    public const string CALENDAR_HISTORY = '-1 year';
+
+    /**
+     * Published events for a calendar feed: everything from CALENDAR_HISTORY on (events still
+     * running included), optionally only those with a tag or those a user subscribed to.
+     *
+     * @return array<Event>
+     */
+    public function findForCalendar(?Tag $tag = null, ?User $user = null): array
+    {
+        $qb = $this
+            ->createQueryBuilder('e')
+            ->where('e.published = true')
+            ->andWhere('e.endDate >= :since')
+            ->setParameter('since', new \DateTimeImmutable(self::CALENDAR_HISTORY))
+            ->addOrderBy('e.startDate', 'ASC')
+        ;
+        if ($tag !== null) {
+            $qb->andWhere(':tag MEMBER OF e.tags')->setParameter('tag', $tag);
+        }
+        if ($user !== null) {
+            $qb
+                ->join('e.eventSubscriptions', 's')
+                ->join('s.createdUser', 'u')
+                ->andWhere('u.id = :user')
+                ->setParameter('user', $user->id->toBinary())
+            ;
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
     public function remove(Event $event): void
     {
         // Check if image needs to be deleted
