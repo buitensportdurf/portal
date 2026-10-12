@@ -121,6 +121,30 @@ class EventRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * Upcoming published events starting before $until whose subscribers have not been reminded.
+     *
+     * @return array<Event>
+     */
+    public function findNeedingReminder(\DateTimeImmutable $until): array
+    {
+        return $this
+            ->createQueryBuilder('e')
+            ->join('e.eventSubscriptions', 's')
+            ->where('e.published = true')
+            ->andWhere('e.cancelledAt IS NULL')
+            ->andWhere('e.reminderSentAt IS NULL')
+            ->andWhere('e.startDate > :now')
+            ->andWhere('e.startDate <= :until')
+            ->setParameter('now', new \DateTimeImmutable())
+            ->setParameter('until', $until)
+            ->groupBy('e.id')
+            ->addOrderBy('e.startDate', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     public function remove(Event $event): void
     {
         // Check if image needs to be deleted

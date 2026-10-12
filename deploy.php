@@ -36,6 +36,8 @@ host('portal.buitensportdurf.nl')
 // Synced into the www-data crontab after each deploy, between "###< durfportal" markers
 add('crontab:jobs', [
     '15 3 * * * cd {{current_path}} && {{bin/php}} bin/console app:recurring-events:generate --no-interaction >> {{deploy_path}}/shared/var/log/cron.log 2>&1',
+    // Does nothing until EVENT_REMINDERS_ENABLED is switched on
+    '0 9 * * * cd {{current_path}} && {{bin/php}} bin/console app:events:send-reminders --no-interaction >> {{deploy_path}}/shared/var/log/cron.log 2>&1',
 ]);
 
 set('console_options', function () {
