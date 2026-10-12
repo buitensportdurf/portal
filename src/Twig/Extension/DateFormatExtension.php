@@ -2,58 +2,46 @@
 
 namespace App\Twig\Extension;
 
-use DateTime;
+use App\Service\LocalDate;
+use DateTimeInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
 class DateFormatExtension extends AbstractExtension
 {
+    public function __construct(
+        private readonly TranslatorInterface $translator,
+    ) {}
+
     public function getFilters(): array
     {
         return [
-            new TwigFilter('time_duration', $this->formatTimeDuration(...), ['is_safe' => ['html']]),
-            new TwigFilter('fdate_time', $this->formatDateTime(...), ['is_safe' => ['html']]),
-            new TwigFilter('fdate', $this->formatDate(...), ['is_safe' => ['html']]),
+            new TwigFilter('time_duration', $this->formatTimeDuration(...)),
+            new TwigFilter('fdate_time', fn(DateTimeInterface $date) => LocalDate::format($date, LocalDate::DATE_TIME)),
+            new TwigFilter('fdate', fn(DateTimeInterface $date) => LocalDate::format($date, LocalDate::DATE)),
+            new TwigFilter('fdate_short', fn(DateTimeInterface $date) => LocalDate::format($date, LocalDate::SHORT_DATE)),
+            new TwigFilter('fday_month', fn(DateTimeInterface $date) => LocalDate::format($date, LocalDate::DAY_MONTH)),
         ];
     }
 
     public function formatTimeDuration(\DateInterval $interval): string
     {
-        $format = '';
+        // Written out per unit, so translation:extract finds each message
+        $parts = [];
         if ($interval->d > 0) {
-            $format .= ' %d day';
-            if ($interval->d > 1) {
-                $format .= 's';
-            }
+            $parts[] = $this->translator->trans('{count, plural, one {# day} other {# days}}', ['count' => $interval->d]);
         }
         if ($interval->h > 0) {
-            $format .= ' %h hour';
-            if ($interval->h > 1) {
-                $format .= 's';
-            }
+            $parts[] = $this->translator->trans('{count, plural, one {# hour} other {# hours}}', ['count' => $interval->h]);
         }
         if ($interval->i > 0) {
-            $format .= ' %i minute';
-            if ($interval->i > 1) {
-                $format .= 's';
-            }
+            $parts[] = $this->translator->trans('{count, plural, one {# minute} other {# minutes}}', ['count' => $interval->i]);
         }
         if ($interval->s > 0) {
-            $format .= ' %s second';
-            if ($interval->s > 1) {
-                $format .= 's';
-            }
+            $parts[] = $this->translator->trans('{count, plural, one {# second} other {# seconds}}', ['count' => $interval->s]);
         }
-        return $interval->format(trim($format));
-    }
 
-    public function formatDateTime(DateTime|\DateTimeImmutable $dateTime): string
-    {
-        return $dateTime->format('D d M Y, H:i');
-    }
-
-    public function formatDate(DateTime|\DateTimeImmutable $dateTime): string
-    {
-        return $dateTime->format('D d M Y');
+        return implode(' ', $parts);
     }
 }

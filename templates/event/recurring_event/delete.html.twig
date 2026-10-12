@@ -18,7 +18,7 @@
                 {% if cancels %}
                     <li>
                         {{ '<strong>Cancels {count, plural, one {# upcoming event} other {# upcoming events}}</strong> that have subscribers:'|trans({count: cancels|length})|raw }}
-                        {% for change in cancels %}{{ change.slot|date('j M Y') }} ({{ change.subscriberCount }}){% if not loop.last %}, {% endif %}{% endfor %}.
+                        {% for change in cancels %}{{ change.slot|fdate_short }} ({{ change.subscriberCount }}){% if not loop.last %}, {% endif %}{% endfor %}.
                         {{ 'They stay visible as cancelled.'|trans }}
                     </li>
                 {% endif %}

@@ -28,7 +28,7 @@
                         </div>
                     </div>
                     <span class="small text-muted text-end">
-                        {% if next %}{{ 'Next: {date}'|trans({date: next|date('D j M Y')}) }}{% else %}{{ 'Ended'|trans }}{% endif %}
+                        {% if next %}{{ 'Next: {date}'|trans({date: next|fdate}) }}{% else %}{{ 'Ended'|trans }}{% endif %}
                     </span>
                 </a>
             {% endfor %}

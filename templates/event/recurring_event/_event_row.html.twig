@@ -2,7 +2,7 @@
 <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center{% if event.cancelled %} text-decoration-line-through text-muted{% endif %}"
    href="{{ path('event_event_show', {id: event.id}) }}">
     <span>
-        {{ event.startDate|date('D j M Y H:i') }}
+        {{ event.startDate|fdate_time }}
         {% if event.name != recurringEvent.name %}<span class="text-muted">· {{ event.name }}</span>{% endif %}
     </span>
     <span>

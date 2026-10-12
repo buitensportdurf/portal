@@ -40,8 +40,16 @@ class TranslationCompletenessTest extends KernelTestCase
         self::assertSame([], $missing, 'Texts without a Dutch translation');
     }
 
+    private string $phpLocale;
+
+    protected function setUp(): void
+    {
+        $this->phpLocale = \Locale::getDefault();
+    }
+
     protected function tearDown(): void
     {
+        \Locale::setDefault($this->phpLocale);
         $booted = static::$booted;
         parent::tearDown();
         if ($booted) {
