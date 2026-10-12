@@ -23,6 +23,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\LoginLink\LoginLinkHandlerInterface;
+use Symfony\Contracts\Cache\CacheInterface;
 
 class SecurityController extends AbstractController
 {
@@ -31,6 +32,7 @@ class SecurityController extends AbstractController
         private readonly MailerInterface           $mailer,
         private readonly CommissionMailer          $commissionMailer,
         private readonly LoginLinkHandlerInterface $loginLinkHandler,
+        private readonly CacheInterface            $cache,
     ) {}
 
     #[Route('/login', name: 'login')]
@@ -94,6 +96,7 @@ class SecurityController extends AbstractController
                 $user->password = $userPasswordHasher->hashPassword($user, $form->get('plainPassword')->getData());
                 $user->enabled = false;
                 $this->repository->add($user);
+                $this->cache->delete('pending_activation_count');
                 $this->mailer->send(EmailFactory::signupEmail($user));
                 $this->commissionMailer->send(EmailFactory::newUserNotification($user));
             }
@@ -202,6 +205,7 @@ class SecurityController extends AbstractController
             $user->guest = false;
             $user->enabled = false;
             $this->repository->add($user);
+            $this->cache->delete('pending_activation_count');
             $this->mailer->send(EmailFactory::signupEmail($user));
             $this->commissionMailer->send(EmailFactory::newUserNotification($user));
 

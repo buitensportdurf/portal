@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Event\EventSubscription;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\EmailFactory;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
@@ -39,6 +41,34 @@ class UserAdmin2Controller extends AbstractController
         $this->cache->delete('pending_activation_count');
         $mailer->send(EmailFactory::userEnabled($user));
         $this->addFlash('success', sprintf('%s is now enabled', $user->name));
+
+        return $this->redirectToRoute('admin2_user_index');
+    }
+
+    /**
+     * Turns down a pending registration. A former guest keeps their subscriptions as a guest
+     * again; anyone else is deleted.
+     */
+    #[Route('/{id}/reject', name: '_reject', methods: ['POST'])]
+    #[IsCsrfTokenValid('user-reject')]
+    public function reject(User $user, EntityManagerInterface $em): Response
+    {
+        if ($user->enabled) {
+            $this->addFlash('error', sprintf('%s is already active', $user->name));
+            return $this->redirectToRoute('admin2_user_index');
+        }
+
+        if ($em->getRepository(EventSubscription::class)->count(['createdUser' => $user]) > 0) {
+            $user->guest = true;
+            $user->enabled = true;
+            $user->password = '!guest';
+            $this->addFlash('success', sprintf('Rejected %s; they keep their event subscriptions as a guest', $user->name));
+        } else {
+            $em->remove($user);
+            $this->addFlash('success', sprintf('Rejected and removed the registration of %s', $user->name));
+        }
+        $em->flush();
+        $this->cache->delete('pending_activation_count');
 
         return $this->redirectToRoute('admin2_user_index');
     }
