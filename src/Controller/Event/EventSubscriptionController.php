@@ -10,6 +10,7 @@ use App\Form\Event\EventSubscriptionType;
 use App\Form\Event\QuestionAnswerType;
 use App\Repository\Event\EventSubscriptionRepository;
 use App\Repository\Event\QuestionAnswerRepository;
+use App\Service\SubscriptionMailer;
 use App\Security\Voter\EventSubscriptionVoter;
 use App\Security\Voter\EventVoter;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -36,6 +37,7 @@ class EventSubscriptionController extends AbstractController
         Request                  $request,
         Event                    $event,
         QuestionAnswerRepository $answerRepository,
+        SubscriptionMailer       $subscriptionMailer,
     ): Response
     {
         /** @var User $user */
@@ -92,7 +94,8 @@ class EventSubscriptionController extends AbstractController
             }
 
             $this->repository->save($subscription);
-            $this->addFlash('success', sprintf('You have subscribed to %s', $event));
+            $subscriptionMailer->sendConfirmation($subscription);
+            $this->addFlash('success', sprintf('You have subscribed to %s. We sent a confirmation by email.', $event));
             return $this->redirectToRoute('event_event_show', ['id' => $event->id]);
         }
 
