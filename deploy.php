@@ -3,6 +3,7 @@
 namespace Deployer;
 
 require_once 'recipe/common.php';
+require_once 'contrib/crontab.php';
 
 // Project name
 set('application', 'durfportal');
@@ -31,6 +32,11 @@ host('portal.buitensportdurf.nl')
         return input()->getOption('branch') ?: 'master';
     })
     ->set('deploy_path', '~/portal.buitensportdurf.nl');
+
+// Synced into the www-data crontab after each deploy, between "###< durfportal" markers
+add('crontab:jobs', [
+    '15 3 * * * cd {{current_path}} && {{bin/php}} bin/console app:recurring-events:generate --no-interaction >> {{deploy_path}}/shared/var/log/cron.log 2>&1',
+]);
 
 set('console_options', function () {
     return '--no-interaction';
@@ -102,6 +108,7 @@ task('deploy', [
 ]);
 
 after('deploy', 'deploy:success');
+after('deploy:success', 'crontab:sync');
 
 // [Optional] if deploy fails automatically unlock.
 after('deploy:failed', 'deploy:unlock');

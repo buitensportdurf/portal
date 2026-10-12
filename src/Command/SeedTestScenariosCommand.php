@@ -7,6 +7,8 @@ use App\Entity\Event\EventSubscription;
 use App\Entity\Event\RecurringEvent;
 use App\Entity\Event\Tag;
 use App\Entity\User;
+use App\Recurrence\SeriesPlanner;
+use App\Recurrence\SeriesSynchronizer;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -25,6 +27,8 @@ class SeedTestScenariosCommand extends Command
     public function __construct(
         private readonly EntityManagerInterface      $em,
         private readonly UserPasswordHasherInterface $hasher,
+        private readonly SeriesPlanner               $planner,
+        private readonly SeriesSynchronizer          $synchronizer,
     ) {
         parent::__construct();
     }
@@ -115,21 +119,17 @@ class SeedTestScenariosCommand extends Command
         $recurring = new RecurringEvent();
         $recurring->name = 'Modal Test - Recurring Weekly';
         $recurring->location = 'Test Location';
-        $recurring->startDate = new DateTimeImmutable('-2 weeks');
+        $recurring->startDate = new DateTimeImmutable('tomorrow 19:00');
         $recurring->endDate = $recurring->startDate->modify('+2 hours');
-        $recurring->recurrenceRule = '1 week';
+        $recurring->rrule = 'FREQ=WEEKLY;COUNT=4';
         $recurring->addTag($tag);
         $this->em->persist($recurring);
-
-        for ($i = 0; $i < 4; $i++) {
-            $child = $recurring->createNextEvent();
-            $child->addTag($tag);
-            $this->em->persist($child);
-        }
-
-        $io->info('Recurring Event: "Modal Test - Recurring Weekly" — 4 child events created');
-
         $this->em->flush();
+
+        // Applying the plan flushes the rest as well
+        $this->synchronizer->apply($this->planner->planExtension($recurring));
+
+        $io->info('Recurring Event: "Modal Test - Recurring Weekly" — 4 occurrences created');
 
         $io->success('All test scenarios seeded. Filter by tag "test_modals" to find them.');
         $io->table(
@@ -138,8 +138,9 @@ class SeedTestScenariosCommand extends Command
                 ['Unsubscribe (member)', 'Log in as testmember, unsubscribe from "Modal Test - Unsubscribe"'],
                 ['Unsubscribe (admin, outside term)', 'Log in as testadmin, unsubscribe member from event with past deadline'],
                 ['Delete event', 'Log in as testadmin, delete "Modal Test - Delete Me"'],
-                ['Delete recurring events', 'Log in as testadmin, go to recurring event, click "Delete events"'],
-                ['Delete recurring event', 'Log in as testadmin, edit recurring event, click "Delete"'],
+                ['Edit recurring event', 'Log in as testadmin, edit "Modal Test - Recurring Weekly", watch the changelist'],
+                ['Delete recurring event', 'Log in as testadmin, open the recurring event, click "Delete"'],
+                ['Cancel occurrence', 'Log in as testadmin, open an occurrence, click "Cancel event"'],
                 ['Enable user', 'Log in as testadmin, go to admin user list, enable "Disabled User"'],
                 ['Guest unsubscribe', 'Log in as testguest, unsubscribe from "Modal Test - Guest Event"'],
             ],
