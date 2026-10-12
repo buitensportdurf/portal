@@ -7,7 +7,8 @@
         {% for change in changes %}
             <tr>
                 <th align="left" style="padding: 6px 12px 6px 0; vertical-align: top;">{{ change.field.label }}</th>
-                <td style="padding: 6px 12px 6px 0; color: #6c757d;"><s>{{ change.oldText }}</s></td>
+                <td style="padding: 6px 8px 6px 0; color: #6c757d;"><s>{{ change.oldText }}</s></td>
+                <td style="padding: 6px 8px 6px 0; color: #6c757d;">→</td>
                 <td style="padding: 6px 0;"><strong>{{ change.newText }}</strong></td>
             </tr>
         {% endfor %}
