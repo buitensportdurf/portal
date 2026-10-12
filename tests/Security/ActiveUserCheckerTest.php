@@ -20,30 +20,28 @@ class ActiveUserCheckerTest extends TestCase
         return $user;
     }
 
-    public function testCheckPreAuthAllowsActiveUser(): void
+    public function testCheckPostAuthAllowsActiveUser(): void
     {
         $checker = new ActiveUserChecker();
-        $user = $this->createUser(true);
 
-        $checker->checkPreAuth($user);
+        $checker->checkPostAuth($this->createUser(true));
         $this->addToAssertionCount(1); // no exception = pass
     }
 
-    public function testCheckPreAuthThrowsForDisabledUser(): void
+    public function testCheckPostAuthThrowsForDisabledUser(): void
     {
         $checker = new ActiveUserChecker();
-        $user = $this->createUser(false);
 
         $this->expectException(AccountDisabledException::class);
-        $checker->checkPreAuth($user);
+        $checker->checkPostAuth($this->createUser(false));
     }
 
-    public function testCheckPostAuthDoesNothing(): void
+    public function testCheckPreAuthDoesNothing(): void
     {
+        // Checking before the password would tell anyone which disabled accounts exist
         $checker = new ActiveUserChecker();
-        $user = $this->createUser();
 
-        $checker->checkPostAuth($user);
+        $checker->checkPreAuth($this->createUser(false));
         $this->addToAssertionCount(1);
     }
 }

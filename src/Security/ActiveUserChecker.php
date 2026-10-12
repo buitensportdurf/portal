@@ -10,15 +10,18 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class ActiveUserChecker implements UserCheckerInterface
 {
-    public function checkPreAuth(UserInterface $user): void
+    public function checkPreAuth(UserInterface $user): void {}
+
+    /**
+     * After the password check, so the message does not reveal which accounts exist.
+     */
+    public function checkPostAuth(UserInterface $user, ?TokenInterface $token = null): void
     {
         /** @var User $user */
         if (!$user->isActive()) {
             throw new AccountDisabledException(
-                'This account is not active. Please contact the Media Committee or the Durf Board to activate your account.'
+                'This account is not active yet. The committee activates new accounts, usually within a few days; you will get an email when that has happened.'
             );
         }
     }
-
-    public function checkPostAuth(UserInterface $user, ?TokenInterface $token = null): void {}
 }
