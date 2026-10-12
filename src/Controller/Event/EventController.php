@@ -101,11 +101,19 @@ class EventController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Whatever is changed here no longer follows the series
-            if ($event->recurringEvent !== null) {
+            if ($series = $event->recurringEvent) {
                 $event->markOverridden(...array_filter(
                     SeriesField::cases(),
                     fn(SeriesField $field) => $field->read($event) !== $before[$field->value],
                 ));
+                // Rescheduled: subscription dates still following the series move along with the start
+                if ($event->occurrenceStart !== null && $event->isOverridden(SeriesField::Schedule)) {
+                    foreach ([SeriesField::SubscriptionOpenDate, SeriesField::SubscriptionDeadline] as $field) {
+                        if (!$event->isOverridden($field)) {
+                            $field->apply($series, $event->occurrenceStart, $event);
+                        }
+                    }
+                }
             }
             $entityManager->flush();
 

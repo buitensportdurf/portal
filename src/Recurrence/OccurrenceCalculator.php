@@ -40,7 +40,9 @@ final class OccurrenceCalculator
     public static function next(RecurringEvent $series, DateTimeInterface $from, int $limit): array
     {
         $slots = [];
-        foreach (self::build($series)->getOccurrencesAfter($from, true) as $occurrence) {
+        // Ask for enough to make up for the exception dates that get skipped
+        $candidates = self::build($series)->getOccurrencesAfter($from, true, $limit + count($series->exceptionDates));
+        foreach ($candidates as $occurrence) {
             $slot = DateTimeImmutable::createFromInterface($occurrence);
             if (!$series->isExcluded($slot)) {
                 $slots[] = $slot;

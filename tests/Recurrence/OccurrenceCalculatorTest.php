@@ -43,6 +43,17 @@ class OccurrenceCalculatorTest extends TestCase
         self::assertSame(['2026-01-03 10:00', '2026-01-10 10:00', '2026-01-17 10:00'], self::format($slots));
     }
 
+    public function testNextWorksForEndlessRules(): void
+    {
+        $series = $this->series('FREQ=MONTHLY;BYDAY=1SA');
+        $series->exclude(new DateTimeImmutable('2026-02-07'));
+
+        self::assertSame(
+            ['2026-01-03 10:00', '2026-03-07 10:00'],
+            self::format(OccurrenceCalculator::next($series, new DateTimeImmutable('2026-01-01'), 2)),
+        );
+    }
+
     public function testExceptionDatesAreSkipped(): void
     {
         $series = $this->series('FREQ=WEEKLY;COUNT=3');

@@ -80,6 +80,10 @@
                         {% set schedule = change.change(Field.Schedule) %}
                         <li>
                             <s class="text-muted">{{ schedule.oldText }}</s> → {{ schedule.newText }}{{ _self.subscribers(change) }}
+                            {% set others = change.changes|filter(c => not c.field.relativeToStart) %}
+                            {% if others %}
+                                <span class="text-muted">+ {{ others|map(c => c.field.label ~ ': ' ~ c.newText)|join(', ') }}</span>
+                            {% endif %}
                         </li>
                     {% endfor %}
                     {% if moves|length > 6 %}<li class="text-muted">and {{ moves|length - 6 }} more</li>{% endif %}

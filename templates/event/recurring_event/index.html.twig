@@ -24,7 +24,7 @@
                         <strong>{{ recurringEvent }}</strong>
                         {% if not recurringEvent.published %}<span class="badge bg-secondary">Draft</span>{% endif %}
                         <div class="small text-muted">
-                            {{ recurringEvent|recurrence_text|capitalize }}, {{ recurringEvent.startDate|date('H:i') }}
+                            {{ recurringEvent|recurrence_text(true) }}, {{ recurringEvent.startDate|date('H:i') }}
                         </div>
                     </div>
                     <span class="small text-muted text-end">

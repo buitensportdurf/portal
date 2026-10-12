@@ -17,7 +17,7 @@
         <div class="card-body">
             <p class="fs-5 mb-1">
                 <i class="fas fa-redo fa-fw"></i>
-                {{ recurringEvent|recurrence_text|capitalize }},
+                {{ recurringEvent|recurrence_text(true) }},
                 {{ recurringEvent.startDate|date('H:i') }}–{{ recurringEvent.endDate|date('H:i') }}
                 {% if not recurringEvent.published %}<span class="badge bg-secondary">Draft</span>{% endif %}
             </p>
