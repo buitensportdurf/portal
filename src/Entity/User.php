@@ -14,6 +14,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Uid\Ulid;
 
 #[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
+// Registration deliberately does not check this (it would reveal which addresses have an account)
+#[UniqueEntity(fields: ['email'], message: 'This email address is already in use', groups: ['profile'])]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {

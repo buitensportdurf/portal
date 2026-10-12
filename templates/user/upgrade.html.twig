@@ -1,0 +1,11 @@
+{% extends 'base/single.column.html.twig' %}
+
+{% set title %}Create your member account{% endset %}
+
+{% block body %}
+    <p>
+        Choose a username and password for <strong>{{ app.user.email }}</strong>. Your guest subscriptions stay.
+        After this, the committee activates your account; you will get an email when you can log in.
+    </p>
+    {{ form(form) }}
+{% endblock %}

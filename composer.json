@@ -24,6 +24,7 @@
         "symfony/mailer": "*",
         "symfony/monolog-bundle": "^4.0",
         "symfony/process": "*",
+        "symfony/rate-limiter": "8.1.*",
         "symfony/runtime": "*",
         "symfony/security-bundle": "*",
         "symfony/serializer": "*",

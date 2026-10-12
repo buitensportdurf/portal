@@ -24,13 +24,13 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         parent::__construct($registry, User::class);
     }
 
+    /**
+     * Log in with a username or an email address. Usernames win: new usernames cannot contain an
+     * "@", so no username can shadow someone else's email, and two matches can never collide.
+     */
     public function loadUserByIdentifier(string $identifier): ?User
     {
-        return $this->createQueryBuilder('u')
-            ->where('u.username = :identifier OR u.email = :identifier')
-            ->setParameter('identifier', $identifier)
-            ->getQuery()
-            ->getOneOrNullResult();
+        return $this->findOneBy(['username' => $identifier]) ?? $this->findOneBy(['email' => $identifier]);
     }
 
     public function add(User $entity): void

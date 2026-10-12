@@ -1,7 +1,11 @@
 {% extends 'base/single.column.html.twig' %}
 
-{% set title %}Guest creation{% endset %}
+{% set title %}Subscribe as a guest{% endset %}
 
 {% block body %}
+    <p>
+        Subscribe to <strong>{{ event }}</strong> without an account. Enter your name and email and we send you a link
+        to finish subscribing. Already a member? <a href="{{ path('login', {_target_path: path('event_subscription_subscribe', {id: event.id})}) }}">Log in</a> instead.
+    </p>
     {{ form(form) }}
 {% endblock %}

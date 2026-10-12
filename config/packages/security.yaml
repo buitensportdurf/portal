@@ -20,6 +20,16 @@ security:
       form_login:
         login_path: login
         check_path: login
+        enable_csrf: true
+      # Passwordless links for guests (and guest account upgrades): signed, expiring, and void
+      # once the email or password changes
+      login_link:
+        check_route: login_link_check
+        signature_properties: ['email', 'password', 'guest']
+        lifetime: 172800 # 2 days
+      login_throttling:
+        max_attempts: 5
+        interval: '15 minutes'
       remember_me:
         secret: '%kernel.secret%' # required
         lifetime: 2419200 # 4 weeks in seconds

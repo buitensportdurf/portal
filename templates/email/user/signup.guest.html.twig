@@ -1,18 +1,10 @@
 {% extends 'email/base.html.twig' %}
+{% import 'email/_macros.html.twig' as email %}
 
-{% set title %}Welcome {{ user.name }}!{% endset %}
+{% set title %}Subscribe to {{ event }}{% endset %}
 
 {% block body %}
-    <p>
-        You have signed up as a guest to the Buitensport Durf vereniging member portal
-        for the event <strong>{{ event }}</strong>.
-    </p>
-    <p>You have the following email: <code>{{ user.email }}</code></p>
-    <p>
-        You can now subscribe and modify your subscription
-        <a class="btn btn-primary btn-sm"
-           href="{{ url('login_event_guest', {user: user.id, event: event.id}) }}">
-            Here
-        </a>
-    </p>
+    <p>Use the button below to finish subscribing to <strong>{{ event }}</strong> as a guest.</p>
+    {{ email.button(loginUrl, 'Subscribe to ' ~ event.name) }}
+    <p>The link logs you in and works for two days; keep it to yourself. Need it again later? Just request a new one on the event page.</p>
 {% endblock %}
