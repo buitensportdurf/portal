@@ -3,9 +3,9 @@
 namespace App\Recurrence;
 
 use App\Entity\Event\RecurringEvent;
+use App\Service\LocalDate;
 use DateTimeImmutable;
 use DateTimeInterface;
-use IntlDateFormatter;
 use RRule\RRule;
 use Throwable;
 
@@ -62,13 +62,11 @@ final class OccurrenceCalculator
     public static function describe(RecurringEvent $series, string $locale = 'en'): string
     {
         try {
-            $dateFormatter = new IntlDateFormatter($locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, pattern: 'd MMM y');
-
             return self::build($series)->humanReadable([
                 'locale' => $locale,
                 'include_start' => false,
                 'explicit_infinite' => false,
-                'date_formatter' => fn(DateTimeInterface $date) => $dateFormatter->format($date),
+                'date_formatter' => fn(DateTimeInterface $date) => LocalDate::format($date, LocalDate::SHORT_DATE, $locale),
             ]);
         } catch (Throwable) {
             return (string) $series->rrule;

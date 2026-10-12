@@ -6,6 +6,7 @@ use App\Entity\Event\Event;
 use App\Entity\Event\RecurringEvent;
 use App\Entity\Event\Tag;
 use App\Entity\Image;
+use App\Service\LocalDate;
 use Doctrine\Common\Collections\ArrayCollection;
 use DateTimeImmutable;
 use Symfony\Component\Translation\TranslatableMessage;
@@ -192,15 +193,15 @@ enum SeriesField: string
 
     private static function formatDate(string $value): string
     {
-        return DateTimeImmutable::createFromFormat(self::DATE_FORMAT, $value)->format('D j M Y H:i');
+        return LocalDate::format(DateTimeImmutable::createFromFormat(self::DATE_FORMAT, $value), LocalDate::DATE_TIME);
     }
 
     private static function formatSchedule(string $start, string $end): string
     {
         $startDate = DateTimeImmutable::createFromFormat(self::DATE_FORMAT, $start);
         $endDate = DateTimeImmutable::createFromFormat(self::DATE_FORMAT, $end);
-        $endFormat = $startDate->format('Y-m-d') === $endDate->format('Y-m-d') ? 'H:i' : 'D j M H:i';
+        $endFormat = $startDate->format('Y-m-d') === $endDate->format('Y-m-d') ? 'HH:mm' : LocalDate::DAY_MONTH_TIME;
 
-        return $startDate->format('D j M Y H:i') . '–' . $endDate->format($endFormat);
+        return LocalDate::format($startDate, LocalDate::DATE_TIME) . '–' . LocalDate::format($endDate, $endFormat);
     }
 }

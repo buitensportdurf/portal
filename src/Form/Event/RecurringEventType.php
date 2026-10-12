@@ -4,6 +4,7 @@ namespace App\Form\Event;
 
 use App\Entity\Event\RecurringEvent;
 use App\Form\SwitchType;
+use App\Service\LocalDate;
 use DateTimeImmutable;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -50,7 +51,7 @@ class RecurringEventType extends AbstractType
                 'mapped' => false,
                 'choices' => $options['apply_from_choices'],
                 'choice_label' => fn(string $date) => t('From {date} onwards', [
-                    'date' => DateTimeImmutable::createFromFormat('!Y-m-d', $date)->format('D j M Y'),
+                    'date' => LocalDate::format(DateTimeImmutable::createFromFormat('!Y-m-d', $date), LocalDate::DATE),
                 ]),
                 'data' => $options['apply_from'],
                 'placeholder' => t('All upcoming events'),

@@ -20,6 +20,19 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class LocaleListenerTest extends TestCase
 {
+    private string $phpLocale;
+
+    protected function setUp(): void
+    {
+        // Request::setLocale() also sets PHP's default locale
+        $this->phpLocale = \Locale::getDefault();
+    }
+
+    protected function tearDown(): void
+    {
+        \Locale::setDefault($this->phpLocale);
+    }
+
     private function listener(?EntityManagerInterface $em = null): LocaleListener
     {
         return new LocaleListener(['en', 'nl'], 'en', $em ?? $this->createStub(EntityManagerInterface::class));

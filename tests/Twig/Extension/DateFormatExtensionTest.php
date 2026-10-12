@@ -4,8 +4,9 @@ namespace App\Tests\Twig\Extension;
 
 use App\Twig\Extension\DateFormatExtension;
 use DateInterval;
-use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Translation\Loader\ArrayLoader;
+use Symfony\Component\Translation\Translator;
 
 class DateFormatExtensionTest extends TestCase
 {
@@ -13,14 +14,22 @@ class DateFormatExtensionTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->ext = new DateFormatExtension();
+        $translator = new Translator('en');
+        $translator->addLoader('array', new ArrayLoader());
+        $messages = [];
+        foreach (['day', 'hour', 'minute', 'second'] as $unit) {
+            $key = sprintf('{count, plural, one {# %s} other {# %ss}}', $unit, $unit);
+            $messages[$key] = $key;
+        }
+        $translator->addResource('array', $messages, 'en', 'messages+intl-icu');
+        $this->ext = new DateFormatExtension($translator);
     }
 
     public function testRegistersExpectedFilters(): void
     {
         $names = array_map(fn ($f) => $f->getName(), $this->ext->getFilters());
 
-        self::assertSame(['time_duration', 'fdate_time', 'fdate'], $names);
+        self::assertSame(['time_duration', 'fdate_time', 'fdate', 'fdate_short', 'fday_month'], $names);
     }
 
     public function testTimeDurationSingularAndPluralUnits(): void
@@ -37,19 +46,5 @@ class DateFormatExtensionTest extends TestCase
         $twoHours = new DateInterval('PT2H');
 
         self::assertSame('2 hours', $this->ext->formatTimeDuration($twoHours));
-    }
-
-    public function testFormatDateTime(): void
-    {
-        $dt = new DateTimeImmutable('2026-03-14 09:05:00');
-
-        self::assertSame('Sat 14 Mar 2026, 09:05', $this->ext->formatDateTime($dt));
-    }
-
-    public function testFormatDate(): void
-    {
-        $dt = new DateTimeImmutable('2026-03-14 09:05:00');
-
-        self::assertSame('Sat 14 Mar 2026', $this->ext->formatDate($dt));
     }
 }

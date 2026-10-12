@@ -26,7 +26,7 @@
                 &middot; {{ 'Subscriptions open {when}'|trans({when: recurringEvent.subscriptionOpenOffset|offset_text('right away'|trans)|trans}) }}
                 &middot; {{ 'deadline {when}'|trans({when: recurringEvent.subscriptionDeadlineOffset|offset_text('at the start'|trans)|trans}) }}
                 {% if recurringEvent.exceptionDates %}
-                    &middot; {{ 'skipped: {dates}'|trans({dates: recurringEvent.exceptionDates|map(d => d|date('j M Y'))|join(', ')}) }}
+                    &middot; {{ 'skipped: {dates}'|trans({dates: recurringEvent.exceptionDates|map(d => d|fdate_short)|join(', ')}) }}
                 {% endif %}
             </p>
             {% if extension.occurrences %}

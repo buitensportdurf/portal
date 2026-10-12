@@ -152,8 +152,8 @@ class SeriesPlannerTest extends TestCase
         self::assertSame(0, $plan->count(ChangeType::Create) + $plan->count(ChangeType::Delete));
         self::assertSame(['2026-11-07'], self::dates($plan->notifications()));
         $move = $plan->notifications()[0]->change(SeriesField::Schedule);
-        self::assertSame('Sat 7 Nov 2026 10:00–15:00', $move->oldText());
-        self::assertSame('Sat 7 Nov 2026 11:00–16:00', $move->newText());
+        self::assertSame('Sat 7 Nov 2026, 10:00–15:00', $move->oldText());
+        self::assertSame('Sat 7 Nov 2026, 11:00–16:00', $move->newText());
     }
 
     public function testWeekdayChangeMovesEachOccurrenceWithinItsMonth(): void

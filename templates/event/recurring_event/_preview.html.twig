@@ -9,7 +9,7 @@
 
 {% macro date_list(changes, limit = 6) %}
     {% for change in changes|slice(0, limit) %}
-        <li>{{ change.slot|date('D j M Y') }}{{ _self.subscribers(change) }}</li>
+        <li>{{ change.slot|fdate }}{{ _self.subscribers(change) }}</li>
     {% endfor %}
     {% if changes|length > limit %}
         <li class="text-muted">{{ 'and {count} more'|trans({count: changes|length - limit}) }}</li>
@@ -40,7 +40,7 @@
     {% if plan.splitAt %}
         <div class="alert alert-info small py-2">
             <i class="fas fa-code-branch"></i>
-            {{ 'Splits the series: events before <strong>{date}</strong> keep the current settings, a new series takes over from that date.'|trans({date: plan.splitAt|date('j M Y')})|raw }}
+            {{ 'Splits the series: events before <strong>{date}</strong> keep the current settings, a new series takes over from that date.'|trans({date: plan.splitAt|fdate_short})|raw }}
         </div>
     {% endif %}
 
@@ -104,7 +104,7 @@
                         </li>
                     {% endfor %}
                     <li class="text-muted">
-                        {% for change in group.occurrences|slice(0, 4) %}{{ change.slot|date('j M') }}{% if not loop.last %}, {% endif %}{% endfor %}{% if group.occurrences|length > 4 %} …{% endif %}
+                        {% for change in group.occurrences|slice(0, 4) %}{{ change.slot|fday_month }}{% if not loop.last %}, {% endif %}{% endfor %}{% if group.occurrences|length > 4 %} …{% endif %}
                     </li>
                 </ul>
             </li>
@@ -144,7 +144,7 @@
                 <ul>
                     {% for change in kept %}
                         <li>
-                            {{ change.slot|date('D j M Y') }}:
+                            {{ change.slot|fdate }}:
                             {{ change.keptOverrides|map(field => field.label|trans)|join(', ') }}
                         </li>
                     {% endfor %}
