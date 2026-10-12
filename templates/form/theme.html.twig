@@ -28,3 +28,18 @@
         {%- endif -%}
     </div>
 {%- endblock -%}
+
+{# Multiple expanded choices as toggle pills, for short lists such as event tags #}
+{%- block tag_pills_widget -%}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' d-flex flex-wrap gap-2')|trim}) -%}
+    <div {{ block('widget_container_attributes') }}>
+        {%- for child in form -%}
+            <input type="checkbox" class="btn-check" autocomplete="off"
+                   id="{{ child.vars.id }}" name="{{ child.vars.full_name }}" value="{{ child.vars.value }}"
+                   {%- if child.vars.checked %} checked{% endif %}{% if child.vars.disabled %} disabled{% endif %}>
+            <label class="btn btn-sm btn-outline-primary rounded-pill" for="{{ child.vars.id }}">{{ child.vars.label }}</label>
+            {%- do child.setRendered -%}
+        {%- endfor -%}
+    </div>
+{%- endblock tag_pills_widget -%}
+
