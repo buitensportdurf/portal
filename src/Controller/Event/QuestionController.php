@@ -14,6 +14,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+use function Symfony\Component\Translation\t;
+
 #[Route('/event/question', name: 'event_question')]
 #[IsGranted('ROLE_EVENT_EDIT')]
 class QuestionController extends AbstractController
@@ -29,12 +31,12 @@ class QuestionController extends AbstractController
         $question->event = $event;
 
         $form = $this->createForm(QuestionType::class, $question);
-        $form->add('save', SubmitType::class);
+        $form->add('save', SubmitType::class, ['label' => t('Save')]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->questionRepository->save($question);
 
-            $this->addFlash('success', sprintf('Added question "%s" to event "%s"', $question->question, $event));
+            $this->addFlash('success', t('Added question "{question}" to event "{event}"', ['question' => $question->question, 'event' => (string) $event]));
             return $this->redirectToRoute('event_event_show', ['id' => $event->id], Response::HTTP_SEE_OTHER);
         }
 
@@ -49,12 +51,12 @@ class QuestionController extends AbstractController
     public function edit(Question $question, Request $request): Response
     {
         $form = $this->createForm(QuestionType::class, $question);
-        $form->add('save', SubmitType::class);
+        $form->add('save', SubmitType::class, ['label' => t('Save')]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->questionRepository->save($question);
 
-            $this->addFlash('success', sprintf('Saved question "%s" to event "%s"', $question->question, $question->event));
+            $this->addFlash('success', t('Saved question "{question}" to event "{event}"', ['question' => $question->question, 'event' => (string) $question->event]));
             return $this->redirectToRoute('event_event_show', ['id' => $question->event->id], Response::HTTP_SEE_OTHER);
         }
 
@@ -73,7 +75,7 @@ class QuestionController extends AbstractController
         $questionText = $question->question;
         $this->questionRepository->remove($question);
 
-        $this->addFlash('success', sprintf('Deleted question "%s" from event "%s"', $questionText, $question->event));
+        $this->addFlash('success', t('Deleted question "{question}" from event "{event}"', ['question' => $questionText, 'event' => (string) $question->event]));
         return $this->redirectToRoute('event_event_show', ['id' => $event->id], Response::HTTP_SEE_OTHER);
     }
 }

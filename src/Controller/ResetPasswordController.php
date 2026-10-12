@@ -19,6 +19,8 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
+use function Symfony\Component\Translation\t;
+
 #[Route('/reset-password')]
 class ResetPasswordController extends AbstractController
 {
@@ -30,6 +32,7 @@ class ResetPasswordController extends AbstractController
         private readonly UserRepository                 $userRepository,
         private readonly EntityManagerInterface         $em,
         private readonly MailerInterface                $mailer,
+        private readonly EmailFactory                   $emailFactory,
     ) {}
 
     /**
@@ -47,7 +50,7 @@ class ResetPasswordController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             if (!$limiter->create($request->getClientIp())->consume()->isAccepted()) {
-                $this->addFlash('error', 'Too many requests from your network, please try again later.');
+                $this->addFlash('error', t('Too many requests from your network, please try again later.'));
                 return $this->redirectToRoute('forgot_password_request');
             }
 
@@ -63,7 +66,7 @@ class ResetPasswordController extends AbstractController
                 $this->em->persist($resetRequest);
                 $this->em->flush();
 
-                $this->mailer->send(EmailFactory::resetPassword($user, $token));
+                $this->mailer->send($this->emailFactory->resetPassword($user, $token));
             }
 
             return $this->render('reset_password/check_email.html.twig', [
@@ -85,7 +88,7 @@ class ResetPasswordController extends AbstractController
     {
         $resetRequest = $this->repository->findResetPasswordRequest($token);
         if ($resetRequest === null || $resetRequest->isExpired()) {
-            $this->addFlash('error', 'This reset link is invalid or has expired. Request a new one below.');
+            $this->addFlash('error', t('This reset link is invalid or has expired. Request a new one below.'));
 
             return $this->redirectToRoute('forgot_password_request');
         }
@@ -99,9 +102,9 @@ class ResetPasswordController extends AbstractController
             // Links work once: drop every open request of this user
             $this->repository->removeResetPasswordRequest($resetRequest);
             $this->userRepository->add($user);
-            $this->mailer->send(EmailFactory::passwordChanged($user));
+            $this->mailer->send($this->emailFactory->passwordChanged($user));
 
-            $this->addFlash('success', 'Your password has been changed. You can now log in.');
+            $this->addFlash('success', t('Your password has been changed. You can now log in.'));
 
             return $this->redirectToRoute('login');
         }

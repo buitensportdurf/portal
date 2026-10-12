@@ -11,14 +11,16 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 class GuestUpgradeType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         AccountFields::add($builder);
         $builder
-            ->add('name', TextType::class, ['label' => 'Full name (first and last name)'])
-            ->add('save', SubmitType::class, ['label' => 'Create account'])
+            ->add('name', TextType::class, ['label' => t('Full name (first and last name)')])
+            ->add('save', SubmitType::class, ['label' => t('Create account')])
         ;
         // Guests get a generated username; start the member account with an empty one
         $builder->addEventListener(FormEvents::POST_SET_DATA, function (PostSetDataEvent $event) {

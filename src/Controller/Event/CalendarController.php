@@ -11,6 +11,7 @@ use App\Service\CalendarBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/event/calendar', name: 'event_calendar')]
 class CalendarController extends AbstractController
@@ -18,6 +19,7 @@ class CalendarController extends AbstractController
     public function __construct(
         private readonly EventRepository $eventRepository,
         private readonly CalendarBuilder $calendarBuilder,
+        private readonly TranslatorInterface $translator,
     ) {}
 
     #[Route('/index', name: '_index')]
@@ -31,13 +33,13 @@ class CalendarController extends AbstractController
     #[Route('/all/cal.ics', name: '_all')]
     public function cal(): Response
     {
-        return $this->getCalendarResponse($this->eventRepository->findForCalendar(), 'Durf - All events');
+        return $this->getCalendarResponse($this->eventRepository->findForCalendar(), 'Durf - ' . $this->translator->trans('All events'));
     }
 
     #[Route('/user/{user}/cal.ics', name: '_user')]
     public function user(User $user): Response
     {
-        return $this->getCalendarResponse($this->eventRepository->findForCalendar(user: $user), 'Durf - My events');
+        return $this->getCalendarResponse($this->eventRepository->findForCalendar(user: $user), 'Durf - ' . $this->translator->trans('My events'));
     }
 
     #[Route('/tag/{tag}/cal.ics', name: '_tag')]

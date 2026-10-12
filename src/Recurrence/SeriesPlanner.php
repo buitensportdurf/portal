@@ -9,6 +9,10 @@ use App\Recurrence\Plan\FieldChange;
 use App\Recurrence\Plan\OccurrenceChange;
 use App\Recurrence\Plan\SeriesPlan;
 use DateTimeImmutable;
+use Symfony\Component\Translation\TranslatableMessage;
+use Symfony\Contracts\Translation\TranslatableInterface;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Works out what a series change means for its occurrences, without changing anything.
@@ -177,43 +181,56 @@ final class SeriesPlanner
     }
 
     /**
-     * @return list<array{label: string, old: string, new: string}>
+     * Compares the series settings themselves; values are compared raw and shown formatted.
+     *
+     * @return list<array{label: TranslatableMessage, old: string|TranslatableInterface, new: string|TranslatableInterface}>
      */
     private function seriesChanges(RecurringEvent $series, RecurringEvent $target): array
     {
+        $schedule = SeriesField::Schedule;
         $rows = [
-            ['Repeats', OccurrenceCalculator::describe($series), OccurrenceCalculator::describe($target)],
             [
-                'First occurrence',
-                SeriesField::Schedule->format(SeriesField::Schedule->expected($series, $series->startDate, $series->startDate)),
-                SeriesField::Schedule->format(SeriesField::Schedule->expected($target, $target->startDate, $target->startDate)),
+                t('Repeats'),
+                OccurrenceCalculator::describe($series),
+                OccurrenceCalculator::describe($target),
+                new RecurrenceDescription($series),
+                new RecurrenceDescription($target),
             ],
             [
-                'Subscriptions open',
-                Offset::describe($series->subscriptionOpenOffset, 'right away'),
-                Offset::describe($target->subscriptionOpenOffset, 'right away'),
+                t('First occurrence'),
+                $old = $schedule->format($schedule->expected($series, $series->startDate, $series->startDate)),
+                $new = $schedule->format($schedule->expected($target, $target->startDate, $target->startDate)),
+                $old,
+                $new,
             ],
             [
-                'Subscription deadline',
-                Offset::describe($series->subscriptionDeadlineOffset, 'at the start'),
-                Offset::describe($target->subscriptionDeadlineOffset, 'at the start'),
+                t('Subscriptions open'),
+                $series->subscriptionOpenOffset,
+                $target->subscriptionOpenOffset,
+                Offset::describe($series->subscriptionOpenOffset, t('right away')),
+                Offset::describe($target->subscriptionOpenOffset, t('right away')),
+            ],
+            [
+                t('Subscription deadline'),
+                $series->subscriptionDeadlineOffset,
+                $target->subscriptionDeadlineOffset,
+                Offset::describe($series->subscriptionDeadlineOffset, t('at the start')),
+                Offset::describe($target->subscriptionDeadlineOffset, t('at the start')),
             ],
         ];
         foreach (SeriesField::cases() as $field) {
             if (in_array($field, [SeriesField::Schedule, SeriesField::SubscriptionOpenDate, SeriesField::SubscriptionDeadline], true)) {
                 continue;
             }
-            $rows[] = [
-                $field->label(),
-                $field->format($field->expected($series, $series->startDate, $series->startDate)),
-                $field->format($field->expected($target, $target->startDate, $target->startDate)),
-            ];
+            $old = $field->expected($series, $series->startDate, $series->startDate);
+            $new = $field->expected($target, $target->startDate, $target->startDate);
+            $rows[] = [$field->label(), $old, $new, $field->format($old), $field->format($new)];
         }
 
         $changes = [];
-        foreach ($rows as [$label, $old, $new]) {
+        foreach ($rows as [$label, $old, $new, $oldText, $newText]) {
             if ($old !== $new) {
-                $changes[] = ['label' => $label, 'old' => $old, 'new' => $new];
+                $changes[] = ['label' => $label, 'old' => $oldText, 'new' => $newText];
             }
         }
         return $changes;

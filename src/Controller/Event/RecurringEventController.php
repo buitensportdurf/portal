@@ -20,6 +20,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Translation\TranslatableMessage;
+use Symfony\Contracts\Translation\TranslatableInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+
+use function Symfony\Component\Translation\t;
 
 #[Route('/event/recurring_event', name: 'event_recurring_event')]
 #[IsGranted('ROLE_EVENT_RECURRING')]
@@ -30,6 +35,7 @@ class RecurringEventController extends AbstractController
         private readonly RecurringEventRepository $repository,
         private readonly SeriesPlanner            $planner,
         private readonly SeriesSynchronizer       $synchronizer,
+        private readonly TranslatorInterface      $translator,
     ) {}
 
     #[Route('/index', name: '_index')]
@@ -49,7 +55,7 @@ class RecurringEventController extends AbstractController
             $recurringEvent->addTag($recurringTag);
         }
         $form = $this->createForm(RecurringEventType::class, $recurringEvent);
-        $form->add('save', SubmitType::class, ['label' => 'Create series']);
+        $form->add('save', SubmitType::class, ['label' => t('Create series')]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -57,7 +63,7 @@ class RecurringEventController extends AbstractController
             $plan = $this->planner->planExtension($recurringEvent);
             $this->synchronizer->apply($plan);
 
-            $this->addFlash('success', sprintf('Created "%s" with %d events', $recurringEvent, count($plan->occurrences)));
+            $this->addFlash('success', t('Created "{name}" with {count, plural, one {# event} other {# events}}', ['name' => (string) $recurringEvent, 'count' => count($plan->occurrences)]));
             return $this->redirectToRoute('event_recurring_event_show', ['id' => $recurringEvent->id], Response::HTTP_SEE_OTHER);
         }
 
@@ -91,13 +97,13 @@ class RecurringEventController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $plan = $this->planner->plan($recurringEvent, $draft, self::applyFrom($form));
             if ($plan->isEmpty()) {
-                $this->addFlash('success', 'Nothing changed');
+                $this->addFlash('success', t('Nothing changed'));
                 return $this->redirectToRoute('event_recurring_event_show', ['id' => $recurringEvent->id], Response::HTTP_SEE_OTHER);
             }
             $notify = (bool) $form->get('notifySubscribers')->getData();
             $owner = $this->synchronizer->apply($plan, $notify);
 
-            $this->addFlash('success', self::summary($plan, $notify));
+            $this->addFlash('success', $this->summary($plan, $notify));
             return $this->redirectToRoute('event_recurring_event_show', ['id' => $owner->id], Response::HTTP_SEE_OTHER);
         }
 
@@ -140,7 +146,7 @@ class RecurringEventController extends AbstractController
         $plan = $this->planner->planExtension($recurringEvent);
         $this->synchronizer->apply($plan);
 
-        $this->addFlash('success', sprintf('Created %d events', count($plan->occurrences)));
+        $this->addFlash('success', t('Created {count, plural, one {# event} other {# events}}', ['count' => count($plan->occurrences)]));
         return $this->redirectToRoute('event_recurring_event_show', ['id' => $recurringEvent->id], Response::HTTP_SEE_OTHER);
     }
 
@@ -154,7 +160,7 @@ class RecurringEventController extends AbstractController
             $notify = $request->request->has('notify');
             $this->synchronizer->apply($plan, $notify);
 
-            $this->addFlash('success', sprintf('Deleted "%s". %s', $recurringEvent, self::summary($plan, $notify)));
+            $this->addFlash('success', $this->summary($plan, $notify, t('Deleted "{name}".', ['name' => (string) $recurringEvent])));
             return $this->redirectToRoute('event_recurring_event_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -169,7 +175,8 @@ class RecurringEventController extends AbstractController
         $choices = [];
         foreach ($recurringEvent->getFutureEvents() as $event) {
             if ($event->occurrenceStart !== null && !$event->isCancelled()) {
-                $choices['From ' . $event->occurrenceStart->format('D j M Y') . ' onwards'] = $event->occurrenceStart->format('Y-m-d');
+                $date = $event->occurrenceStart->format('Y-m-d');
+                $choices[$date] = $date;
             }
         }
         // The first upcoming occurrence is the same as "all upcoming"
@@ -180,7 +187,7 @@ class RecurringEventController extends AbstractController
             'apply_from' => in_array($from, $choices, true) ? $from : null,
             'notify_option' => true,
         ]);
-        $form->add('save', SubmitType::class, ['label' => 'Save changes']);
+        $form->add('save', SubmitType::class, ['label' => t('Save changes')]);
 
         return $form;
     }
@@ -194,6 +201,11 @@ class RecurringEventController extends AbstractController
         if (!$form->isSubmitted() || !$form->isValid()) {
             foreach ($form->getErrors(true) as $error) {
                 $label = $error->getOrigin()?->getConfig()->getOption('label');
+                if ($label instanceof TranslatableInterface) {
+                    $label = $label->trans($this->translator);
+                } elseif (is_string($label) && $label !== '') {
+                    $label = $this->translator->trans($label);
+                }
                 $errors[] = ($label ? $label . ': ' : '') . $error->getMessage();
             }
         }
@@ -220,23 +232,28 @@ class RecurringEventController extends AbstractController
         }
     }
 
-    private static function summary(SeriesPlan $plan, bool $notified = true): string
+    /**
+     * One sentence per kind of change, e.g. "2 events created. 1 event cancelled. 3 subscribers notified."
+     */
+    private function summary(SeriesPlan $plan, bool $notified = true, ?TranslatableInterface $intro = null): string
     {
-        $parts = array_filter([
-            'created' => $plan->count(ChangeType::Create),
-            'moved' => $plan->count(ChangeType::Move),
-            'updated' => $plan->count(ChangeType::Update),
-            'cancelled' => $plan->count(ChangeType::Cancel),
-            'deleted' => $plan->count(ChangeType::Delete),
-        ]);
-        if ($parts === []) {
-            return 'Series updated, no events affected.';
+        $sentences = $intro ? [$intro] : [];
+        $counts = [
+            t('{count, plural, one {# event} other {# events}} created.', ['count' => $plan->count(ChangeType::Create)]),
+            t('{count, plural, one {# event} other {# events}} moved.', ['count' => $plan->count(ChangeType::Move)]),
+            t('{count, plural, one {# event} other {# events}} updated.', ['count' => $plan->count(ChangeType::Update)]),
+            t('{count, plural, one {# event} other {# events}} cancelled.', ['count' => $plan->count(ChangeType::Cancel)]),
+            t('{count, plural, one {# event} other {# events}} deleted.', ['count' => $plan->count(ChangeType::Delete)]),
+        ];
+        $counts = array_filter($counts, fn(TranslatableMessage $sentence) => $sentence->getParameters()['count'] > 0);
+        if ($counts === []) {
+            $sentences[] = t('Series updated, no events affected.');
         }
-        $text = 'Events ' . implode(', ', array_map(fn(string $what, int $count) => "$what: $count", array_keys($parts), $parts)) . '.';
+        array_push($sentences, ...$counts);
         if ($notified && $plan->notifiedSubscriberCount() > 0) {
-            $text .= sprintf(' %d subscribers notified.', $plan->notifiedSubscriberCount());
+            $sentences[] = t('{count, plural, one {# subscriber} other {# subscribers}} notified.', ['count' => $plan->notifiedSubscriberCount()]);
         }
 
-        return $text;
+        return implode(' ', array_map(fn(TranslatableInterface $sentence) => $sentence->trans($this->translator), $sentences));
     }
 }

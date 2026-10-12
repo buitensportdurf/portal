@@ -72,6 +72,7 @@ class OccurrenceCalculatorTest extends TestCase
             OccurrenceCalculator::describe($this->series('FREQ=MONTHLY;INTERVAL=2;BYDAY=1MO')),
         );
         self::assertSame('weekly, until 17 Jan 2026', OccurrenceCalculator::describe($this->series('FREQ=WEEKLY;UNTIL=20260117')));
+        self::assertSame('wekelijks, tot en met 17 jan 2026', OccurrenceCalculator::describe($this->series('FREQ=WEEKLY;UNTIL=20260117'), 'nl'));
     }
 
     public static function invalidRules(): iterable

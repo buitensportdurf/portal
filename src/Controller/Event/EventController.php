@@ -22,6 +22,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+use function Symfony\Component\Translation\t;
+
 #[Route('/event/event', name: 'event_event')]
 class EventController extends AbstractController
 {
@@ -65,7 +67,7 @@ class EventController extends AbstractController
         $event = new Event();
         $event->published = false;
         $form = $this->createForm(EventType::class, $event);
-        $form->add('Save', SubmitType::class);
+        $form->add('Save', SubmitType::class, ['label' => t('Save')]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -104,7 +106,7 @@ class EventController extends AbstractController
     {
         $before = self::snapshot($event);
         $form = $this->createForm(EventType::class, $event);
-        $form->add('Save', SubmitType::class);
+        $form->add('Save', SubmitType::class, ['label' => t('Save')]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -135,7 +137,7 @@ class EventController extends AbstractController
             $change = new OccurrenceChange(ChangeType::Update, $event, $event->occurrenceStart ?? $event->startDate, $changes);
             if (!$event->isCancelled() && $event->isNotPastStartDate() && $change->notifiesSubscribers()) {
                 $notifier->notify($change);
-                $this->addFlash('success', sprintf('Saved. %d subscriber(s) were emailed about the change.', count($change->recipients())));
+                $this->addFlash('success', t('Saved. {count, plural, one {# subscriber was} other {# subscribers were}} emailed about the change.', ['count' => count($change->recipients())]));
             }
 
             return $this->redirectToRoute('event_event_show', ['id' => $event->id], Response::HTTP_SEE_OTHER);
@@ -159,7 +161,7 @@ class EventController extends AbstractController
         }
         $entityManager->flush();
 
-        $this->addFlash('success', sprintf('Event "%s" has been published.', $event));
+        $this->addFlash('success', t('Event "{event}" has been published.', ['event' => (string) $event]));
         return $this->redirectToRoute('event_event_show', ['id' => $event->id]);
     }
 
@@ -174,7 +176,7 @@ class EventController extends AbstractController
         }
         $entityManager->flush();
 
-        $this->addFlash('success', sprintf('Event "%s" has been moved to draft.', $event));
+        $this->addFlash('success', t('Event "{event}" has been moved to draft.', ['event' => (string) $event]));
         return $this->redirectToRoute('event_event_show', ['id' => $event->id]);
     }
 
@@ -185,7 +187,7 @@ class EventController extends AbstractController
     {
         $repository->remove($event);
 
-        $this->addFlash('success', sprintf('Deleted event "%s"', $event));
+        $this->addFlash('success', t('Deleted event "{event}"', ['event' => (string) $event]));
         return $this->redirectToRoute('event_event_index');
     }
 
@@ -211,7 +213,7 @@ class EventController extends AbstractController
             }
         }
 
-        $this->addFlash('success', sprintf('Event "%s" has been cancelled.', $event));
+        $this->addFlash('success', t('Event "{event}" has been cancelled.', ['event' => (string) $event]));
         return $this->redirectToRoute('event_event_show', ['id' => $event->id], Response::HTTP_SEE_OTHER);
     }
 
@@ -223,7 +225,7 @@ class EventController extends AbstractController
         $event->cancelledAt = null;
         $entityManager->flush();
 
-        $this->addFlash('success', sprintf('Event "%s" is no longer cancelled.', $event));
+        $this->addFlash('success', t('Event "{event}" is no longer cancelled.', ['event' => (string) $event]));
         return $this->redirectToRoute('event_event_show', ['id' => $event->id], Response::HTTP_SEE_OTHER);
     }
 
@@ -245,7 +247,7 @@ class EventController extends AbstractController
         $event->overriddenFields = [];
         $entityManager->flush();
 
-        $this->addFlash('success', sprintf('Event "%s" follows its series again.', $event));
+        $this->addFlash('success', t('Event "{event}" follows its series again.', ['event' => (string) $event]));
         return $this->redirectToRoute('event_event_show', ['id' => $event->id], Response::HTTP_SEE_OTHER);
     }
 
@@ -262,7 +264,7 @@ class EventController extends AbstractController
             $series->removeEvent($event);
             $event->overriddenFields = [];
             $entityManager->flush();
-            $this->addFlash('success', sprintf('Event "%s" is now separate from "%s".', $event, $series));
+            $this->addFlash('success', t('Event "{event}" is now separate from "{series}".', ['event' => (string) $event, 'series' => (string) $series]));
         }
 
         return $this->redirectToRoute('event_event_show', ['id' => $event->id], Response::HTTP_SEE_OTHER);

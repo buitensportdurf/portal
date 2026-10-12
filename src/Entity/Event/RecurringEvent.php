@@ -83,7 +83,8 @@ class RecurringEvent extends BaseEvent
         }
         $error = OccurrenceCalculator::validate($this);
         if ($error !== null) {
-            $context->buildViolation('Invalid recurrence rule: ' . $error)
+            $context->buildViolation('Invalid recurrence rule: {{ error }}')
+                    ->setParameter('{{ error }}', $error)
                     ->atPath('rrule')
                     ->addViolation()
             ;

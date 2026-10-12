@@ -13,6 +13,8 @@ use App\Recurrence\SeriesPlanner;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
+use function Symfony\Component\Translation\t;
+
 class SeriesPlannerTest extends TestCase
 {
     private DateTimeImmutable $now;
@@ -129,7 +131,7 @@ class SeriesPlannerTest extends TestCase
         $draft->name = 'Klusdag';
         $plan = $this->planner->plan($series, $draft, now: $this->now);
 
-        self::assertSame([['label' => 'Name', 'old' => 'Bouwdag', 'new' => 'Klusdag']], $plan->seriesChanges);
+        self::assertEquals([['label' => t('Name'), 'old' => 'Bouwdag', 'new' => 'Klusdag']], $plan->seriesChanges);
         self::assertSame(11, $plan->count(ChangeType::Update));
         self::assertSame(['2027-01-02'], self::dates($plan->keptOverrides()));
         self::assertSame([SeriesField::Name], $plan->keptOverrides()[0]->keptOverrides);
@@ -166,10 +168,9 @@ class SeriesPlannerTest extends TestCase
         $first = $plan->ofType(ChangeType::Move)[0];
         self::assertSame('2026-11-07', $first->event->occurrenceStart->format('Y-m-d'));
         self::assertSame('2026-11-01', $first->slot->format('Y-m-d'));
-        self::assertSame(
-            ['label' => 'Repeats', 'old' => 'monthly on the first Saturday of the month', 'new' => 'monthly on the first Sunday of the month'],
-            $plan->seriesChanges[0],
-        );
+        self::assertSame('Repeats', $plan->seriesChanges[0]['label']->getMessage());
+        self::assertSame('monthly on the first Saturday of the month', (string) $plan->seriesChanges[0]['old']);
+        self::assertSame('monthly on the first Sunday of the month', (string) $plan->seriesChanges[0]['new']);
     }
 
     public function testRescheduledOccurrenceKeepsItsDateWhenTheRuleShifts(): void

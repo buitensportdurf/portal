@@ -16,6 +16,8 @@ use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * The email is not mapped: a new address only takes effect once it is confirmed.
  */
@@ -24,13 +26,13 @@ class ProfileType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class, ['label' => 'Full name'])
-            ->add('locale', LocaleType::class, ['help' => 'For the website and the emails we send you'])
+            ->add('name', TextType::class, ['label' => t('Full name')])
+            ->add('locale', LocaleType::class, ['help' => t('For the website and the emails we send you')])
             ->add('newEmail', EmailType::class, [
-                'label' => 'Email',
+                'label' => t('Email'),
                 'mapped' => false,
                 'data' => $options['current_email'],
-                'help' => 'A new address has to be confirmed via a link we send to it',
+                'help' => t('A new address has to be confirmed via a link we send to it'),
                 'constraints' => [new NotBlank(), new Email()],
             ])
             ->add('plainPassword', RepeatedType::class, [
@@ -38,21 +40,21 @@ class ProfileType extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'invalid_message' => 'The password fields must match.',
-                'first_options' => ['label' => 'New password', 'attr' => ['autocomplete' => 'new-password'], 'help' => 'Leave empty to keep your current password'],
-                'second_options' => ['label' => 'Repeat new password', 'attr' => ['autocomplete' => 'new-password']],
+                'first_options' => ['label' => t('New password'), 'attr' => ['autocomplete' => 'new-password'], 'help' => t('Leave empty to keep your current password')],
+                'second_options' => ['label' => t('Repeat new password'), 'attr' => ['autocomplete' => 'new-password']],
                 'constraints' => [
                     new Length(min: 8, max: 4096, minMessage: 'Your password should be at least {{ limit }} characters'),
                 ],
             ])
             ->add('currentPassword', PasswordType::class, [
-                'label' => 'Current password',
+                'label' => t('Current password'),
                 'mapped' => false,
                 'required' => false,
                 'attr' => ['autocomplete' => 'current-password'],
-                'help' => 'Needed to change your email or password',
+                'help' => t('Needed to change your email or password'),
             ])
             ->add('emailNotifications', EmailNotificationsType::class)
-            ->add('save', SubmitType::class)
+            ->add('save', SubmitType::class, ['label' => t('Save')])
         ;
     }
 

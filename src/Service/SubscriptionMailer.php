@@ -18,6 +18,7 @@ readonly class SubscriptionMailer
     public function __construct(
         private MailerInterface $mailer,
         private CalendarBuilder $calendarBuilder,
+        private EmailFactory $emailFactory,
         private LoggerInterface $logger,
     ) {}
 
@@ -27,7 +28,7 @@ readonly class SubscriptionMailer
             return;
         }
         $ics = $this->calendarBuilder->build([$subscription->event], 'Durf - ' . $subscription->event->name);
-        $this->send(EmailFactory::subscriptionConfirmed($subscription, $ics), $subscription);
+        $this->send($this->emailFactory->subscriptionConfirmed($subscription, $ics), $subscription);
     }
 
     public function wants(EventSubscription $subscription, EmailNotification $notification): bool
@@ -42,7 +43,7 @@ readonly class SubscriptionMailer
         if (!$this->wants($subscription, EmailNotification::Reminder)) {
             return;
         }
-        $this->send(EmailFactory::eventReminder($subscription), $subscription);
+        $this->send($this->emailFactory->eventReminder($subscription), $subscription);
     }
 
     private function send(Email $email, EventSubscription $subscription): void

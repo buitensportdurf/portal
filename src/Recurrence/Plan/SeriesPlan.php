@@ -4,6 +4,8 @@ namespace App\Recurrence\Plan;
 
 use App\Entity\Event\RecurringEvent;
 use DateTimeImmutable;
+use Symfony\Component\Translation\TranslatableMessage;
+use Symfony\Contracts\Translation\TranslatableInterface;
 
 /**
  * The full changelist of a series edit, creation, extension or removal. Built by SeriesPlanner
@@ -15,7 +17,7 @@ final readonly class SeriesPlan
      * @param RecurringEvent          $series         the stored series
      * @param RecurringEvent          $target         the series state to apply (a draft, or $series itself)
      * @param DateTimeImmutable|null  $splitAt        when set, $target becomes a new series from this date and $series ends before it
-     * @param list<array{label: string, old: string, new: string}> $seriesChanges
+     * @param list<array{label: TranslatableMessage, old: string|TranslatableInterface, new: string|TranslatableInterface}> $seriesChanges
      * @param list<OccurrenceChange>  $occurrences
      * @param list<string>            $exceptionDates exception dates the series applied to occurrences will have
      */

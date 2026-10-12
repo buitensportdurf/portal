@@ -50,7 +50,8 @@ class EventSubscription
         if ($this->event) {
             if ($this->event->subscriberLimit && $this->event->getAmountOfSubscriptions() > $this->event->subscriberLimit) {
                 $context
-                    ->buildViolation(sprintf('Subscription exceeds subscriber limit for this event, limit is %d', $this->event->subscriberLimit))
+                    ->buildViolation('Subscription exceeds subscriber limit for this event, limit is {{ limit }}')
+                    ->setParameter('{{ limit }}', (string) $this->event->subscriberLimit)
                     ->atPath('amount')
                     ->addViolation()
                 ;

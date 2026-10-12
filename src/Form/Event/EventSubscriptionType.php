@@ -11,18 +11,20 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 class EventSubscriptionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('amount')
+            ->add('amount', null, ['label' => t('Amount')])
             ->add('questionAnswers', CollectionType::class, [
                 'entry_type' => QuestionAnswerType::class,
                 'entry_options' => ['label' => false],
                 'label' => false,
             ])
-            ->add('note')
+            ->add('note', null, ['label' => t('Note')])
         ;
     }
 

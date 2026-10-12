@@ -10,9 +10,25 @@ use DateInterval;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class EmailFactoryTest extends TestCase
 {
+    /** @var list<?string> Locales the subjects were translated in */
+    private array $translatedIn = [];
+
+    private function factory(): EmailFactory
+    {
+        $translator = $this->createStub(TranslatorInterface::class);
+        $translator->method('trans')->willReturnCallback(function (string $id, array $parameters = [], ?string $domain = null, ?string $locale = null): string {
+            $this->translatedIn[] = $locale;
+
+            return \MessageFormatter::formatMessage('en', $id, $parameters);
+        });
+
+        return new EmailFactory($translator, 'en');
+    }
+
     private function createUser(string $email = 'user@example.com'): User
     {
         $user = new User();
@@ -40,7 +56,7 @@ class EmailFactoryTest extends TestCase
     public function testSignupEmailSendsToUser(): void
     {
         $user = $this->createUser('alice@example.com');
-        $email = EmailFactory::signupEmail($user);
+        $email = $this->factory()->signupEmail($user);
 
         self::assertInstanceOf(TemplatedEmail::class, $email);
         self::assertSame('alice@example.com', $email->getTo()[0]->getAddress());
@@ -48,7 +64,7 @@ class EmailFactoryTest extends TestCase
 
     public function testSignupEmailHasSubject(): void
     {
-        $email = EmailFactory::signupEmail($this->createUser());
+        $email = $this->factory()->signupEmail($this->createUser());
 
         self::assertSame('Durf - Account created', $email->getSubject());
     }
@@ -56,7 +72,7 @@ class EmailFactoryTest extends TestCase
     public function testSignupEmailUsesCorrectTemplate(): void
     {
         /** @var TemplatedEmail $email */
-        $email = EmailFactory::signupEmail($this->createUser());
+        $email = $this->factory()->signupEmail($this->createUser());
 
         self::assertSame('email/user/signup.html.twig', $email->getHtmlTemplate());
     }
@@ -65,7 +81,7 @@ class EmailFactoryTest extends TestCase
     {
         $user = $this->createUser();
         /** @var TemplatedEmail $email */
-        $email = EmailFactory::signupEmail($user);
+        $email = $this->factory()->signupEmail($user);
         $context = $email->getContext();
 
         self::assertSame($user, $context['user']);
@@ -78,14 +94,14 @@ class EmailFactoryTest extends TestCase
     {
         $user = $this->createUser('guest@example.com');
         $event = $this->createEvent();
-        $email = EmailFactory::eventGuestSignupEmail($user, $event, 'https://example.test/login');
+        $email = $this->factory()->eventGuestSignupEmail($user, $event, 'https://example.test/login');
 
         self::assertSame('guest@example.com', $email->getTo()[0]->getAddress());
     }
 
     public function testEventGuestSignupEmailHasSubject(): void
     {
-        $email = EmailFactory::eventGuestSignupEmail($this->createUser(), $this->createEvent(), 'https://example.test/login');
+        $email = $this->factory()->eventGuestSignupEmail($this->createUser(), $this->createEvent(), 'https://example.test/login');
 
         self::assertStringStartsWith('Durf - Subscribe to ', $email->getSubject());
         self::assertSame('https://example.test/login', $email->getContext()['loginUrl']);
@@ -94,7 +110,7 @@ class EmailFactoryTest extends TestCase
     public function testEventGuestSignupEmailUsesCorrectTemplate(): void
     {
         /** @var TemplatedEmail $email */
-        $email = EmailFactory::eventGuestSignupEmail($this->createUser(), $this->createEvent(), 'https://example.test/login');
+        $email = $this->factory()->eventGuestSignupEmail($this->createUser(), $this->createEvent(), 'https://example.test/login');
 
         self::assertSame('email/user/signup.guest.html.twig', $email->getHtmlTemplate());
     }
@@ -103,7 +119,7 @@ class EmailFactoryTest extends TestCase
     {
         $event = $this->createEvent();
         /** @var TemplatedEmail $email */
-        $email = EmailFactory::eventGuestSignupEmail($this->createUser(), $event, 'https://example.test/login');
+        $email = $this->factory()->eventGuestSignupEmail($this->createUser(), $event, 'https://example.test/login');
 
         self::assertSame($event, $email->getContext()['event']);
     }
@@ -112,7 +128,7 @@ class EmailFactoryTest extends TestCase
 
     public function testResetPasswordEmailHasSubject(): void
     {
-        $email = EmailFactory::resetPassword($this->createUser(), 'token123');
+        $email = $this->factory()->resetPassword($this->createUser(), 'token123');
 
         self::assertSame('Durf - Reset your password', $email->getSubject());
     }
@@ -120,7 +136,7 @@ class EmailFactoryTest extends TestCase
     public function testResetPasswordEmailUsesCorrectTemplate(): void
     {
         /** @var TemplatedEmail $email */
-        $email = EmailFactory::resetPassword($this->createUser(), 'token123');
+        $email = $this->factory()->resetPassword($this->createUser(), 'token123');
 
         self::assertSame('email/user/reset.password.html.twig', $email->getHtmlTemplate());
     }
@@ -128,7 +144,7 @@ class EmailFactoryTest extends TestCase
     public function testResetPasswordEmailContextContainsToken(): void
     {
         /** @var TemplatedEmail $email */
-        $email = EmailFactory::resetPassword($this->createUser(), 'my-reset-token');
+        $email = $this->factory()->resetPassword($this->createUser(), 'my-reset-token');
 
         self::assertSame('my-reset-token', $email->getContext()['resetToken']);
     }
@@ -137,7 +153,7 @@ class EmailFactoryTest extends TestCase
 
     public function testUserEnabledEmailHasSubject(): void
     {
-        $email = EmailFactory::userEnabled($this->createUser());
+        $email = $this->factory()->userEnabled($this->createUser());
 
         self::assertSame('Durf - Account activated', $email->getSubject());
     }
@@ -145,7 +161,7 @@ class EmailFactoryTest extends TestCase
     public function testUserEnabledEmailUsesCorrectTemplate(): void
     {
         /** @var TemplatedEmail $email */
-        $email = EmailFactory::userEnabled($this->createUser());
+        $email = $this->factory()->userEnabled($this->createUser());
 
         self::assertSame('email/user/enabled.html.twig', $email->getHtmlTemplate());
     }
@@ -154,7 +170,7 @@ class EmailFactoryTest extends TestCase
 
     public function testNewUserNotificationHasNoRecipient(): void
     {
-        $email = EmailFactory::newUserNotification($this->createUser());
+        $email = $this->factory()->newUserNotification($this->createUser());
 
         self::assertEmpty($email->getTo());
     }
@@ -162,7 +178,7 @@ class EmailFactoryTest extends TestCase
     public function testNewUserNotificationSubjectContainsUserName(): void
     {
         $user = $this->createUser();
-        $email = EmailFactory::newUserNotification($user);
+        $email = $this->factory()->newUserNotification($user);
 
         self::assertStringContainsString('Test User', $email->getSubject());
     }
@@ -170,7 +186,7 @@ class EmailFactoryTest extends TestCase
     public function testNewUserNotificationUsesCorrectTemplate(): void
     {
         /** @var TemplatedEmail $email */
-        $email = EmailFactory::newUserNotification($this->createUser());
+        $email = $this->factory()->newUserNotification($this->createUser());
 
         self::assertSame('email/user/new_user_notification.html.twig', $email->getHtmlTemplate());
     }
@@ -179,7 +195,7 @@ class EmailFactoryTest extends TestCase
     {
         $user = $this->createUser();
         /** @var TemplatedEmail $email */
-        $email = EmailFactory::newUserNotification($user);
+        $email = $this->factory()->newUserNotification($user);
 
         self::assertSame($user, $email->getContext()['newUser']);
         // The committee is not addressed as the new user
@@ -200,7 +216,7 @@ class EmailFactoryTest extends TestCase
 
     public function testSubscriptionConfirmedAttachesTheCalendarFile(): void
     {
-        $email = EmailFactory::subscriptionConfirmed($this->createSubscription(), "BEGIN:VCALENDAR\r\nEND:VCALENDAR");
+        $email = $this->factory()->subscriptionConfirmed($this->createSubscription(), "BEGIN:VCALENDAR\r\nEND:VCALENDAR");
 
         self::assertSame('member@example.com', $email->getTo()[0]->getAddress());
         self::assertCount(1, $email->getAttachments());
@@ -210,7 +226,7 @@ class EmailFactoryTest extends TestCase
 
     public function testEventReminderUsesTheReminderTemplate(): void
     {
-        $email = EmailFactory::eventReminder($this->createSubscription());
+        $email = $this->factory()->eventReminder($this->createSubscription());
 
         self::assertStringStartsWith('Durf - Reminder: ', $email->getSubject());
         self::assertSame('email/event/reminder.html.twig', $email->getHtmlTemplate());
@@ -220,7 +236,7 @@ class EmailFactoryTest extends TestCase
 
     public function testConfirmEmailChangeGoesToTheNewAddress(): void
     {
-        $email = EmailFactory::confirmEmailChange($this->createUser('old@example.com'), 'new@example.com', 'https://example.test/confirm');
+        $email = $this->factory()->confirmEmailChange($this->createUser('old@example.com'), 'new@example.com', 'https://example.test/confirm');
 
         self::assertCount(1, $email->getTo());
         self::assertSame('new@example.com', $email->getTo()[0]->getAddress());
@@ -231,9 +247,48 @@ class EmailFactoryTest extends TestCase
     {
         $user = $this->createUser('new@example.com');
 
-        $email = EmailFactory::emailChanged($user, 'old@example.com');
+        $email = $this->factory()->emailChanged($user, 'old@example.com');
 
         self::assertCount(1, $email->getTo());
         self::assertSame('old@example.com', $email->getTo()[0]->getAddress());
+    }
+
+    // --- locale ---
+
+    public function testEmailIsInTheLanguageOfTheRecipient(): void
+    {
+        $user = $this->createUser();
+        $user->locale = 'nl';
+
+        $email = $this->factory()->signupEmail($user);
+
+        self::assertSame('nl', $email->getLocale());
+        self::assertSame(['nl'], $this->translatedIn);
+    }
+
+    public function testEmailFallsBackToTheDefaultLanguage(): void
+    {
+        $email = $this->factory()->signupEmail($this->createUser());
+
+        self::assertSame('en', $email->getLocale());
+        self::assertSame(['en'], $this->translatedIn);
+    }
+
+    public function testSubjectHasTheEventName(): void
+    {
+        $email = $this->factory()->eventReminder($this->createSubscription());
+
+        self::assertSame('Durf - Reminder: Test Event', $email->getSubject());
+    }
+
+    public function testNewUserNotificationIsInTheDefaultLanguage(): void
+    {
+        $user = $this->createUser();
+        $user->locale = 'nl';
+
+        $email = $this->factory()->newUserNotification($user);
+
+        self::assertSame('en', $email->getLocale());
+        self::assertSame('Durf - New user registered: Test User', $email->getSubject());
     }
 }

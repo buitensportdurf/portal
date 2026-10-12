@@ -9,6 +9,7 @@ use Eluceo\iCal\Domain\Enum\EventStatus;
 use Eluceo\iCal\Domain\ValueObject\TimeSpan;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class EventCalTransformerTest extends TestCase
 {
@@ -29,7 +30,12 @@ class EventCalTransformerTest extends TestCase
         $url = $this->createStub(UrlGeneratorInterface::class);
         $url->method('generate')->willReturn('https://example.test/event/42');
 
-        return new EventCalTransformer($url);
+        $translator = $this->createStub(TranslatorInterface::class);
+        $translator->method('trans')->willReturnCallback(
+            fn(string $id, array $parameters = []): string => \MessageFormatter::formatMessage('en', $id, $parameters),
+        );
+
+        return new EventCalTransformer($url, $translator);
     }
 
     public function testEventsUseTimesInTheirTimezone(): void

@@ -10,6 +10,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
+use function Symfony\Component\Translation\t;
+
 class ChangePasswordFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -33,10 +35,10 @@ class ChangePasswordFormType extends AbstractType
                             max: 4096,
                         ),
                     ],
-                    'label' => 'New password',
+                    'label' => t('New password'),
                 ],
                 'second_options' => [
-                    'label' => 'Repeat Password',
+                    'label' => t('Repeat Password'),
                 ],
                 'invalid_message' => 'The password fields must match.',
                 // Instead of being set onto the object directly,

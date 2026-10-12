@@ -10,6 +10,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Translation\TranslatableMessage;
+
+use function Symfony\Component\Translation\t;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 #[ORM\UniqueConstraint(name: 'event_occurrence', columns: ['recurring_event_id', 'occurrence_start'])]
@@ -131,25 +134,25 @@ class Event extends BaseEvent
      * Mirrors the conditions in EventVoter::voteOnSubscription(). The "subscriptions open later"
      * case is intentionally left to the template, which shows the formatted open date.
      */
-    public function getSubscriptionUnavailableReason(?User $user): ?string
+    public function getSubscriptionUnavailableReason(?User $user): ?TranslatableMessage
     {
         if ($this->isCancelled()) {
-            return 'This event has been cancelled.';
+            return t('This event has been cancelled.');
         }
         if (!$this->published) {
-            return 'This event is not published yet.';
+            return t('This event is not published yet.');
         }
         if ($user !== null && $user->guest && !$this->guestsAllowed) {
-            return 'This event is for members only.';
+            return t('This event is for members only.');
         }
         if (!$this->isNotPastStartDate()) {
-            return 'This event has already taken place.';
+            return t('This event has already taken place.');
         }
         if (!$this->isNotPastSubscriptionDeadline()) {
-            return 'The subscription deadline has passed.';
+            return t('The subscription deadline has passed.');
         }
         if ($user !== null && $this->isSubscribed($user)) {
-            return 'You are already subscribed.';
+            return t('You are already subscribed.');
         }
 
         return null;

@@ -20,6 +20,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+use function Symfony\Component\Translation\t;
+
 #[Route('/user', name: 'user')]
 #[IsGranted('ROLE_USER')]
 class UserController extends AbstractController
@@ -29,6 +31,7 @@ class UserController extends AbstractController
         private readonly UserRepository         $repository,
         private readonly MailerInterface        $mailer,
         private readonly UriSigner              $uriSigner,
+        private readonly EmailFactory           $emailFactory,
     ) {}
 
     #[Route('/profile', name: '_profile')]
@@ -62,17 +65,17 @@ class UserController extends AbstractController
             } else {
                 if ($newPassword) {
                     $user->password = $userPasswordHasher->hashPassword($user, $newPassword);
-                    $this->mailer->send(EmailFactory::passwordChanged($user));
-                    $this->addFlash('success', 'Your password has been changed.');
+                    $this->mailer->send($this->emailFactory->passwordChanged($user));
+                    $this->addFlash('success', t('Your password has been changed.'));
                 }
                 $this->em->flush();
                 $request->getSession()->set(LocaleListener::SESSION_KEY, $user->locale);
 
                 if ($changesEmail) {
-                    $this->mailer->send(EmailFactory::confirmEmailChange($user, $newEmail, $this->confirmUrl($user, $newEmail)));
-                    $this->addFlash('success', sprintf('We sent a confirmation link to %s. Your email changes once you click it.', $newEmail));
+                    $this->mailer->send($this->emailFactory->confirmEmailChange($user, $newEmail, $this->confirmUrl($user, $newEmail)));
+                    $this->addFlash('success', t('We sent a confirmation link to {email}. Your email changes once you click it.', ['email' => $newEmail]));
                 } else {
-                    $this->addFlash('success', 'Profile updated.');
+                    $this->addFlash('success', t('Profile updated.'));
                 }
 
                 return $this->redirectToRoute('user_profile', [], Response::HTTP_SEE_OTHER);
@@ -97,11 +100,11 @@ class UserController extends AbstractController
         $newEmail = $request->query->getString('email');
 
         if (!$this->uriSigner->checkRequest($request) || $request->query->getString('user') !== (string) $user->id) {
-            $this->addFlash('error', 'This confirmation link is invalid or has expired. Change your email again to get a new one.');
+            $this->addFlash('error', t('This confirmation link is invalid or has expired. Change your email again to get a new one.'));
             return $this->redirectToRoute('user_profile');
         }
         if ($this->isTaken($newEmail, $user)) {
-            $this->addFlash('error', 'This email address is already in use by another account.');
+            $this->addFlash('error', t('This email address is already in use by another account.'));
             return $this->redirectToRoute('user_profile');
         }
 
@@ -109,10 +112,10 @@ class UserController extends AbstractController
         $user->email = $newEmail;
         $this->em->flush();
         if ($oldEmail && strcasecmp($oldEmail, $newEmail) !== 0) {
-            $this->mailer->send(EmailFactory::emailChanged($user, $oldEmail));
+            $this->mailer->send($this->emailFactory->emailChanged($user, $oldEmail));
         }
 
-        $this->addFlash('success', sprintf('Your email address is now %s.', $newEmail));
+        $this->addFlash('success', t('Your email address is now {email}.', ['email' => $newEmail]));
         return $this->redirectToRoute('user_profile');
     }
 

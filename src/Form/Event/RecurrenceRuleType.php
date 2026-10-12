@@ -12,6 +12,9 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatableMessage;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * Builds an RRULE string from a few plain choices: how often, on which days, and until when.
@@ -27,48 +30,72 @@ class RecurrenceRuleType extends AbstractType
     {
         $builder
             ->add('frequency', ChoiceType::class, [
-                'label' => 'Repeats',
-                'choices' => ['Daily' => 'DAILY', 'Weekly' => 'WEEKLY', 'Monthly' => 'MONTHLY', 'Yearly' => 'YEARLY'],
+                'label' => t('Repeats'),
+                'choices' => OccurrenceCalculator::FREQUENCIES,
+                'choice_label' => fn(string $frequency) => match ($frequency) {
+                    'DAILY' => t('Daily'),
+                    'WEEKLY' => t('Weekly'),
+                    'MONTHLY' => t('Monthly'),
+                    'YEARLY' => t('Yearly'),
+                },
             ])
             ->add('interval', IntegerType::class, [
-                'label' => 'Every',
+                'label' => t('Every'),
                 'attr' => ['min' => 1],
-                'help' => 'e.g. 2 for every other week',
+                'help' => t('e.g. 2 for every other week'),
             ])
             ->add('weekdays', ChoiceType::class, [
-                'label' => 'On',
+                'label' => t('On'),
                 'choices' => self::WEEKDAYS,
+                'choice_label' => self::weekdayLabel(...),
                 'multiple' => true,
                 'expanded' => true,
                 'required' => false,
-                'help' => 'None selected: the weekday of the first occurrence',
+                'help' => t('None selected: the weekday of the first occurrence'),
             ])
             ->add('monthlyMode', ChoiceType::class, [
-                'label' => 'On',
-                'choices' => ['The same day of the month as the first occurrence' => 'day', 'A weekday of the month' => 'weekday'],
+                'label' => t('On'),
+                'choices' => ['day', 'weekday'],
+                'choice_label' => fn(string $mode) => match ($mode) {
+                    'day' => t('The same day of the month as the first occurrence'),
+                    'weekday' => t('A weekday of the month'),
+                },
                 'expanded' => true,
             ])
             ->add('ordinal', ChoiceType::class, [
                 'label' => false,
-                'choices' => ['First' => 1, 'Second' => 2, 'Third' => 3, 'Fourth' => 4, 'Last' => -1],
+                'choices' => [1, 2, 3, 4, -1],
+                'choice_label' => fn(int $ordinal) => match ($ordinal) {
+                    1 => t('First'),
+                    2 => t('Second'),
+                    3 => t('Third'),
+                    4 => t('Fourth'),
+                    -1 => t('Last'),
+                },
             ])
             ->add('weekday', ChoiceType::class, [
                 'label' => false,
                 'choices' => self::WEEKDAYS,
+                'choice_label' => self::weekdayLabel(...),
             ])
             ->add('end', ChoiceType::class, [
-                'label' => 'Ends',
-                'choices' => ['Never' => 'never', 'On a date' => 'until', 'After a number of occurrences' => 'count'],
+                'label' => t('Ends'),
+                'choices' => ['never', 'until', 'count'],
+                'choice_label' => fn(string $end) => match ($end) {
+                    'never' => t('Never'),
+                    'until' => t('On a date'),
+                    'count' => t('After a number of occurrences'),
+                },
                 'expanded' => true,
             ])
             ->add('until', DateType::class, [
-                'label' => 'Last date',
+                'label' => t('Last date'),
                 'widget' => 'single_text',
                 'input' => 'datetime_immutable',
                 'required' => false,
             ])
             ->add('count', IntegerType::class, [
-                'label' => 'Number of occurrences',
+                'label' => t('Number of occurrences'),
                 'attr' => ['min' => 1],
                 'required' => false,
             ])
@@ -80,11 +107,23 @@ class RecurrenceRuleType extends AbstractType
         ));
     }
 
+    public static function weekdayLabel(string $day): TranslatableMessage
+    {
+        return match ($day) {
+            'MO' => t('Monday'),
+            'TU' => t('Tuesday'),
+            'WE' => t('Wednesday'),
+            'TH' => t('Thursday'),
+            'FR' => t('Friday'),
+            'SA' => t('Saturday'),
+            'SU' => t('Sunday'),
+        };
+    }
+
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'invalid_message' => 'Please complete the recurrence: {{ error }}',
-            'invalid_message_parameters' => ['{{ error }}' => 'check the end date or number of occurrences'],
+            'invalid_message' => 'Please complete the recurrence: check the end date or number of occurrences.',
             'error_bubbling' => false,
         ]);
     }

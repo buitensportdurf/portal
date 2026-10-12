@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\UriSigner;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Uid\Ulid;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * Email settings opened from the signed link in event emails, without logging in.
  */
@@ -35,15 +37,15 @@ class EmailSettingsController extends AbstractController
 
         $user->locale ??= $request->getLocale();
         $form = $this->createFormBuilder($user)
-            ->add('locale', LocaleType::class, ['label' => 'Email language'])
+            ->add('locale', LocaleType::class, ['label' => t('Email language')])
             ->add('emailNotifications', EmailNotificationsType::class)
-            ->add('save', SubmitType::class)
+            ->add('save', SubmitType::class, ['label' => t('Save')])
             ->getForm()
         ;
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
-            $this->addFlash('success', 'Your email settings have been saved.');
+            $this->addFlash('success', t('Your email settings have been saved.'));
 
             // The signed URL, query string included, so the page keeps working
             return $this->redirect($request->getUri(), Response::HTTP_SEE_OTHER);
