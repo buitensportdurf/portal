@@ -21,6 +21,7 @@ class TestMailCommand extends Command
     public function __construct(
         private readonly MailerInterface $mailer,
         private readonly UserRepository  $userRepository,
+        private readonly EmailFactory    $emailFactory,
     )
     {
         parent::__construct();
@@ -38,7 +39,7 @@ class TestMailCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $user = $this->userRepository->findOneBy(['username' => $input->getArgument('username')]);
-        $email = EmailFactory::signupEmail($user);
+        $email = $this->emailFactory->signupEmail($user);
 
         //->cc('cc@example.com')
         //->bcc('bcc@example.com')

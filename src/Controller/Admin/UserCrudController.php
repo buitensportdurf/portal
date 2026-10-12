@@ -24,6 +24,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+use function Symfony\Component\Translation\t;
+
 class UserCrudController extends AbstractCrudController
 {
     public function __construct(
@@ -67,8 +69,8 @@ class UserCrudController extends AbstractCrudController
                        ->setFormType(RepeatedType::class)
                        ->setFormTypeOptions([
                            'type' => PasswordType::class,
-                           'first_options' => ['label' => 'Password'],
-                           'second_options' => ['label' => '(Repeat)'],
+                           'first_options' => ['label' => t('Password')],
+                           'second_options' => ['label' => t('Repeat Password')],
                            'mapped' => false,
                        ])
                        ->setRequired($pageName === Crud::PAGE_NEW)

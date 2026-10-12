@@ -6,6 +6,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * A field people never see but form-filling bots do. Controllers treat a filled-in value as spam.
  */
@@ -16,7 +18,7 @@ class HoneypotType extends AbstractType
         $resolver->setDefaults([
             'mapped' => false,
             'required' => false,
-            'label' => 'Website',
+            'label' => t('Website'),
             'row_attr' => ['style' => 'position: absolute; left: -10000px;', 'aria-hidden' => 'true'],
             'attr' => ['autocomplete' => 'off', 'tabindex' => '-1'],
         ]);

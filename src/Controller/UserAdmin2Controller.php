@@ -15,6 +15,8 @@ use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Cache\CacheInterface;
 
+use function Symfony\Component\Translation\t;
+
 #[Route('/admin2/user', name: 'admin2_user')]
 #[IsGranted('ROLE_ADMIN_USER')]
 class UserAdmin2Controller extends AbstractController
@@ -22,6 +24,7 @@ class UserAdmin2Controller extends AbstractController
     public function __construct(
         private readonly UserRepository $userRepository,
         private readonly CacheInterface $cache,
+        private readonly EmailFactory   $emailFactory,
     ) {}
 
     #[Route('/index', name: '_index')]
@@ -39,8 +42,8 @@ class UserAdmin2Controller extends AbstractController
         $user->enabled = true;
         $this->userRepository->add($user);
         $this->cache->delete('pending_activation_count');
-        $mailer->send(EmailFactory::userEnabled($user));
-        $this->addFlash('success', sprintf('%s is now enabled', $user->name));
+        $mailer->send($this->emailFactory->userEnabled($user));
+        $this->addFlash('success', t('{name} is now enabled', ['name' => $user->name]));
 
         return $this->redirectToRoute('admin2_user_index');
     }
@@ -54,7 +57,7 @@ class UserAdmin2Controller extends AbstractController
     public function reject(User $user, EntityManagerInterface $em): Response
     {
         if ($user->enabled) {
-            $this->addFlash('error', sprintf('%s is already active', $user->name));
+            $this->addFlash('error', t('{name} is already active', ['name' => $user->name]));
             return $this->redirectToRoute('admin2_user_index');
         }
 
@@ -62,10 +65,10 @@ class UserAdmin2Controller extends AbstractController
             $user->guest = true;
             $user->enabled = true;
             $user->password = '!guest';
-            $this->addFlash('success', sprintf('Rejected %s; they keep their event subscriptions as a guest', $user->name));
+            $this->addFlash('success', t('Rejected {name}; they keep their event subscriptions as a guest', ['name' => $user->name]));
         } else {
             $em->remove($user);
-            $this->addFlash('success', sprintf('Rejected and removed the registration of %s', $user->name));
+            $this->addFlash('success', t('Rejected and removed the registration of {name}', ['name' => $user->name]));
         }
         $em->flush();
         $this->cache->delete('pending_activation_count');
@@ -76,7 +79,7 @@ class UserAdmin2Controller extends AbstractController
     #[Route('/{id}/switch', name: '_switch')]
     public function switch(User $user): Response
     {
-        $this->addFlash('success', sprintf('Now impersonating %s', $user->name));
+        $this->addFlash('success', t('Now impersonating {name}', ['name' => $user->name]));
         return $this->redirectToRoute('home', ['_switch_user' => $user->username]);
     }
 }

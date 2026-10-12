@@ -25,6 +25,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+use function Symfony\Component\Translation\t;
+
 #[Route('/event/subscription', name: 'event_subscription')]
 class EventSubscriptionController extends AbstractController
 {
@@ -53,7 +55,7 @@ class EventSubscriptionController extends AbstractController
         // Check permissions
         if (!$this->isGranted(EventVoter::SUBSCRIBE, $event)) {
             if ($user) {
-                $this->addFlash('error', 'You cannot subscribe to this event');
+                $this->addFlash('error', t('You cannot subscribe to this event'));
                 return $this->redirectToRoute('event_event_show', [
                     'id' => $event->id,
                 ]);
@@ -81,21 +83,21 @@ class EventSubscriptionController extends AbstractController
         if ($this->isGranted('ROLE_EVENT_ADMIN')) {
             $form->add('createdUser', options: [
                 'query_builder' => fn($er) => $er->createQueryBuilder('u')->orderBy('u.name', 'ASC'),
-                'label' => 'To subscribe user',
+                'label' => t('To subscribe user'),
             ]);
         }
-        $form->add('subscribe', SubmitType::class);
+        $form->add('subscribe', SubmitType::class, ['label' => t('Subscribe')]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             if (!$this->isGranted('ROLE_EVENT_ADMIN') && $user !== $subscription->createdUser) {
-                $this->addFlash('error', 'You can only subscribe to your own events');
+                $this->addFlash('error', t('You can only subscribe to your own events'));
                 return $this->redirectToRoute('event_event_show', ['id' => $event->id]);
             }
 
             $this->repository->save($subscription);
             $subscriptionMailer->sendConfirmation($subscription);
-            $this->addFlash('success', sprintf('You have subscribed to %s. We sent a confirmation by email.', $event));
+            $this->addFlash('success', t('You have subscribed to {event}. We sent a confirmation by email.', ['event' => (string) $event]));
             return $this->redirectToRoute('event_event_show', ['id' => $event->id]);
         }
 
@@ -113,7 +115,7 @@ class EventSubscriptionController extends AbstractController
         $this->denyAccessUnlessGranted(EventVoter::UNSUBSCRIBE, $subscription->event);
         $event = $subscription->event;
         $this->repository->delete($subscription);
-        $this->addFlash('success', sprintf('You have unsubscribed from %s', $event));
+        $this->addFlash('success', t('You have unsubscribed from {event}', ['event' => (string) $event]));
         return $this->redirectToRoute('event_event_show', ['id' => $event->id]);
     }
 
@@ -139,13 +141,13 @@ class EventSubscriptionController extends AbstractController
         }
 
         $form = $this->createForm(EventSubscriptionType::class, $subscription)
-            ->add('save', SubmitType::class)
+            ->add('save', SubmitType::class, ['label' => t('Save')])
         ;
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->repository->save($subscription);
-            $this->addFlash('success', sprintf('Updated subscription to %s', $subscription->event));
+            $this->addFlash('success', t('Updated subscription to {event}', ['event' => (string) $subscription->event]));
             return $this->redirectToRoute('event_event_show', ['id' => $subscription->event->id]);
         }
 

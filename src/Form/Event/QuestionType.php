@@ -10,17 +10,21 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 class QuestionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('question')
-            ->add('required')
+            ->add('question', null, ['label' => t('Question')])
+            ->add('required', null, ['label' => t('Required')])
             ->add('type', ChoiceType::class, [
-                'choices' => [
-                    'Open' => 'text',
-                ],
+                'label' => t('Type'),
+                'choices' => ['text'],
+                'choice_label' => fn(string $type) => match ($type) {
+                    'text' => t('Open'),
+                },
             ])
         ;
     }

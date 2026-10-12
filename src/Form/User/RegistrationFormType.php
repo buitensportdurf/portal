@@ -15,14 +15,17 @@ use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
+use function Symfony\Component\Translation\t;
+
 class RegistrationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class, ['label' => 'Full name (first and last name)'])
+            ->add('name', TextType::class, ['label' => t('Full name (first and last name)')])
             ->add('email', EmailType::class, [
-                'help' => 'Needed for activation, password resets and event updates',
+                'label' => t('Email'),
+                'help' => t('Needed for activation, password resets and event updates'),
                 'constraints' => [new NotBlank(), new Email()],
             ])
         ;
@@ -36,9 +39,9 @@ class RegistrationFormType extends AbstractType
                         message: 'You should agree to our terms.',
                     ),
                 ],
-                'label' => 'I agree to the privacy statement found below',
+                'label' => t('I agree to the privacy statement found below'),
             ])
-            ->add('register', SubmitType::class)
+            ->add('register', SubmitType::class, ['label' => t('Register')])
         ;
     }
 

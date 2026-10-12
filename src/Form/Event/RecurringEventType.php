@@ -4,10 +4,13 @@ namespace App\Form\Event;
 
 use App\Entity\Event\RecurringEvent;
 use App\Form\SwitchType;
+use DateTimeImmutable;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function Symfony\Component\Translation\t;
 
 class RecurringEventType extends AbstractType
 {
@@ -15,45 +18,49 @@ class RecurringEventType extends AbstractType
     {
         $builder
             ->add('startDate', null, [
-                'label' => 'First occurrence starts',
-                'help' => 'Also sets the time of every occurrence',
+                'label' => t('First occurrence starts'),
+                'help' => t('Also sets the time of every occurrence'),
             ])
             ->add('endDate', null, [
-                'label' => 'First occurrence ends',
-                'help' => 'Sets the duration of every occurrence',
+                'label' => t('First occurrence ends'),
+                'help' => t('Sets the duration of every occurrence'),
             ])
             ->add('rrule', RecurrenceRuleType::class, [
                 'label' => false,
             ])
             ->add('subscriptionOpenOffset', OffsetType::class, [
-                'label' => 'Subscriptions open',
+                'label' => t('Subscriptions open'),
                 'required' => false,
-                'help' => 'Leave empty to open subscriptions right away',
+                'help' => t('Leave empty to open subscriptions right away'),
             ])
             ->add('subscriptionDeadlineOffset', OffsetType::class, [
-                'label' => 'Subscription deadline',
+                'label' => t('Subscription deadline'),
                 'required' => false,
-                'help' => 'Leave empty to allow subscribing until the start',
+                'help' => t('Leave empty to allow subscribing until the start'),
             ])
             ->add('published', SwitchType::class, [
+                'label' => t('Published'),
                 'required' => false,
             ])
         ;
 
         if ($options['apply_from_choices'] !== []) {
             $builder->add('applyFrom', ChoiceType::class, [
-                'label' => 'Apply changes to',
+                'label' => t('Apply changes to'),
                 'mapped' => false,
                 'choices' => $options['apply_from_choices'],
+                'choice_label' => fn(string $date) => t('From {date} onwards', [
+                    'date' => DateTimeImmutable::createFromFormat('!Y-m-d', $date)->format('D j M Y'),
+                ]),
                 'data' => $options['apply_from'],
-                'placeholder' => 'All upcoming events',
+                'placeholder' => t('All upcoming events'),
                 'required' => false,
-                'help' => 'Picking a date splits the series: earlier events keep the current settings',
+                'help' => t('Picking a date splits the series: earlier events keep the current settings'),
             ]);
         }
         if ($options['notify_option']) {
             $builder->add('notifySubscribers', SwitchType::class, [
-                'label' => 'Email subscribers about moved or cancelled events',
+                'label' => t('Email subscribers about moved or cancelled events'),
                 'mapped' => false,
                 'required' => false,
                 'data' => true,

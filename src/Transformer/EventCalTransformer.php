@@ -12,6 +12,7 @@ use Eluceo\iCal\Domain\ValueObject\UniqueIdentifier;
 use Eluceo\iCal\Domain\ValueObject\Uri;
 use League\CommonMark\CommonMarkConverter;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 readonly class EventCalTransformer
 {
@@ -19,6 +20,7 @@ readonly class EventCalTransformer
 
     public function __construct(
         private UrlGeneratorInterface $urlGenerator,
+        private TranslatorInterface $translator,
     ) {
         $this->markdown = new CommonMarkConverter(['html_input' => 'strip', 'allow_unsafe_links' => false]);
     }
@@ -36,7 +38,9 @@ readonly class EventCalTransformer
                 new DateTime($event->endDate, true),
             ))
             ->setUrl(new Uri($url))
-            ->setSummary($event->isCancelled() ? 'Cancelled: ' . $event->name : $event->name)
+            ->setSummary($event->isCancelled()
+                ? $this->translator->trans('Cancelled: {name}', ['name' => $event->name])
+                : $event->name)
             ->setDescription(trim($this->plainText($event->description) . "\n\n" . $url))
             ->setLocation(new Location($event->location))
         ;

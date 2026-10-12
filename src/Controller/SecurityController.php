@@ -26,6 +26,8 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\LoginLink\LoginLinkHandlerInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 
+use function Symfony\Component\Translation\t;
+
 class SecurityController extends AbstractController
 {
     public function __construct(
@@ -34,13 +36,14 @@ class SecurityController extends AbstractController
         private readonly CommissionMailer          $commissionMailer,
         private readonly LoginLinkHandlerInterface $loginLinkHandler,
         private readonly CacheInterface            $cache,
+        private readonly EmailFactory              $emailFactory,
     ) {}
 
     #[Route('/login', name: 'login')]
     public function login(Request $request, AuthenticationUtils $authenticationUtils): Response
     {
         if ($this->getUser()) {
-            $this->addFlash('error', 'You are already logged in, redirected you to the homepage');
+            $this->addFlash('error', t('You are already logged in, redirected you to the homepage'));
             return $this->redirectToRoute('home');
         }
 
@@ -80,7 +83,7 @@ class SecurityController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             if (!$limiter->create($request->getClientIp())->consume()->isAccepted()) {
-                $this->addFlash('error', 'Too many registrations from your network, please try again later.');
+                $this->addFlash('error', t('Too many registrations from your network, please try again later.'));
                 return $this->redirectToRoute('register');
             }
             // Bots fill in the hidden field; pretend it worked
@@ -90,17 +93,17 @@ class SecurityController extends AbstractController
 
             $existing = $this->repository->findByEmail($user->email);
             if ($existing?->guest) {
-                $this->mailer->send(EmailFactory::guestUpgrade($existing, $this->loginLink($existing, 'user_upgrade')));
+                $this->mailer->send($this->emailFactory->guestUpgrade($existing, $this->loginLink($existing, 'user_upgrade')));
             } elseif ($existing) {
-                $this->mailer->send(EmailFactory::accountExists($existing));
+                $this->mailer->send($this->emailFactory->accountExists($existing));
             } else {
                 $user->password = $userPasswordHasher->hashPassword($user, $form->get('plainPassword')->getData());
                 $user->enabled = false;
                 $user->locale = $request->getLocale();
                 $this->repository->add($user);
                 $this->cache->delete('pending_activation_count');
-                $this->mailer->send(EmailFactory::signupEmail($user));
-                $this->commissionMailer->send(EmailFactory::newUserNotification($user));
+                $this->mailer->send($this->emailFactory->signupEmail($user));
+                $this->commissionMailer->send($this->emailFactory->newUserNotification($user));
             }
 
             return $this->checkEmail($request, $user->email, 'register');
@@ -120,7 +123,7 @@ class SecurityController extends AbstractController
     ): Response
     {
         if ($this->getUser()) {
-            $this->addFlash('error', 'You are already logged in, redirected you to the homepage');
+            $this->addFlash('error', t('You are already logged in, redirected you to the homepage'));
             return $this->redirectToRoute('home');
         }
         if (!$event->guestsAllowed) {
@@ -130,13 +133,13 @@ class SecurityController extends AbstractController
         $user = new User();
         $form = $this
             ->createForm(GuestForm::class, $user)
-            ->add('Save', SubmitType::class, ['label' => 'Send me the link'])
+            ->add('Save', SubmitType::class, ['label' => t('Send me the link')])
         ;
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if (!$limiter->create($request->getClientIp())->consume()->isAccepted()) {
-                $this->addFlash('error', 'Too many requests from your network, please try again later.');
+                $this->addFlash('error', t('Too many requests from your network, please try again later.'));
                 return $this->redirectToRoute('create_event_guest', ['id' => $event->id]);
             }
             if ($form->get('website')->getData()) {
@@ -146,7 +149,7 @@ class SecurityController extends AbstractController
             $existing = $this->repository->findByEmail($user->email);
             if ($existing && !$existing->guest) {
                 // A member: point them to logging in, without telling the visitor
-                $this->mailer->send(EmailFactory::accountExists($existing));
+                $this->mailer->send($this->emailFactory->accountExists($existing));
             } else {
                 if ($existing === null) {
                     $user->username = sprintf('guest_%s', bin2hex(random_bytes(8)));
@@ -155,11 +158,11 @@ class SecurityController extends AbstractController
                     $user->guest = true;
                     $user->locale = $request->getLocale();
                     $this->repository->add($user);
-                    $this->commissionMailer->send(EmailFactory::newUserNotification($user));
+                    $this->commissionMailer->send($this->emailFactory->newUserNotification($user));
                 }
                 $guest = $existing ?? $user;
                 $link = $this->loginLink($guest, 'event_subscription_subscribe', ['id' => $event->id]);
-                $this->mailer->send(EmailFactory::eventGuestSignupEmail($guest, $event, $link));
+                $this->mailer->send($this->emailFactory->eventGuestSignupEmail($guest, $event, $link));
             }
 
             return $this->checkEmail($request, $user->email, 'guest', $event);
@@ -178,7 +181,7 @@ class SecurityController extends AbstractController
     #[Route('/loginEventGuest/{user}/{event}', name: 'login_event_guest')]
     public function loginEventGuest(Event $event): Response
     {
-        $this->addFlash('error', 'This link is no longer valid. Enter your email again and we will send you a new one.');
+        $this->addFlash('error', t('This link is no longer valid. Enter your email again and we will send you a new one.'));
 
         return $this->redirectToRoute('create_event_guest', ['id' => $event->id]);
     }
@@ -209,11 +212,11 @@ class SecurityController extends AbstractController
             $user->enabled = false;
             $this->repository->add($user);
             $this->cache->delete('pending_activation_count');
-            $this->mailer->send(EmailFactory::signupEmail($user));
-            $this->commissionMailer->send(EmailFactory::newUserNotification($user));
+            $this->mailer->send($this->emailFactory->signupEmail($user));
+            $this->commissionMailer->send($this->emailFactory->newUserNotification($user));
 
             $security->logout(false);
-            $this->addFlash('success', 'Your account has been created. You can log in once the committee has activated it.');
+            $this->addFlash('success', t('Your account has been created. You can log in once the committee has activated it.'));
 
             return $this->redirectToRoute('login');
         }

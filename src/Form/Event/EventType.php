@@ -7,16 +7,19 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 class EventType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('subscriptionOpenDate', null, [
+                'label' => t('Subscription open date'),
                 'required' => false,
                 'widget' => 'single_text',
             ])
-            ->add('subscriptionDeadline')
+            ->add('subscriptionDeadline', null, ['label' => t('Subscription deadline')])
         ;
     }
 

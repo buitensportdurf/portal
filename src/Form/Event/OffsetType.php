@@ -8,6 +8,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * An amount of time before an occurrence starts, stored as minutes (null when left empty).
  */
@@ -25,7 +27,12 @@ class OffsetType extends AbstractType
             ])
             ->add('unit', ChoiceType::class, [
                 'label' => false,
-                'choices' => ['hours before the start' => 'hours', 'days before the start' => 'days', 'weeks before the start' => 'weeks'],
+                'choices' => array_keys(self::UNITS),
+                'choice_label' => fn(string $unit) => match ($unit) {
+                    'hours' => t('hours before the start'),
+                    'days' => t('days before the start'),
+                    'weeks' => t('weeks before the start'),
+                },
             ])
         ;
 

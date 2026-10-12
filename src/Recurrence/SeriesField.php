@@ -8,6 +8,9 @@ use App\Entity\Event\Tag;
 use App\Entity\Image;
 use Doctrine\Common\Collections\ArrayCollection;
 use DateTimeImmutable;
+use Symfony\Component\Translation\TranslatableMessage;
+
+use function Symfony\Component\Translation\t;
 
 /**
  * A property a series hands down to its occurrences.
@@ -34,22 +37,22 @@ enum SeriesField: string
 
     private const string DATE_FORMAT = 'Y-m-d H:i';
 
-    public function label(): string
+    public function label(): TranslatableMessage
     {
         return match ($this) {
-            self::Schedule => 'Date and time',
-            self::Name => 'Name',
-            self::Description => 'Description',
-            self::Location => 'Location',
-            self::Image => 'Image',
-            self::Tags => 'Tags',
-            self::SubscriptionOpenDate => 'Subscriptions open',
-            self::SubscriptionDeadline => 'Subscription deadline',
-            self::SubscriberLimit => 'Subscriber limit',
-            self::MemberPrice => 'Member price',
-            self::GuestPrice => 'Guest price',
-            self::GuestsAllowed => 'Guests allowed',
-            self::Published => 'Published',
+            self::Schedule => t('Date and time'),
+            self::Name => t('Name'),
+            self::Description => t('Description'),
+            self::Location => t('Location'),
+            self::Image => t('Image'),
+            self::Tags => t('Tags'),
+            self::SubscriptionOpenDate => t('Subscriptions open'),
+            self::SubscriptionDeadline => t('Subscription deadline'),
+            self::SubscriberLimit => t('Subscriber limit'),
+            self::MemberPrice => t('Member price'),
+            self::GuestPrice => t('Guest price'),
+            self::GuestsAllowed => t('Guests allowed'),
+            self::Published => t('Published'),
         };
     }
 
@@ -133,9 +136,10 @@ enum SeriesField: string
     }
 
     /**
-     * Renders a value returned by read() or expected() for a changelist.
+     * Renders a value returned by read() or expected() for a changelist. Fixed words come back
+     * translatable, so templates render the result with |trans.
      */
-    public function format(mixed $value): string
+    public function format(mixed $value): string|TranslatableMessage
     {
         if ($value === null || $value === '' || $value === []) {
             return '—';
@@ -145,10 +149,10 @@ enum SeriesField: string
             self::Schedule => self::formatSchedule($value[0], $value[1]),
             self::SubscriptionOpenDate, self::SubscriptionDeadline => self::formatDate($value),
             self::Description => mb_strimwidth(preg_replace('/\s+/', ' ', $value), 0, 60, '…'),
-            self::Image => 'Image',
+            self::Image => t('Image'),
             self::Tags => implode(', ', $value),
             self::MemberPrice, self::GuestPrice => '€ ' . number_format($value, 2, ',', '.'),
-            self::GuestsAllowed, self::Published => $value ? 'Yes' : 'No',
+            self::GuestsAllowed, self::Published => $value ? t('Yes') : t('No'),
             default => (string) $value,
         };
     }

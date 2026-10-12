@@ -16,6 +16,7 @@ readonly class SubscriberNotifier
 {
     public function __construct(
         private MailerInterface $mailer,
+        private EmailFactory $emailFactory,
         private LoggerInterface $logger,
     ) {}
 
@@ -29,8 +30,8 @@ readonly class SubscriberNotifier
 
         foreach ($change->recipients() as $user) {
             $email = $change->type === ChangeType::Cancel
-                ? EmailFactory::eventCancelled($user, $event)
-                : EmailFactory::eventChanged($user, $event, $changes);
+                ? $this->emailFactory->eventCancelled($user, $event)
+                : $this->emailFactory->eventChanged($user, $event, $changes);
             try {
                 $this->mailer->send($email);
             } catch (TransportExceptionInterface $e) {

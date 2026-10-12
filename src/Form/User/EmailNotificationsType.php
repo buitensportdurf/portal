@@ -7,6 +7,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 class EmailNotificationsType extends AbstractType
 {
     public function configureOptions(OptionsResolver $resolver): void
@@ -16,9 +18,9 @@ class EmailNotificationsType extends AbstractType
             'multiple' => true,
             'expanded' => true,
             'required' => false,
-            'label' => 'Email me about events I subscribed to',
+            'label' => t('Email me about events I subscribed to'),
             'choice_label' => fn(EmailNotification $notification) => $notification->label(),
-            'help' => 'Emails about your account, like a changed password, are always sent.',
+            'help' => t('Emails about your account, like a changed password, are always sent.'),
         ]);
     }
 

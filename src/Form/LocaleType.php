@@ -8,6 +8,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Intl\Locales;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * The site's languages, each named in its own language.
  */
@@ -31,7 +33,7 @@ class LocaleType extends AbstractType
         $resolver->setDefaults([
             'choices' => $choices,
             'choice_translation_domain' => false,
-            'label' => 'Language',
+            'label' => t('Language'),
         ]);
     }
 

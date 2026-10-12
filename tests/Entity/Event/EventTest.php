@@ -290,7 +290,7 @@ class EventTest extends TestCase
         $event = $this->createEvent();
         $event->published = false;
 
-        self::assertSame('This event is not published yet.', $event->getSubscriptionUnavailableReason($this->createUser()));
+        self::assertSame('This event is not published yet.', $event->getSubscriptionUnavailableReason($this->createUser())?->getMessage());
     }
 
     public function testReasonForGuestWhenGuestsNotAllowed(): void
@@ -300,7 +300,7 @@ class EventTest extends TestCase
         $user = $this->createUser();
         $user->guest = true;
 
-        self::assertSame('This event is for members only.', $event->getSubscriptionUnavailableReason($user));
+        self::assertSame('This event is for members only.', $event->getSubscriptionUnavailableReason($user)?->getMessage());
     }
 
     public function testNoMembersOnlyReasonForGuestWhenGuestsAllowed(): void
@@ -318,7 +318,7 @@ class EventTest extends TestCase
         $event = $this->createEvent();
         $event->startDate = new DateTimeImmutable('-1 day');
 
-        self::assertSame('This event has already taken place.', $event->getSubscriptionUnavailableReason($this->createUser()));
+        self::assertSame('This event has already taken place.', $event->getSubscriptionUnavailableReason($this->createUser())?->getMessage());
     }
 
     public function testReasonWhenDeadlineHasPassed(): void
@@ -326,7 +326,7 @@ class EventTest extends TestCase
         $event = $this->createEvent();
         $event->subscriptionDeadline = new DateTimeImmutable('-1 day');
 
-        self::assertSame('The subscription deadline has passed.', $event->getSubscriptionUnavailableReason($this->createUser()));
+        self::assertSame('The subscription deadline has passed.', $event->getSubscriptionUnavailableReason($this->createUser())?->getMessage());
     }
 
     public function testReasonWhenAlreadySubscribed(): void
@@ -335,7 +335,7 @@ class EventTest extends TestCase
         $user = $this->createUser();
         $this->subscribeUser($event, $user);
 
-        self::assertSame('You are already subscribed.', $event->getSubscriptionUnavailableReason($user));
+        self::assertSame('You are already subscribed.', $event->getSubscriptionUnavailableReason($user)?->getMessage());
     }
 
     // --- Series occurrences ---
@@ -350,7 +350,7 @@ class EventTest extends TestCase
         $event = $this->createEvent();
         $event->cancelledAt = new DateTimeImmutable();
 
-        self::assertSame('This event has been cancelled.', $event->getSubscriptionUnavailableReason(null));
+        self::assertSame('This event has been cancelled.', $event->getSubscriptionUnavailableReason(null)?->getMessage());
     }
 
     public function testMarkOverriddenKeepsFieldsUnique(): void

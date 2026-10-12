@@ -5,6 +5,7 @@ namespace App\Recurrence;
 use App\Entity\Event\RecurringEvent;
 use DateTimeImmutable;
 use DateTimeInterface;
+use IntlDateFormatter;
 use RRule\RRule;
 use Throwable;
 
@@ -55,14 +56,19 @@ final class OccurrenceCalculator
         return $slots;
     }
 
-    public static function describe(RecurringEvent $series): string
+    /**
+     * The rule in words, e.g. "every 2 weeks on Saturday" ($locale is 'en' or 'nl').
+     */
+    public static function describe(RecurringEvent $series, string $locale = 'en'): string
     {
         try {
+            $dateFormatter = new IntlDateFormatter($locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE, pattern: 'd MMM y');
+
             return self::build($series)->humanReadable([
-                'locale' => 'en',
+                'locale' => $locale,
                 'include_start' => false,
                 'explicit_infinite' => false,
-                'date_formatter' => fn(DateTimeInterface $date) => $date->format('j M Y'),
+                'date_formatter' => fn(DateTimeInterface $date) => $dateFormatter->format($date),
             ]);
         } catch (Throwable) {
             return (string) $series->rrule;
