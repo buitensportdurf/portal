@@ -15,11 +15,12 @@
 
         <label for="inputUsername">Username or email</label>
         <input type="text" value="{{ last_username }}" name="_username" id="inputUsername" class="form-control" required
-               autofocus>
+               autofocus autocomplete="username">
         <br/>
         <label for="inputPassword">Password</label>
-        <input type="password" name="_password" id="inputPassword" class="form-control" required>
+        <input type="password" name="_password" id="inputPassword" class="form-control" required autocomplete="current-password">
         <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+        {% if target_path %}<input type="hidden" name="_target_path" value="{{ target_path }}">{% endif %}
         <br/>
 
         <div class="checkbox mb-3">
@@ -28,7 +29,7 @@
             </label>
         </div>
         <button class="btn btn-primary" type="submit">Login</button>
-        <a class="btn btn-info" href="{{ path('register') }}">Register</a>
-        <a class="btn btn-info" href="{{ path('forgot_password_request') }}">Forgot password</a>
+        <a class="btn btn-outline-primary" href="{{ path('register') }}">Register</a>
+        <a class="btn btn-link" href="{{ path('forgot_password_request') }}">Forgot password?</a>
     </form>
 {% endblock %}

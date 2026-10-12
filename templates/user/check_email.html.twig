@@ -1,0 +1,28 @@
+{% extends 'base/single.column.html.twig' %}
+
+{% set title %}Check your email{% endset %}
+
+{% block body %}
+    <div class="card">
+        <div class="card-body">
+            <p class="fs-5"><i class="fas fa-envelope-open-text"></i> We've sent an email to <strong>{{ email }}</strong>.</p>
+            {% if reason == 'guest' %}
+                <p>
+                    Click the link in it to finish subscribing{% if event %} to <strong>{{ event.name }}</strong>{% endif %}.
+                    The link works for two days.
+                </p>
+            {% else %}
+                <p>
+                    It explains the next steps. New accounts are activated by the committee, usually within a few days;
+                    you will get an email when that has happened.
+                </p>
+            {% endif %}
+            <p class="text-muted small mb-0">
+                Nothing arrived after a few minutes? Check your spam folder, or make sure the address is right and try again.
+            </p>
+        </div>
+    </div>
+    {% if event %}
+        <a class="btn btn-outline-primary mt-3" href="{{ path('event_event_show', {id: event.id}) }}">Back to {{ event.name }}</a>
+    {% endif %}
+{% endblock %}

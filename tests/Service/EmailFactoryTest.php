@@ -77,22 +77,23 @@ class EmailFactoryTest extends TestCase
     {
         $user = $this->createUser('guest@example.com');
         $event = $this->createEvent();
-        $email = EmailFactory::eventGuestSignupEmail($user, $event);
+        $email = EmailFactory::eventGuestSignupEmail($user, $event, 'https://example.test/login');
 
         self::assertSame('guest@example.com', $email->getTo()[0]->getAddress());
     }
 
     public function testEventGuestSignupEmailHasSubject(): void
     {
-        $email = EmailFactory::eventGuestSignupEmail($this->createUser(), $this->createEvent());
+        $email = EmailFactory::eventGuestSignupEmail($this->createUser(), $this->createEvent(), 'https://example.test/login');
 
-        self::assertSame('Durf - Guest account created', $email->getSubject());
+        self::assertStringStartsWith('Durf - Subscribe to ', $email->getSubject());
+        self::assertSame('https://example.test/login', $email->getContext()['loginUrl']);
     }
 
     public function testEventGuestSignupEmailUsesCorrectTemplate(): void
     {
         /** @var TemplatedEmail $email */
-        $email = EmailFactory::eventGuestSignupEmail($this->createUser(), $this->createEvent());
+        $email = EmailFactory::eventGuestSignupEmail($this->createUser(), $this->createEvent(), 'https://example.test/login');
 
         self::assertSame('email/user/signup.guest.html.twig', $email->getHtmlTemplate());
     }
@@ -101,7 +102,7 @@ class EmailFactoryTest extends TestCase
     {
         $event = $this->createEvent();
         /** @var TemplatedEmail $email */
-        $email = EmailFactory::eventGuestSignupEmail($this->createUser(), $event);
+        $email = EmailFactory::eventGuestSignupEmail($this->createUser(), $event, 'https://example.test/login');
 
         self::assertSame($event, $email->getContext()['event']);
     }
@@ -112,7 +113,7 @@ class EmailFactoryTest extends TestCase
     {
         $email = EmailFactory::resetPassword($this->createUser(), 'token123');
 
-        self::assertSame('Durf - Password reset request', $email->getSubject());
+        self::assertSame('Durf - Reset your password', $email->getSubject());
     }
 
     public function testResetPasswordEmailUsesCorrectTemplate(): void
@@ -137,7 +138,7 @@ class EmailFactoryTest extends TestCase
     {
         $email = EmailFactory::userEnabled($this->createUser());
 
-        self::assertSame('Durf - Account enabled', $email->getSubject());
+        self::assertSame('Durf - Account activated', $email->getSubject());
     }
 
     public function testUserEnabledEmailUsesCorrectTemplate(): void
@@ -179,6 +180,8 @@ class EmailFactoryTest extends TestCase
         /** @var TemplatedEmail $email */
         $email = EmailFactory::newUserNotification($user);
 
-        self::assertSame($user, $email->getContext()['user']);
+        self::assertSame($user, $email->getContext()['newUser']);
+        // The committee is not addressed as the new user
+        self::assertNull($email->getContext()['user']);
     }
 }

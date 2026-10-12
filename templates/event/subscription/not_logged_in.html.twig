@@ -5,7 +5,7 @@
 {% block body %}
     <h4>You tried to subscribe to {{ event }}, but you first need to be logged in</h4>
     <div class="list-group">
-        <a class="list-group-item list-group-item-action" href="{{ path('login') }}">
+        <a class="list-group-item list-group-item-action" href="{{ path('login', {_target_path: path('event_subscription_subscribe', {id: event.id})}) }}">
             Login
         </a>
         <a class="list-group-item list-group-item-action" href="{{ path('register') }}">

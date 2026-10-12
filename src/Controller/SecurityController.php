@@ -5,46 +5,70 @@ namespace App\Controller;
 use App\Entity\Event\Event;
 use App\Entity\User;
 use App\Form\User\GuestForm;
+use App\Form\User\GuestUpgradeType;
 use App\Form\User\RegistrationFormType;
 use App\Repository\UserRepository;
 use App\Service\CommissionMailer;
 use App\Service\EmailFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Security\Http\LoginLink\LoginLinkHandlerInterface;
 
 class SecurityController extends AbstractController
 {
+    public function __construct(
+        private readonly UserRepository            $repository,
+        private readonly MailerInterface           $mailer,
+        private readonly CommissionMailer          $commissionMailer,
+        private readonly LoginLinkHandlerInterface $loginLinkHandler,
+    ) {}
+
     #[Route('/login', name: 'login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(Request $request, AuthenticationUtils $authenticationUtils): Response
     {
         if ($this->getUser()) {
             $this->addFlash('error', 'You are already logged in, redirected you to the homepage');
             return $this->redirectToRoute('home');
         }
 
-        $error = $authenticationUtils->getLastAuthenticationError();
-        $lastUsername = $authenticationUtils->getLastUsername();
-
         return $this->render('user/login.html.twig', [
-            'last_username' => $lastUsername,
-            'error' => $error,
+            'last_username' => $authenticationUtils->getLastUsername(),
+            'error' => $authenticationUtils->getLastAuthenticationError(),
+            'target_path' => self::localPath($request->query->get('_target_path')),
         ]);
     }
 
+    /**
+     * Handled by the login_link authenticator; this never runs.
+     */
+    #[Route('/login/link', name: 'login_link_check')]
+    public function loginLinkCheck(): never
+    {
+        throw new \LogicException('The login_link authenticator handles this route.');
+    }
+
+    /**
+     * Every outcome (new account, existing member, existing guest) looks the same to the visitor;
+     * the email tells the owner of the address what happens next. That way the form does not
+     * reveal which addresses have an account, and nobody can take over a guest account by
+     * registering with its email.
+     */
     #[Route('/register', name: 'register')]
     public function register(
         Request                     $request,
         UserPasswordHasherInterface $userPasswordHasher,
-        UserRepository              $repository,
-        MailerInterface             $mailer,
-        CommissionMailer            $commissionMailer,
+        #[Target('registration')]
+        RateLimiterFactoryInterface $limiter,
     ): Response
     {
         $user = new User();
@@ -52,33 +76,29 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $repoUser = $repository->findByEmail($user->email);
-            if ($repoUser) {
-                if ($repoUser->guest) {
-                    $this->addFlash('success', 'Found an existing guest account based on email, upgrading to normal user');
-                    $repoUser->username = $user->username;
-                    $repoUser->name = $user->name;
-                    $repoUser->guest = false;
-                    $user = $repoUser;
-                } else {
-                    $this->addFlash('error', 'Email already used by a registered user');
-                    return $this->redirectToRoute('register');
-                }
+            if (!$limiter->create($request->getClientIp())->consume()->isAccepted()) {
+                $this->addFlash('error', 'Too many registrations from your network, please try again later.');
+                return $this->redirectToRoute('register');
+            }
+            // Bots fill in the hidden field; pretend it worked
+            if ($form->get('website')->getData()) {
+                return $this->checkEmail($request, (string) $user->email, 'register');
             }
 
-            $user->password = $userPasswordHasher->hashPassword(
-                $user,
-                $form->get('plainPassword')->getData()
-            );
-            $user->enabled = false;
+            $existing = $this->repository->findByEmail($user->email);
+            if ($existing?->guest) {
+                $this->mailer->send(EmailFactory::guestUpgrade($existing, $this->loginLink($existing, 'user_upgrade')));
+            } elseif ($existing) {
+                $this->mailer->send(EmailFactory::accountExists($existing));
+            } else {
+                $user->password = $userPasswordHasher->hashPassword($user, $form->get('plainPassword')->getData());
+                $user->enabled = false;
+                $this->repository->add($user);
+                $this->mailer->send(EmailFactory::signupEmail($user));
+                $this->commissionMailer->send(EmailFactory::newUserNotification($user));
+            }
 
-            $repository->add($user);
-            $mailer->send(EmailFactory::signupEmail($user));
-            $commissionMailer->send(EmailFactory::newUserNotification($user));
-
-            $this->addFlash('success', sprintf('Successfully registered user %s', $user->username));
-
-            return $this->redirectToRoute('register');
+            return $this->checkEmail($request, $user->email, 'register');
         }
 
         return $this->render('user/register.html.twig', [
@@ -88,74 +108,151 @@ class SecurityController extends AbstractController
 
     #[Route('/createEventGuest/{id}', name: 'create_event_guest')]
     public function createEventGuest(
-        Request         $request,
-        Event           $event,
-        UserRepository  $repository,
-        MailerInterface  $mailer,
-        CommissionMailer $commissionMailer,
+        Request                     $request,
+        Event                       $event,
+        #[Target('guest_signup')]
+        RateLimiterFactoryInterface $limiter,
     ): Response
     {
         if ($this->getUser()) {
             $this->addFlash('error', 'You are already logged in, redirected you to the homepage');
             return $this->redirectToRoute('home');
         }
+        if (!$event->guestsAllowed) {
+            throw $this->createNotFoundException('This event is for members only');
+        }
 
         $user = new User();
-        $user->username = sprintf('guest_%s', uniqid());
-        $user->password = uniqid();
-        $user->guest = true;
-
         $form = $this
             ->createForm(GuestForm::class, $user)
-            ->add('Save', SubmitType::class)
+            ->add('Save', SubmitType::class, ['label' => 'Send me the link'])
         ;
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $repoUser = $repository->findByEmail($user->email);
-            if ($repoUser) {
-                if ($repoUser->guest) {
-                    $user = $repoUser;
-                } else {
-                    $this->addFlash('error', 'Email already used by a registered user');
-                    return $this->redirectToRoute('create_event_guest', [
-                        'id' => $event->id,
-                    ]);
-                }
-            } else {
-                $repository->add($user);
+            if (!$limiter->create($request->getClientIp())->consume()->isAccepted()) {
+                $this->addFlash('error', 'Too many requests from your network, please try again later.');
+                return $this->redirectToRoute('create_event_guest', ['id' => $event->id]);
+            }
+            if ($form->get('website')->getData()) {
+                return $this->checkEmail($request, (string) $user->email, 'guest');
             }
 
-            $mailer->send(EmailFactory::eventGuestSignupEmail($user, $event));
-            $commissionMailer->send(EmailFactory::newUserNotification($user));
+            $existing = $this->repository->findByEmail($user->email);
+            if ($existing && !$existing->guest) {
+                // A member: point them to logging in, without telling the visitor
+                $this->mailer->send(EmailFactory::accountExists($existing));
+            } else {
+                if ($existing === null) {
+                    $user->username = sprintf('guest_%s', bin2hex(random_bytes(8)));
+                    // Guests log in by link only; this is no usable password
+                    $user->password = '!guest';
+                    $user->guest = true;
+                    $this->repository->add($user);
+                    $this->commissionMailer->send(EmailFactory::newUserNotification($user));
+                }
+                $guest = $existing ?? $user;
+                $link = $this->loginLink($guest, 'event_subscription_subscribe', ['id' => $event->id]);
+                $this->mailer->send(EmailFactory::eventGuestSignupEmail($guest, $event, $link));
+            }
 
-            $this->addFlash('success', sprintf('Successfully registered guest user %s', $user->name));
-
-            return $this->redirectToRoute('event_event_show', [
-                'id' => $event->id,
-            ]);
+            return $this->checkEmail($request, $user->email, 'guest', $event);
         }
 
         return $this->render('user/guest.html.twig', [
             'form' => $form->createView(),
+            'event' => $event,
         ]);
     }
 
+    /**
+     * Old guest emails linked here with just the user id, which worked as a permanent password.
+     * Those links no longer log anyone in.
+     */
     #[Route('/loginEventGuest/{user}/{event}', name: 'login_event_guest')]
-    public function loginEventGuest(
-        User     $user,
-        Event    $event,
-        Security $security,
+    public function loginEventGuest(Event $event): Response
+    {
+        $this->addFlash('error', 'This link is no longer valid. Enter your email again and we will send you a new one.');
+
+        return $this->redirectToRoute('create_event_guest', ['id' => $event->id]);
+    }
+
+    /**
+     * A guest who registered (and proved they own the address via the emailed link) picks a
+     * username and password. The account then waits for activation like any registration.
+     */
+    #[Route('/user/upgrade', name: 'user_upgrade')]
+    #[IsGranted('ROLE_USER')]
+    public function upgradeGuest(
+        Request                     $request,
+        UserPasswordHasherInterface $userPasswordHasher,
+        Security                    $security,
     ): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
         if (!$user->guest) {
-            $this->addFlash('error', 'Logging in like this only works for a guest account');
+            return $this->redirectToRoute('user_profile');
+        }
+
+        $form = $this->createForm(GuestUpgradeType::class, $user);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user->password = $userPasswordHasher->hashPassword($user, $form->get('plainPassword')->getData());
+            $user->guest = false;
+            $user->enabled = false;
+            $this->repository->add($user);
+            $this->mailer->send(EmailFactory::signupEmail($user));
+            $this->commissionMailer->send(EmailFactory::newUserNotification($user));
+
+            $security->logout(false);
+            $this->addFlash('success', 'Your account has been created. You can log in once the committee has activated it.');
+
+            return $this->redirectToRoute('login');
+        }
+
+        return $this->render('user/upgrade.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/check-email', name: 'check_email')]
+    public function checkEmailPage(Request $request): Response
+    {
+        $context = $request->getSession()->get('check_email');
+        if ($context === null) {
             return $this->redirectToRoute('home');
         }
-        $security->login($user, 'form_login');
 
-        return $this->redirectToRoute('event_subscription_subscribe', [
-            'id' => $event->id,
+        return $this->render('user/check_email.html.twig', $context);
+    }
+
+    private function checkEmail(Request $request, string $email, string $reason, ?Event $event = null): Response
+    {
+        $request->getSession()->set('check_email', [
+            'email' => $email,
+            'reason' => $reason,
+            'event' => $event ? ['id' => $event->id, 'name' => $event->name] : null,
         ]);
+
+        return $this->redirectToRoute('check_email', [], Response::HTTP_SEE_OTHER);
+    }
+
+    /**
+     * A signed, expiring login link that lands on the given route.
+     */
+    private function loginLink(User $user, string $route, array $parameters = []): string
+    {
+        $url = $this->loginLinkHandler->createLoginLink($user)->getUrl();
+
+        return $url . '&_target_path=' . rawurlencode($this->generateUrl($route, $parameters));
+    }
+
+    /**
+     * Only same-site paths, so a crafted login URL cannot redirect elsewhere.
+     */
+    private static function localPath(mixed $path): ?string
+    {
+        return is_string($path) && preg_match('#^/(?![/\\\\])#', $path) ? $path : null;
     }
 }

@@ -1,0 +1,15 @@
+# Limits per client IP on forms that send email or create accounts
+framework:
+    rate_limiter:
+        guest_signup:
+            policy: sliding_window
+            limit: 5
+            interval: '1 hour'
+        registration:
+            policy: sliding_window
+            limit: 5
+            interval: '1 hour'
+        password_reset:
+            policy: sliding_window
+            limit: 5
+            interval: '1 hour'
