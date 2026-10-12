@@ -15,7 +15,7 @@ class RecurrenceExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('recurrence_text', OccurrenceCalculator::describe(...)),
+            new TwigFilter('recurrence_text', $this->recurrenceText(...)),
             new TwigFilter('offset_text', Offset::describe(...)),
         ];
     }
@@ -25,6 +25,13 @@ class RecurrenceExtension extends AbstractExtension
         return [
             new TwigFunction('next_occurrences', $this->nextOccurrences(...)),
         ];
+    }
+
+    public function recurrenceText(RecurringEvent $series, bool $capitalize = false): string
+    {
+        $text = OccurrenceCalculator::describe($series);
+
+        return $capitalize ? ucfirst($text) : $text;
     }
 
     /**
