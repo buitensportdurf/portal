@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/event/question', name: 'event_question')]
@@ -64,7 +65,8 @@ class QuestionController extends AbstractController
         ]);
     }
 
-    #[Route('/delete/{id}', name: '_delete')]
+    #[Route('/delete/{id}', name: '_delete', methods: ['POST'])]
+    #[IsCsrfTokenValid('question-delete')]
     public function delete(Question $question): Response
     {
         $event = $question->event;

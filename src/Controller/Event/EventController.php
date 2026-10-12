@@ -18,6 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/event/event', name: 'event_event')]
@@ -127,7 +128,8 @@ class EventController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/publish', name: '_publish')]
+    #[Route('/{id}/publish', name: '_publish', methods: ['POST'])]
+    #[IsCsrfTokenValid('event-publish')]
     #[IsGranted('publish', subject: 'event')]
     public function publish(Event $event, EntityManagerInterface $entityManager): Response
     {
@@ -141,7 +143,8 @@ class EventController extends AbstractController
         return $this->redirectToRoute('event_event_show', ['id' => $event->id]);
     }
 
-    #[Route('/{id}/unpublish', name: '_unpublish')]
+    #[Route('/{id}/unpublish', name: '_unpublish', methods: ['POST'])]
+    #[IsCsrfTokenValid('event-publish')]
     #[IsGranted('unpublish', subject: 'event')]
     public function unpublish(Event $event, EntityManagerInterface $entityManager): Response
     {
@@ -155,7 +158,8 @@ class EventController extends AbstractController
         return $this->redirectToRoute('event_event_show', ['id' => $event->id]);
     }
 
-    #[Route('/{id}/delete', name: '_delete')]
+    #[Route('/{id}/delete', name: '_delete', methods: ['POST'])]
+    #[IsCsrfTokenValid('event-delete')]
     #[IsGranted('ROLE_EVENT_EDIT')]
     public function delete(Event $event, EventRepository $repository): Response
     {

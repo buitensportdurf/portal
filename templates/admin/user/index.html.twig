@@ -30,6 +30,7 @@
                                 title: 'Enable ' ~ user.name,
                                 message: 'Do you really want to enable "' ~ user.name ~ '" with email "' ~ user.email ~ '"?',
                                 action_url: path('admin2_user_enable', {id: user.id}),
+                                csrf_id: 'user-enable',
                                 action_label: 'Enable',
                                 action_class: 'btn-success',
                             }) }}
