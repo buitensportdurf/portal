@@ -14,6 +14,7 @@
                     title: 'Publish event',
                     message: 'This will make "' ~ event ~ '" visible to all users and allow subscriptions.',
                     action_url: path('event_event_publish', {id: event.id}),
+                    csrf_id: 'event-publish',
                     action_label: 'Publish',
                     action_class: 'btn-success',
                 }) }}
@@ -24,6 +25,7 @@
                     title: 'Move to draft',
                     message: 'This will hide "' ~ event ~ '" from regular users. Events with subscribers cannot be unpublished.',
                     action_url: path('event_event_unpublish', {id: event.id}),
+                    csrf_id: 'event-publish',
                     action_label: 'Move to draft',
                     action_class: 'btn-secondary',
                 }) }}
@@ -57,6 +59,7 @@
                 title: 'Delete event',
                 message: 'Are you sure you want to delete event "' ~ event ~ '"?',
                 action_url: path('event_event_delete', {id: event.id}),
+                csrf_id: 'event-delete',
                 action_label: 'Delete',
             }) }}
         {% endif %}
@@ -180,6 +183,7 @@
                                                         title: 'Unsubscribe ' ~ subscription.createdUser,
                                                         message: 'Are you sure you want to unsubscribe "' ~ subscription.createdUser ~ '" from "' ~ event ~ '"?',
                                                         action_url: path('event_subscription_unsubscribe', {id: subscription.id}),
+                                                        csrf_id: 'unsubscribe',
                                                         action_label: 'Unsubscribe',
                                                     }) }}
                                                 {% endif %}
@@ -242,9 +246,17 @@
                                     <div class="btn-group btn-group-sm">
                                         <a class="btn btn-outline-warning"
                                            href="{{ path('event_question_edit', {'id': question.id}) }}">Edit</a>
-                                        <a class="btn btn-outline-danger"
-                                           href="{{ path('event_question_delete', {'id': question.id}) }}">Delete</a>
+                                        <a class="btn btn-outline-danger" data-bs-toggle="modal"
+                                           data-bs-target="#confirmDeleteQuestion{{ question.id }}">Delete</a>
                                     </div>
+                                    {{ include('components/_confirm_modal.html.twig', {
+                                        id: 'confirmDeleteQuestion' ~ question.id,
+                                        title: 'Delete question',
+                                        message: 'Delete the question "' ~ question ~ '" and all answers to it?',
+                                        action_url: path('event_question_delete', {id: question.id}),
+                                        action_label: 'Delete',
+                                        csrf_id: 'question-delete',
+                                    }) }}
                                 {% endif %}
                             </li>
                         {% endfor %}

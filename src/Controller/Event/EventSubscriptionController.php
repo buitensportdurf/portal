@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/event/subscription', name: 'event_subscription')]
@@ -101,7 +102,8 @@ class EventSubscriptionController extends AbstractController
         ]);
     }
 
-    #[Route('/unsubscribe/{id}', name: '_unsubscribe')]
+    #[Route('/unsubscribe/{id}', name: '_unsubscribe', methods: ['POST'])]
+    #[IsCsrfTokenValid('unsubscribe')]
     #[IsGranted('ROLE_USER')]
     public function unsubscribe(EventSubscription $subscription): Response
     {

@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Cache\CacheInterface;
 
@@ -29,7 +30,8 @@ class UserAdmin2Controller extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/enable', name: '_enable')]
+    #[Route('/{id}/enable', name: '_enable', methods: ['POST'])]
+    #[IsCsrfTokenValid('user-enable')]
     public function enable(User $user, MailerInterface $mailer): Response
     {
         $user->enabled = true;

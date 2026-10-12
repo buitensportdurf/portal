@@ -11,6 +11,7 @@
             title: 'Delete event',
             message: 'Are you sure you want to delete event "' ~ event ~ '"?',
             action_url: path('event_event_delete', {id: event.id}),
+            csrf_id: 'event-delete',
             action_label: 'Delete',
         }) }}
     </div>
