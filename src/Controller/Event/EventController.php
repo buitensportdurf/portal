@@ -46,7 +46,8 @@ class EventController extends AbstractController
     public function past(Request $request, EventRepository $eventRepository): Response
     {
         $years = $eventRepository->findPastYears();
-        $year = $request->query->getInt('year') ?: ($years[0] ?? null);
+        // Malformed input falls back to the latest year instead of failing
+        $year = filter_var($request->query->get('year'), FILTER_VALIDATE_INT) ?: ($years[0] ?? null);
 
         return $this->render('event/event/past.html.twig', [
             'events' => $eventRepository->findPast($year, $this->isGranted('ROLE_EVENT_EDIT')),

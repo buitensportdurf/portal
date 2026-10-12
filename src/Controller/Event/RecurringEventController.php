@@ -151,7 +151,7 @@ class RecurringEventController extends AbstractController
 
         if ($request->isMethod('POST')) {
             $this->denyUnlessCsrf($request, 'recurring-delete-' . $recurringEvent->id);
-            $notify = $request->request->getBoolean('notify');
+            $notify = $request->request->has('notify');
             $this->synchronizer->apply($plan, $notify);
 
             $this->addFlash('success', sprintf('Deleted "%s". %s', $recurringEvent, self::summary($plan, $notify)));
