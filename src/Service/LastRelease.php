@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use JetBrains\PhpStorm\ArrayShape;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class LastRelease
 {
@@ -15,7 +16,10 @@ class LastRelease
     ])]
     private array $lastRelease = [];
 
-    public function __construct(string $jsonFile)
+    public function __construct(
+        #[Autowire('%kernel.project_dir%/release.json')]
+        string $jsonFile,
+    )
     {
         if (file_exists($jsonFile)) {
             $this->lastRelease = json_decode(file_get_contents($jsonFile), true);
