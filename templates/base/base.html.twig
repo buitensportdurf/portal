@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% if title is defined %}{{ title }}{% else %}Durf ledenportaal{% endif %}</title>
+    <title>{% if title is defined %}{{ title }}{% else %}{{ 'Durf member portal'|trans }}{% endif %}</title>
     <link rel="shortcut icon" type="image/jpg" href="/favicon.svg">
 
     {% block css %}
@@ -24,12 +24,12 @@
             {% block flashes %}
                 {% for msg in app.session.flashBag.get('error') %}
                     <div class="alert alert-danger my-2" role="alert">
-                        {{ msg|raw }}
+                        {{ msg|trans }}
                     </div>
                 {% endfor %}
                 {% for msg in app.session.flashBag.get('success') %}
                     <div class="alert alert-success my-2">
-                        {{ msg|raw }}
+                        {{ msg|trans }}
                     </div>
                 {% endfor %}
             {% endblock %}

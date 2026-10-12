@@ -1,14 +1,10 @@
 {% extends 'email/base.html.twig' %}
 {% import 'email/_macros.html.twig' as email %}
 
-{% set title %}Finish your registration{% endset %}
+{% set title = 'Finish your registration'|trans %}
 
 {% block body %}
-    <p>
-        Someone (hopefully you) registered on the Buitensport Durf member portal with this email address.
-        You already have a guest account with it, so we will turn that into a member account; your event
-        subscriptions stay.
-    </p>
-    {{ email.button(loginUrl, 'Choose a username and password') }}
-    <p>The link works for two days. Didn't register? Then you can ignore this email; nothing changes.</p>
+    <p>{{ 'Someone (hopefully you) registered on the Buitensport Durf member portal with this email address. You already have a guest account with it, so we will turn that into a member account; your event subscriptions stay.'|trans }}</p>
+    {{ email.button(loginUrl, 'Choose a username and password'|trans) }}
+    <p>{{ "The link works for two days. Didn't register? Then you can ignore this email; nothing changes."|trans }}</p>
 {% endblock %}

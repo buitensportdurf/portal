@@ -6,5 +6,5 @@
             </td>
         </tr>
     </table>
-    <p style="margin: 0 0 12px; font-size: 13px; color: #6c757d;">Button not working? Copy this link: <a href="{{ url }}" style="color: #6c757d; word-break: break-all;">{{ url }}</a></p>
+    <p style="margin: 0 0 12px; font-size: 13px; color: #6c757d;">{{ 'Button not working? Copy this link: <a href="{url}" style="color: #6c757d; word-break: break-all;">{url}</a>'|trans({url: url|e})|raw }}</p>
 {% endmacro %}

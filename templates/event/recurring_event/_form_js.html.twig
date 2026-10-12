@@ -6,7 +6,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const field = (name) => form.querySelector(`[name$="[rrule][${name}]"]`);
     const checked = (name) => form.querySelector(`[name$="[rrule][${name}]"]:checked`)?.value;
-    const units = {DAILY: 'days', WEEKLY: 'weeks', MONTHLY: 'months', YEARLY: 'years'};
+    const i18n = {{ {
+        units: {DAILY: 'days'|trans, WEEKLY: 'weeks'|trans, MONTHLY: 'months'|trans, YEARLY: 'years'|trans},
+        previewError: 'Could not load the preview.'|trans,
+    }|json_encode|raw }};
+    const units = i18n.units;
 
     // Show only the rule options that apply to the chosen frequency, mode and end
     function toggle() {
@@ -36,7 +40,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 const response = await fetch(form.dataset.previewUrl, {method: 'POST', body: data, signal: controller.signal});
                 preview.innerHTML = await response.text();
             } catch (e) {
-                if (e.name !== 'AbortError') preview.innerHTML = '<div class="alert alert-warning">Could not load the preview.</div>';
+                if (e.name !== 'AbortError') {
+                    const alert = document.createElement('div');
+                    alert.className = 'alert alert-warning';
+                    alert.textContent = i18n.previewError;
+                    preview.replaceChildren(alert);
+                }
             } finally {
                 preview.classList.remove('opacity-50');
             }

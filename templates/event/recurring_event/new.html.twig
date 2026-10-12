@@ -1,9 +1,9 @@
 {% extends 'base/single.column.html.twig' %}
 
-{% set title %}New recurring event{% endset %}
+{% set title %}{{ 'New recurring event'|trans }}{% endset %}
 
 {% block actions %}
-    <a class="btn btn-sm btn-outline-primary" href="{{ path('event_recurring_event_index') }}">Back to list</a>
+    <a class="btn btn-sm btn-outline-primary" href="{{ path('event_recurring_event_index') }}">{{ 'Back to list'|trans }}</a>
 {% endblock %}
 
 {% block body %}
@@ -13,12 +13,12 @@
         </div>
         <div class="col-lg-5">
             <div class="card sticky-top" style="top: 1rem">
-                <div class="card-header">Preview</div>
+                <div class="card-header">{{ 'Preview'|trans }}</div>
                 <div class="card-body" id="recurring-preview">
                     {% if plan %}
                         {{ include('event/recurring_event/_preview.html.twig', {plan: plan, errors: [], isNew: true}) }}
                     {% else %}
-                        <p class="text-muted mb-0">Fix the form to see the preview.</p>
+                        <p class="text-muted mb-0">{{ 'Fix the form to see the preview.'|trans }}</p>
                     {% endif %}
                 </div>
             </div>

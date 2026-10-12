@@ -4,9 +4,9 @@
 
 {% block actions %}
     <div class="btn-group btn-group-sm">
-        <a class="btn btn-outline-primary" href="{{ path('event_recurring_event_index') }}">Back</a>
-        <a class="btn btn-outline-warning" href="{{ path('event_recurring_event_edit', {id: recurringEvent.id}) }}">Edit</a>
-        <a class="btn btn-outline-danger" href="{{ path('event_recurring_event_delete', {id: recurringEvent.id}) }}">Delete</a>
+        <a class="btn btn-outline-primary" href="{{ path('event_recurring_event_index') }}">{{ 'Back'|trans }}</a>
+        <a class="btn btn-outline-warning" href="{{ path('event_recurring_event_edit', {id: recurringEvent.id}) }}">{{ 'Edit'|trans }}</a>
+        <a class="btn btn-outline-danger" href="{{ path('event_recurring_event_delete', {id: recurringEvent.id}) }}">{{ 'Delete'|trans }}</a>
     </div>
 {% endblock %}
 
@@ -17,31 +17,31 @@
         <div class="card-body">
             <p class="fs-5 mb-1">
                 <i class="fas fa-redo fa-fw"></i>
-                {{ recurringEvent|recurrence_text(true) }},
+                {{ recurringEvent|recurrence_text(true)|trans }},
                 {{ recurringEvent.startDate|date('H:i') }}–{{ recurringEvent.endDate|date('H:i') }}
-                {% if not recurringEvent.published %}<span class="badge bg-secondary">Draft</span>{% endif %}
+                {% if not recurringEvent.published %}<span class="badge bg-secondary">{{ 'Draft'|trans }}</span>{% endif %}
             </p>
             <p class="text-muted mb-0 small">
                 <i class="fas fa-map-marker-alt fa-fw"></i> {{ recurringEvent.location }}
-                &middot; Subscriptions open {{ recurringEvent.subscriptionOpenOffset|offset_text('right away') }}
-                &middot; deadline {{ recurringEvent.subscriptionDeadlineOffset|offset_text('at the start') }}
+                &middot; {{ 'Subscriptions open {when}'|trans({when: recurringEvent.subscriptionOpenOffset|offset_text('right away'|trans)|trans}) }}
+                &middot; {{ 'deadline {when}'|trans({when: recurringEvent.subscriptionDeadlineOffset|offset_text('at the start'|trans)|trans}) }}
                 {% if recurringEvent.exceptionDates %}
-                    &middot; skipped: {{ recurringEvent.exceptionDates|map(d => d|date('j M Y'))|join(', ') }}
+                    &middot; {{ 'skipped: {dates}'|trans({dates: recurringEvent.exceptionDates|map(d => d|date('j M Y'))|join(', ')}) }}
                 {% endif %}
             </p>
             {% if extension.occurrences %}
                 <form method="post" action="{{ path('event_recurring_event_generate', {id: recurringEvent.id}) }}" class="mt-3">
                     <input type="hidden" name="_token" value="{{ csrf_token('recurring-generate-' ~ recurringEvent.id) }}">
-                    <span class="small text-muted">{{ extension.occurrences|length }} event(s) will be added in the nightly run.</span>
-                    <button class="btn btn-sm btn-outline-success ms-2">Add them now</button>
+                    <span class="small text-muted">{{ '{count, plural, one {# event} other {# events}} will be added in the nightly run.'|trans({count: extension.occurrences|length}) }}</span>
+                    <button class="btn btn-sm btn-outline-success ms-2">{{ 'Add them now'|trans }}</button>
                 </form>
             {% endif %}
         </div>
     </div>
 
-    <h4>Upcoming events</h4>
+    <h4>{{ 'Upcoming events'|trans }}</h4>
     {% if futureEvents is empty %}
-        <p class="text-muted">No upcoming events.</p>
+        <p class="text-muted">{{ 'No upcoming events.'|trans }}</p>
     {% else %}
         <div class="list-group mb-4">
             {% for event in futureEvents %}
@@ -52,7 +52,7 @@
 
     {% if pastEvents is not empty %}
         <details>
-            <summary class="h5">Past events ({{ pastEvents|length }})</summary>
+            <summary class="h5">{{ 'Past events ({count})'|trans({count: pastEvents|length}) }}</summary>
             <div class="list-group mt-2">
                 {% for event in pastEvents %}
                     {{ include('event/recurring_event/_event_row.html.twig') }}

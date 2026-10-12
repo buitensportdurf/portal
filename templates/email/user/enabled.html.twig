@@ -1,10 +1,10 @@
 {% extends 'email/base.html.twig' %}
 {% import 'email/_macros.html.twig' as email %}
 
-{% set title %}Account activated{% endset %}
+{% set title = 'Account activated'|trans %}
 
 {% block body %}
-    <p>Your account on the Buitensport Durf member portal is now active.</p>
-    <p>You can log in with your username <strong>{{ user.username }}</strong> or your email address, and subscribe to events.</p>
-    {{ email.button(url('login'), 'Log in') }}
+    <p>{{ 'Your account on the Buitensport Durf member portal is now active.'|trans }}</p>
+    <p>{{ 'You can log in with your username <strong>{username}</strong> or your email address, and subscribe to events.'|trans({username: user.username|e})|raw }}</p>
+    {{ email.button(url('login'), 'Log in'|trans) }}
 {% endblock %}

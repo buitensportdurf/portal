@@ -1,14 +1,9 @@
 {% extends 'email/base.html.twig' %}
 {% import 'email/_macros.html.twig' as email %}
 
-{% set title %}Account created{% endset %}
+{% set title = 'Account created'|trans %}
 
 {% block body %}
-    <p>
-        You have signed up to the Buitensport Durf member portal with the username <strong>{{ user.username }}</strong>.
-    </p>
-    <p>
-        Your account still has to be activated by the committee. You will get an email as soon as that has happened,
-        usually within a few days.
-    </p>
+    <p>{{ 'You have signed up to the Buitensport Durf member portal with the username <strong>{username}</strong>.'|trans({username: user.username|e})|raw }}</p>
+    <p>{{ 'Your account still has to be activated by the committee. You will get an email as soon as that has happened, usually within a few days.'|trans }}</p>
 {% endblock %}

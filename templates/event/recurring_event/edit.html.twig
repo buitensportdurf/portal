@@ -1,11 +1,11 @@
 {% extends 'base/single.column.html.twig' %}
 
-{% set title %}Edit {{ recurringEvent }}{% endset %}
+{% set title %}{{ 'Edit {name}'|trans({name: recurringEvent.name}) }}{% endset %}
 
 {% block actions %}
     <div class="btn-group btn-group-sm">
-        <a class="btn btn-outline-primary" href="{{ path('event_recurring_event_show', {id: recurringEvent.id}) }}">Back</a>
-        <a class="btn btn-outline-danger" href="{{ path('event_recurring_event_delete', {id: recurringEvent.id}) }}">Delete series</a>
+        <a class="btn btn-outline-primary" href="{{ path('event_recurring_event_show', {id: recurringEvent.id}) }}">{{ 'Back'|trans }}</a>
+        <a class="btn btn-outline-danger" href="{{ path('event_recurring_event_delete', {id: recurringEvent.id}) }}">{{ 'Delete series'|trans }}</a>
     </div>
 {% endblock %}
 
@@ -16,12 +16,12 @@
         </div>
         <div class="col-lg-5">
             <div class="card sticky-top" style="top: 1rem; max-height: calc(100vh - 2rem); overflow-y: auto">
-                <div class="card-header">What saving will do</div>
+                <div class="card-header">{{ 'What saving will do'|trans }}</div>
                 <div class="card-body" id="recurring-preview">
                     {% if plan %}
                         {{ include('event/recurring_event/_preview.html.twig', {plan: plan, errors: [], isNew: false}) }}
                     {% else %}
-                        <p class="text-muted mb-0">Fix the form to see the changes.</p>
+                        <p class="text-muted mb-0">{{ 'Fix the form to see the changes.'|trans }}</p>
                     {% endif %}
                 </div>
             </div>

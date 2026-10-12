@@ -1,9 +1,9 @@
 {% extends 'base/single.column.html.twig' %}
 
-{% set title %}Subscribe to {{ event }}{% endset %}
+{% set title %}{{ 'Subscribe to {event}'|trans({event: event}) }}{% endset %}
 
 {% block body %}
-    <a class="btn btn-primary" href="{{ path('event_event_show', {id: event.id}) }}">Back to {{ event }}</a>
+    <a class="btn btn-primary" href="{{ path('event_event_show', {id: event.id}) }}">{{ 'Back to {event}'|trans({event: event}) }}</a>
 
     <div class="alert alert-info my-4" role="alert">
         {{ event.description|markdown_to_html }}

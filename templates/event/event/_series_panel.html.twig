@@ -4,45 +4,44 @@
     <div class="card-body py-2 d-flex flex-wrap justify-content-between align-items-center gap-2">
         <div>
             <i class="fas fa-redo text-info"></i>
-            Part of <a href="{{ path('event_recurring_event_show', {id: series.id}) }}">{{ series }}</a>
+            {{ 'Part of <a href="{url}">{series}</a>'|trans({url: path('event_recurring_event_show', {id: series.id}), series: series|e})|raw }}
             <span class="text-muted">({{ series|recurrence_text }})</span>
             {% if event.overriddenFields %}
                 <div class="small text-muted">
                     <i class="fas fa-lock"></i>
-                    Customised here, so series changes leave these alone:
-                    {{ event.getOverriddenFields|map(f => f.label)|join(', ') }}
+                    {{ 'Customised here, so series changes leave these alone: {fields}'|trans({fields: event.getOverriddenFields|map(f => f.label|trans)|join(', ')}) }}
                 </div>
             {% endif %}
         </div>
         <div class="btn-group btn-group-sm">
             {% if event.occurrenceStart %}
-                <a class="btn btn-outline-primary" href="{{ path('event_recurring_event_edit', {id: series.id, from: event.occurrenceStart|date('Y-m-d')}) }}">Edit this and following</a>
+                <a class="btn btn-outline-primary" href="{{ path('event_recurring_event_edit', {id: series.id, from: event.occurrenceStart|date('Y-m-d')}) }}">{{ 'Edit this and following'|trans }}</a>
             {% endif %}
-            <a class="btn btn-outline-primary" href="{{ path('event_recurring_event_edit', {id: series.id}) }}">Edit series</a>
+            <a class="btn btn-outline-primary" href="{{ path('event_recurring_event_edit', {id: series.id}) }}">{{ 'Edit series'|trans }}</a>
             {% if event.overriddenFields and event.occurrenceStart %}
-                <a class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#confirmReset">Reset to series</a>
+                <a class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#confirmReset">{{ 'Reset to series'|trans }}</a>
             {% endif %}
-            <a class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#confirmDetach">Detach</a>
+            <a class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#confirmDetach">{{ 'Detach'|trans }}</a>
         </div>
     </div>
 </div>
 {% if event.overriddenFields and event.occurrenceStart %}
     {{ include('components/_confirm_modal.html.twig', {
         id: 'confirmReset',
-        title: 'Reset to series',
-        message: 'This overwrites ' ~ event.getOverriddenFields|map(f => f.label|lower)|join(', ') ~ ' with the series values, and the event follows series changes again.',
+        title: 'Reset to series'|trans,
+        message: 'This overwrites {fields} with the series values, and the event follows series changes again.'|trans({fields: event.getOverriddenFields|map(f => f.label|trans|lower)|join(', ')}),
         action_url: path('event_event_reset', {id: event.id}),
-        action_label: 'Reset',
+        action_label: 'Reset'|trans,
         action_class: 'btn-warning',
         csrf_id: 'event-reset-' ~ event.id,
     }) }}
 {% endif %}
 {{ include('components/_confirm_modal.html.twig', {
     id: 'confirmDetach',
-    title: 'Detach from series',
-    message: 'The event becomes a standalone event and series changes no longer reach it. The series will not create a new event on this date.',
+    title: 'Detach from series'|trans,
+    message: 'The event becomes a standalone event and series changes no longer reach it. The series will not create a new event on this date.'|trans,
     action_url: path('event_event_detach', {id: event.id}),
-    action_label: 'Detach',
+    action_label: 'Detach'|trans,
     action_class: 'btn-warning',
     csrf_id: 'event-detach-' ~ event.id,
 }) }}

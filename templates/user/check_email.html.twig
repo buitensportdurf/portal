@@ -1,28 +1,31 @@
 {% extends 'base/single.column.html.twig' %}
 
-{% set title %}Check your email{% endset %}
+{% set title %}{{ 'Check your email'|trans }}{% endset %}
 
 {% block body %}
     <div class="card">
         <div class="card-body">
-            <p class="fs-5"><i class="fas fa-envelope-open-text"></i> We've sent an email to <strong>{{ email }}</strong>.</p>
+            <p class="fs-5"><i class="fas fa-envelope-open-text"></i> {{ 'We\'ve sent an email to <strong>{email}</strong>.'|trans({email: email|e})|raw }}</p>
             {% if reason == 'guest' %}
                 <p>
-                    Click the link in it to finish subscribing{% if event %} to <strong>{{ event.name }}</strong>{% endif %}.
-                    The link works for two days.
+                    {% if event %}
+                        {{ 'Click the link in it to finish subscribing to <strong>{event}</strong>.'|trans({event: event.name|e})|raw }}
+                    {% else %}
+                        {{ 'Click the link in it to finish subscribing.'|trans }}
+                    {% endif %}
+                    {{ 'The link works for two days.'|trans }}
                 </p>
             {% else %}
                 <p>
-                    It explains the next steps. New accounts are activated by the committee, usually within a few days;
-                    you will get an email when that has happened.
+                    {{ 'It explains the next steps. New accounts are activated by the committee, usually within a few days; you will get an email when that has happened.'|trans }}
                 </p>
             {% endif %}
             <p class="text-muted small mb-0">
-                Nothing arrived after a few minutes? Check your spam folder, or make sure the address is right and try again.
+                {{ 'Nothing arrived after a few minutes? Check your spam folder, or make sure the address is right and try again.'|trans }}
             </p>
         </div>
     </div>
     {% if event %}
-        <a class="btn btn-outline-primary mt-3" href="{{ path('event_event_show', {id: event.id}) }}">Back to {{ event.name }}</a>
+        <a class="btn btn-outline-primary mt-3" href="{{ path('event_event_show', {id: event.id}) }}">{{ 'Back to {event}'|trans({event: event.name}) }}</a>
     {% endif %}
 {% endblock %}

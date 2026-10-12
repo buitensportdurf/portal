@@ -1,6 +1,6 @@
 {% extends 'base/single.column.html.twig' %}
 
-{% set title %}Login{% endset %}
+{% set title %}{{ 'Login'|trans }}{% endset %}
 
 {% block body %}
     <form action="{{ path('login') }}" method="post">
@@ -9,15 +9,15 @@
         {% endif %}
         {% if app.user %}
             <div class="mb-3">
-                You are already logged in as {{ app.user }}, <a href="{{ path('_logout_main') }}">Logout</a>
+                {{ 'You are already logged in as {name}, <a href="{url}">Logout</a>'|trans({name: app.user|e, url: path('_logout_main')})|raw }}
             </div>
         {% endif %}
 
-        <label for="inputUsername">Username or email</label>
+        <label for="inputUsername">{{ 'Username or email'|trans }}</label>
         <input type="text" value="{{ last_username }}" name="_username" id="inputUsername" class="form-control" required
                autofocus autocomplete="username">
         <br/>
-        <label for="inputPassword">Password</label>
+        <label for="inputPassword">{{ 'Password'|trans }}</label>
         <input type="password" name="_password" id="inputPassword" class="form-control" required autocomplete="current-password">
         <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
         {% if target_path %}<input type="hidden" name="_target_path" value="{{ target_path }}">{% endif %}
@@ -25,11 +25,11 @@
 
         <div class="checkbox mb-3">
             <label>
-                <input type="checkbox" name="_remember_me"> Remember me
+                <input type="checkbox" name="_remember_me"> {{ 'Remember me'|trans }}
             </label>
         </div>
-        <button class="btn btn-primary" type="submit">Login</button>
-        <a class="btn btn-outline-primary" href="{{ path('register') }}">Register</a>
-        <a class="btn btn-link" href="{{ path('forgot_password_request') }}">Forgot password?</a>
+        <button class="btn btn-primary" type="submit">{{ 'Login'|trans }}</button>
+        <a class="btn btn-outline-primary" href="{{ path('register') }}">{{ 'Register'|trans }}</a>
+        <a class="btn btn-link" href="{{ path('forgot_password_request') }}">{{ 'Forgot password?'|trans }}</a>
     </form>
 {% endblock %}

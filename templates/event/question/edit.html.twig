@@ -1,9 +1,9 @@
 {% extends 'base/single.column.html.twig' %}
 
-{% set title %}Edit Question {{ question }}{% endset %}
+{% set title %}{{ 'Edit Question {question}'|trans({question: question}) }}{% endset %}
 
 {% block body %}
-    <a class="btn btn-primary" href="{{ path('event_event_show', {'id': event.id}) }}">Back to event</a>
+    <a class="btn btn-primary" href="{{ path('event_event_show', {'id': event.id}) }}">{{ 'Back to event'|trans }}</a>
 
     {{ form(form) }}
 {% endblock %}

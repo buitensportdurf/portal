@@ -2,11 +2,8 @@
 {% import 'email/_macros.html.twig' as email %}
 
 {% block body %}
-    <p>
-        Unfortunately <strong>{{ event }}</strong> on {{ event.startDate|fdate_time }}, which you subscribed to,
-        has been cancelled.
-    </p>
-    {{ email.button(url('event_event_show', {id: event.id}), 'View event') }}
+    <p>{{ 'Unfortunately <strong>{event}</strong> on {date}, which you subscribed to, has been cancelled.'|trans({event: event.name|e, date: event.startDate|fdate_time})|raw }}</p>
+    {{ email.button(url('event_event_show', {id: event.id}), 'View event'|trans) }}
 {% endblock %}
 
 {% block footer %}{{ include('email/event/_footer.html.twig') }}{% endblock %}

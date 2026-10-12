@@ -2,10 +2,10 @@
 {% import 'email/_macros.html.twig' as email %}
 
 {% block body %}
-    <p>A reminder: <strong>{{ event }}</strong> is coming up and you are subscribed.</p>
+    <p>{{ 'A reminder: <strong>{event}</strong> is coming up and you are subscribed.'|trans({event: event.name|e})|raw }}</p>
     {{ include('email/event/_details.html.twig') }}
-    <p>Can't make it anymore? Please unsubscribe on the event page, so the organisers know.</p>
-    {{ email.button(url('event_event_show', {id: event.id}), 'View event') }}
+    <p>{{ "Can't make it anymore? Please unsubscribe on the event page, so the organisers know."|trans }}</p>
+    {{ email.button(url('event_event_show', {id: event.id}), 'View event'|trans) }}
 {% endblock %}
 
 {% block footer %}{{ include('email/event/_footer.html.twig') }}{% endblock %}

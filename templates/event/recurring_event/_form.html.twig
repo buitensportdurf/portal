@@ -1,20 +1,20 @@
 {# @var form Symfony\Component\Form\FormView #}
 {% macro offset_row(field) %}
     <div class="mb-3">
-        <label class="form-label" for="{{ field.amount.vars.id }}">{{ field.vars.label }}</label>
+        <label class="form-label" for="{{ field.amount.vars.id }}">{{ field.vars.label|trans }}</label>
         <div class="input-group">
             {{ form_widget(field.amount, {attr: {class: 'flex-grow-0', style: 'width: 6rem'}}) }}
             {{ form_widget(field.unit) }}
         </div>
         {{ form_errors(field) }}
-        {% if field.vars.help %}<div class="form-text">{{ field.vars.help }}</div>{% endif %}
+        {% if field.vars.help %}<div class="form-text">{{ field.vars.help|trans }}</div>{% endif %}
     </div>
 {% endmacro %}
 
 {% set rule = form.rrule %}
 {{ form_start(form, {attr: {id: 'recurring-form', 'data-preview-url': preview_url}}) }}
 <div class="card mb-3">
-    <div class="card-header">Schedule</div>
+    <div class="card-header">{{ 'Schedule'|trans }}</div>
     <div class="card-body">
         <div class="row">
             <div class="col-md-6">{{ form_row(form.startDate) }}</div>
@@ -27,7 +27,7 @@
                 {{ form_label(rule.interval) }}
                 <div class="input-group">
                     {{ form_widget(rule.interval) }}
-                    <span class="input-group-text" data-interval-unit>weeks</span>
+                    <span class="input-group-text" data-interval-unit>{{ 'weeks'|trans }}</span>
                 </div>
                 {{ form_errors(rule.interval) }}
             </div>
@@ -39,14 +39,14 @@
                     {{ form_widget(day) }}
                 {% endfor %}
             </div>
-            <div class="form-text">{{ rule.weekdays.vars.help }}</div>
+            <div class="form-text">{{ rule.weekdays.vars.help|trans }}</div>
         </div>
         <div class="mt-3" data-show-frequency="MONTHLY">
             {{ form_row(rule.monthlyMode) }}
             <div class="row g-2 mb-3" data-show-monthly-mode="weekday">
                 <div class="col-auto">{{ form_widget(rule.ordinal) }}</div>
                 <div class="col-auto">{{ form_widget(rule.weekday) }}</div>
-                <div class="col-auto align-self-center">of the month</div>
+                <div class="col-auto align-self-center">{{ 'of the month'|trans }}</div>
             </div>
         </div>
         <div class="mt-3">
@@ -60,7 +60,7 @@
 </div>
 
 <div class="card mb-3">
-    <div class="card-header">Details</div>
+    <div class="card-header">{{ 'Details'|trans }}</div>
     <div class="card-body">
         {{ form_row(form.name) }}
         {{ form_row(form.location) }}
@@ -71,7 +71,7 @@
 </div>
 
 <div class="card mb-3">
-    <div class="card-header">Subscriptions</div>
+    <div class="card-header">{{ 'Subscriptions'|trans }}</div>
     <div class="card-body">
         <div class="row">
             <div class="col-md-6">{{ _self.offset_row(form.subscriptionOpenOffset) }}</div>
@@ -89,7 +89,7 @@
 
 {% if form.applyFrom is defined or form.notifySubscribers is defined %}
     <div class="card mb-3 border-primary">
-        <div class="card-header">Apply</div>
+        <div class="card-header">{{ 'Apply'|trans }}</div>
         <div class="card-body">
             {% if form.applyFrom is defined %}{{ form_row(form.applyFrom) }}{% endif %}
             {% if form.notifySubscribers is defined %}{{ form_row(form.notifySubscribers) }}{% endif %}

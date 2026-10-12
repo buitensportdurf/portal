@@ -1,9 +1,9 @@
 {% extends 'base/single.column.html.twig' %}
 
-{% set title %}Delete {{ recurringEvent }}{% endset %}
+{% set title %}{{ 'Delete {name}'|trans({name: recurringEvent.name}) }}{% endset %}
 
 {% block actions %}
-    <a class="btn btn-sm btn-outline-primary" href="{{ path('event_recurring_event_show', {id: recurringEvent.id}) }}">Back</a>
+    <a class="btn btn-sm btn-outline-primary" href="{{ path('event_recurring_event_show', {id: recurringEvent.id}) }}">{{ 'Back'|trans }}</a>
 {% endblock %}
 
 {% block body %}
@@ -12,29 +12,29 @@
     {% set cancels = plan.ofType(Type.Cancel) %}
     <div class="card">
         <div class="card-body">
-            <p>Deleting the series:</p>
+            <p>{{ 'Deleting the series:'|trans }}</p>
             <ul>
-                <li><strong>Deletes {{ deletes|length }} upcoming event(s)</strong> without subscribers.</li>
+                <li>{{ '<strong>Deletes {count, plural, one {# upcoming event} other {# upcoming events}}</strong> without subscribers.'|trans({count: deletes|length})|raw }}</li>
                 {% if cancels %}
                     <li>
-                        <strong>Cancels {{ cancels|length }} upcoming event(s)</strong> that have subscribers:
+                        {{ '<strong>Cancels {count, plural, one {# upcoming event} other {# upcoming events}}</strong> that have subscribers:'|trans({count: cancels|length})|raw }}
                         {% for change in cancels %}{{ change.slot|date('j M Y') }} ({{ change.subscriberCount }}){% if not loop.last %}, {% endif %}{% endfor %}.
-                        They stay visible as cancelled.
+                        {{ 'They stay visible as cancelled.'|trans }}
                     </li>
                 {% endif %}
-                <li>Keeps {{ recurringEvent.pastEvents|length }} past event(s) as standalone events.</li>
+                <li>{{ 'Keeps {count, plural, one {# past event} other {# past events}} as standalone events.'|trans({count: recurringEvent.pastEvents|length}) }}</li>
             </ul>
-            <p class="text-muted small">Want it to just stop at some point instead? Edit the series and set an end date.</p>
+            <p class="text-muted small">{{ 'Want it to just stop at some point instead? Edit the series and set an end date.'|trans }}</p>
             <form method="post">
                 <input type="hidden" name="_token" value="{{ csrf_token('recurring-delete-' ~ recurringEvent.id) }}">
                 {% if cancels %}
                     <div class="form-check form-switch mb-3">
                         <input class="form-check-input" type="checkbox" role="switch" name="notify" value="1" id="notify" checked>
-                        <label class="form-check-label" for="notify">Email the {{ plan.notifiedSubscriberCount }} subscriber(s) about the cancellation</label>
+                        <label class="form-check-label" for="notify">{{ 'Email the {count, plural, one {# subscriber} other {# subscribers}} about the cancellation'|trans({count: plan.notifiedSubscriberCount}) }}</label>
                     </div>
                 {% endif %}
-                <button class="btn btn-danger">Delete series</button>
-                <a class="btn btn-secondary" href="{{ path('event_recurring_event_show', {id: recurringEvent.id}) }}">Cancel</a>
+                <button class="btn btn-danger">{{ 'Delete series'|trans }}</button>
+                <a class="btn btn-secondary" href="{{ path('event_recurring_event_show', {id: recurringEvent.id}) }}">{{ 'Cancel'|trans }}</a>
             </form>
         </div>
     </div>

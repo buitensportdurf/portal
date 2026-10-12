@@ -1,8 +1,8 @@
 {% extends 'base/single.column.html.twig' %}
 
-{% set title %}Email settings{% endset %}
+{% set title %}{{ 'Email settings'|trans }}{% endset %}
 
 {% block body %}
-    <p>Choose which emails we send to <strong>{{ user.email }}</strong> about events you subscribed to.</p>
+    <p>{{ 'Choose which emails we send to <strong>{email}</strong> about events you subscribed to.'|trans({email: user.email|e})|raw }}</p>
     {{ form(form) }}
 {% endblock %}

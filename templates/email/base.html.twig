@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% if title is defined %}{{ title }}{% else %}Durf ledenportaal{% endif %}</title>
+    <title>{% if title is defined %}{{ title }}{% else %}{{ 'Durf member portal'|trans }}{% endif %}</title>
 </head>
 {# Mail clients drop stylesheets, so everything is styled inline #}
 <body style="margin: 0; padding: 0; background: #f4f5f7; font-family: -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; line-height: 1.5; color: #32373c;">
@@ -15,12 +15,11 @@
                     <td style="padding: 24px 28px;">
                         {% if title is defined %}<h2 style="margin: 0 0 16px; font-size: 20px; color: #32373c;">{{ title }}</h2>{% endif %}
                         {% if user|default(null) %}
-                            <p style="margin: 0 0 12px;">Dear {{ user.name }},</p>
+                            <p style="margin: 0 0 12px;">{{ 'Dear {name},'|trans({name: user.name}) }}</p>
                         {% endif %}
                         {% block body %}{% endblock %}
                         <p style="margin: 24px 0 0;">
-                            Kind regards,<br>
-                            The Durf Portal Team
+                            {{ 'Kind regards,<br>The Durf Portal Team'|trans|raw }}
                         </p>
                     </td>
                 </tr>

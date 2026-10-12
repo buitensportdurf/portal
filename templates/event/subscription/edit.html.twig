@@ -1,6 +1,6 @@
 {% extends 'base/single.column.html.twig' %}
 
-{% set title %}Edit subscription of {{ subscription.createdUser.name }} to {{ subscription.event }}{% endset %}
+{% set title %}{{ 'Edit subscription of {name} to {event}'|trans({name: subscription.createdUser.name, event: subscription.event}) }}{% endset %}
 
 {% block body %}
     {{ form(form) }}
