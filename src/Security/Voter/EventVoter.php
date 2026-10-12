@@ -61,6 +61,9 @@ class EventVoter extends Voter
 
     private function voteOnSubscription(string $attribute, Event $event, User $user): bool
     {
+        if ($attribute === self::SUBSCRIBE && $event->isCancelled()) {
+            return false;
+        }
         if ($this->security->isGranted('ROLE_EVENT_ADMIN')) {
             return true;
         }

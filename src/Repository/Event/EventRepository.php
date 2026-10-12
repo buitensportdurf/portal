@@ -5,6 +5,7 @@ namespace App\Repository\Event;
 use App\Entity\Event\Event;
 use App\Entity\Event\Tag;
 use App\Entity\User;
+use App\Recurrence\SeriesSynchronizer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -92,6 +93,8 @@ class EventRepository extends ServiceEntityRepository
             && count($this->findBy(['image' => $image])) === 1) {
             $this->getEntityManager()->remove($image);
         }
+        // Keep the series from generating this occurrence again
+        SeriesSynchronizer::release($event);
         $this->getEntityManager()->remove($event);
         $this->getEntityManager()->flush();
     }
