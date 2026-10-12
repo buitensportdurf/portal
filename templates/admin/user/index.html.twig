@@ -13,6 +13,7 @@
                 <thead>
                 <tr>
                     <th>Name</th>
+                    <th>Username</th>
                     <th>Email</th>
                     <th></th>
                 </tr>
@@ -21,6 +22,7 @@
                 {% for user in users %}
                     <tr>
                         <td>{{ user.name }}</td>
+                        <td>{{ user.username }}</td>
                         <td>{{ user.email }}</td>
                         <td class="text-end">
                             <a class="btn btn-sm btn-success" data-bs-toggle="modal"
@@ -33,6 +35,16 @@
                                 csrf_id: 'user-enable',
                                 action_label: 'Enable',
                                 action_class: 'btn-success',
+                            }) }}
+                            <a class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                               data-bs-target="#confirmReject{{ user.id }}">Reject</a>
+                            {{ include('components/_confirm_modal.html.twig', {
+                                id: 'confirmReject' ~ user.id,
+                                title: 'Reject ' ~ user.name,
+                                message: 'Reject the registration of "' ~ user.name ~ '" (' ~ user.email ~ ')? The account is removed (or turned back into a guest when it has event subscriptions). They are not emailed.',
+                                action_url: path('admin2_user_reject', {id: user.id}),
+                                csrf_id: 'user-reject',
+                                action_label: 'Reject',
                             }) }}
                         </td>
                     </tr>
