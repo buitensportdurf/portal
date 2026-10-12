@@ -6,11 +6,11 @@
         {% if event.name != recurringEvent.name %}<span class="text-muted">· {{ event.name }}</span>{% endif %}
     </span>
     <span>
-        {% if event.cancelled %}<span class="badge bg-danger">Cancelled</span>{% endif %}
-        {% if not event.published %}<span class="badge bg-secondary">Draft</span>{% endif %}
+        {% if event.cancelled %}<span class="badge bg-danger">{{ 'Cancelled'|trans }}</span>{% endif %}
+        {% if not event.published %}<span class="badge bg-secondary">{{ 'Draft'|trans }}</span>{% endif %}
         {% if event.overriddenFields %}
-            <span class="badge bg-light text-dark border" title="Customised: {{ event.getOverriddenFields|map(f => f.label)|join(', ') }}">
-                <i class="fas fa-lock"></i> {{ event.overriddenFields|length }} customised
+            <span class="badge bg-light text-dark border" title="{{ 'Customised: {fields}'|trans({fields: event.getOverriddenFields|map(f => f.label|trans)|join(', ')}) }}">
+                <i class="fas fa-lock"></i> {{ '{count} customised'|trans({count: event.overriddenFields|length}) }}
             </span>
         {% endif %}
         {% if event.amountOfSubscriptions > 0 %}

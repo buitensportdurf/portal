@@ -1,19 +1,19 @@
 {% extends 'base/single.column.html.twig' %}
 
-{% set title %}Not logged in{% endset %}
+{% set title %}{{ 'Not logged in'|trans }}{% endset %}
 
 {% block body %}
-    <h4>You tried to subscribe to {{ event }}, but you first need to be logged in</h4>
+    <h4>{{ 'You tried to subscribe to {event}, but you first need to be logged in'|trans({event: event}) }}</h4>
     <div class="list-group">
         <a class="list-group-item list-group-item-action" href="{{ path('login', {_target_path: path('event_subscription_subscribe', {id: event.id})}) }}">
-            Login
+            {{ 'Login'|trans }}
         </a>
         <a class="list-group-item list-group-item-action" href="{{ path('register') }}">
-            Register
+            {{ 'Register'|trans }}
         </a>
         {% if event.guestsAllowed %}
             <a class="list-group-item list-group-item-action" href="{{ path('create_event_guest', {id: event.id}) }}">
-                Subscribe as guest to {{ event }}
+                {{ 'Subscribe as guest to {event}'|trans({event: event}) }}
             </a>
         {% endif %}
     </div>

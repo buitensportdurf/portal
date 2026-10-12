@@ -1,16 +1,16 @@
 {# @var event App\Entity\Event\Event #}
 <table role="presentation" cellpadding="0" cellspacing="0" style="margin: 0 0 12px; border-collapse: collapse;">
     <tr>
-        <th align="left" style="padding: 4px 16px 4px 0; vertical-align: top;">When</th>
+        <th align="left" style="padding: 4px 16px 4px 0; vertical-align: top;">{{ 'When'|trans }}</th>
         <td style="padding: 4px 0;">{{ event.startDate|date('l j F Y, H:i') }} – {{ event.endDate|date(event.startDate|date('Y-m-d') == event.endDate|date('Y-m-d') ? 'H:i' : 'l j F H:i') }}</td>
     </tr>
     <tr>
-        <th align="left" style="padding: 4px 16px 4px 0; vertical-align: top;">Where</th>
+        <th align="left" style="padding: 4px 16px 4px 0; vertical-align: top;">{{ 'Where'|trans }}</th>
         <td style="padding: 4px 0;">{{ event.location }}</td>
     </tr>
     {% if subscription is defined and subscription.amount > 1 %}
         <tr>
-            <th align="left" style="padding: 4px 16px 4px 0; vertical-align: top;">People</th>
+            <th align="left" style="padding: 4px 16px 4px 0; vertical-align: top;">{{ 'People'|trans }}</th>
             <td style="padding: 4px 0;">{{ subscription.amount }}</td>
         </tr>
     {% endif %}

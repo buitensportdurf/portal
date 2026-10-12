@@ -1,20 +1,20 @@
 {% extends 'base/single.column.html.twig' %}
 
-{% set title %}User activation{% endset %}
+{% set title %}{{ 'User activation'|trans }}{% endset %}
 
 {% block body %}
     {% if users is empty %}
         <div class="text-center py-5 text-muted">
-            <p class="fs-5">No users pending activation</p>
+            <p class="fs-5">{{ 'No users pending activation'|trans }}</p>
         </div>
     {% else %}
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Username</th>
-                    <th>Email</th>
+                    <th>{{ 'Name'|trans }}</th>
+                    <th>{{ 'Username'|trans }}</th>
+                    <th>{{ 'Email'|trans }}</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -26,25 +26,25 @@
                         <td>{{ user.email }}</td>
                         <td class="text-end">
                             <a class="btn btn-sm btn-success" data-bs-toggle="modal"
-                               data-bs-target="#confirmEnable{{ user.id }}">Enable</a>
+                               data-bs-target="#confirmEnable{{ user.id }}">{{ 'Enable'|trans }}</a>
                             {{ include('components/_confirm_modal.html.twig', {
                                 id: 'confirmEnable' ~ user.id,
-                                title: 'Enable ' ~ user.name,
-                                message: 'Do you really want to enable "' ~ user.name ~ '" with email "' ~ user.email ~ '"?',
+                                title: 'Enable {name}'|trans({name: user.name}),
+                                message: 'Do you really want to enable "{name}" with email "{email}"?'|trans({name: user.name, email: user.email}),
                                 action_url: path('admin2_user_enable', {id: user.id}),
                                 csrf_id: 'user-enable',
-                                action_label: 'Enable',
+                                action_label: 'Enable'|trans,
                                 action_class: 'btn-success',
                             }) }}
                             <a class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
-                               data-bs-target="#confirmReject{{ user.id }}">Reject</a>
+                               data-bs-target="#confirmReject{{ user.id }}">{{ 'Reject'|trans }}</a>
                             {{ include('components/_confirm_modal.html.twig', {
                                 id: 'confirmReject' ~ user.id,
-                                title: 'Reject ' ~ user.name,
-                                message: 'Reject the registration of "' ~ user.name ~ '" (' ~ user.email ~ ')? The account is removed (or turned back into a guest when it has event subscriptions). They are not emailed.',
+                                title: 'Reject {name}'|trans({name: user.name}),
+                                message: 'Reject the registration of "{name}" ({email})? The account is removed (or turned back into a guest when it has event subscriptions). They are not emailed.'|trans({name: user.name, email: user.email}),
                                 action_url: path('admin2_user_reject', {id: user.id}),
                                 csrf_id: 'user-reject',
-                                action_label: 'Reject',
+                                action_label: 'Reject'|trans,
                             }) }}
                         </td>
                     </tr>

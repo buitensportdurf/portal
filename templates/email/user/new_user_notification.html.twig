@@ -1,21 +1,17 @@
 {% extends 'email/base.html.twig' %}
 {% import 'email/_macros.html.twig' as email %}
 
-{% set title %}New user registered{% endset %}
+{% set title = 'New user registered'|trans %}
 
 {% block body %}
-    <p>
-        A new {{ newUser.guest ? 'guest ' : '' }}user has registered on the Durf portal.
-    </p>
+    <p>{{ newUser.guest ? 'A new guest user has registered on the Durf portal.'|trans : 'A new user has registered on the Durf portal.'|trans }}</p>
     <ul>
-        <li>Name: <strong>{{ newUser.name }}</strong></li>
-        <li>Email: <strong>{{ newUser.email }}</strong></li>
-        <li>Username: <strong>{{ newUser.username }}</strong></li>
+        <li>{{ 'Name: <strong>{name}</strong>'|trans({name: newUser.name|e})|raw }}</li>
+        <li>{{ 'Email: <strong>{email}</strong>'|trans({email: newUser.email|e})|raw }}</li>
+        <li>{{ 'Username: <strong>{username}</strong>'|trans({username: newUser.username|e})|raw }}</li>
     </ul>
     {% if not newUser.guest %}
-        <p>
-            The account is disabled and needs to be activated by an admin.
-        </p>
-        {{ email.button(url('admin2_user_index'), 'Review pending accounts') }}
+        <p>{{ 'The account is disabled and needs to be activated by an admin.'|trans }}</p>
+        {{ email.button(url('admin2_user_index'), 'Review pending accounts'|trans) }}
     {% endif %}
 {% endblock %}

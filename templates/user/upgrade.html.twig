@@ -1,11 +1,11 @@
 {% extends 'base/single.column.html.twig' %}
 
-{% set title %}Create your member account{% endset %}
+{% set title %}{{ 'Create your member account'|trans }}{% endset %}
 
 {% block body %}
     <p>
-        Choose a username and password for <strong>{{ app.user.email }}</strong>. Your guest subscriptions stay.
-        After this, the committee activates your account; you will get an email when you can log in.
+        {{ 'Choose a username and password for <strong>{email}</strong>. Your guest subscriptions stay.'|trans({email: app.user.email|e})|raw }}
+        {{ 'After this, the committee activates your account; you will get an email when you can log in.'|trans }}
     </p>
     {{ form(form) }}
 {% endblock %}

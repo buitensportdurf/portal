@@ -1,16 +1,16 @@
 {% extends 'base/single.column.html.twig' %}
 
-{% set title %}Register{% endset %}
+{% set title %}{{ 'Register'|trans }}{% endset %}
 
 {% block body %}
     <p>
-        Create an account for the Buitensport Durf member portal. Already have one? <a href="{{ path('login') }}">Log in</a>.
+        {{ 'Create an account for the Buitensport Durf member portal. Already have one? <a href="{url}">Log in</a>.'|trans({url: path('login')})|raw }}
     </p>
     <ol class="text-muted">
-        <li>Fill in the form; we send you an email to confirm it arrived.</li>
-        <li>The committee activates your account, usually within a few days.</li>
-        <li>You get an email, and can log in and subscribe to events.</li>
+        <li>{{ 'Fill in the form; we send you an email to confirm it arrived.'|trans }}</li>
+        <li>{{ 'The committee activates your account, usually within a few days.'|trans }}</li>
+        <li>{{ 'You get an email, and can log in and subscribe to events.'|trans }}</li>
     </ol>
-    <p class="small text-muted">Only want to join one event? Many events also let you subscribe as a guest, without an account.</p>
+    <p class="small text-muted">{{ 'Only want to join one event? Many events also let you subscribe as a guest, without an account.'|trans }}</p>
     {{ form(registrationForm) }}
 {% endblock %}

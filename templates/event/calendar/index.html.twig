@@ -1,44 +1,43 @@
 {% extends 'base/single.column.html.twig' %}
 
-{% set title %}Event calendars{% endset %}
+{% set title %}{{ 'Event calendars'|trans }}{% endset %}
 
 {% macro feed(label, url) %}
     {% set webcal = url|replace({'https://': 'webcal://', 'http://': 'webcal://'}) %}
     <div class="input-group mb-2">
         <span class="input-group-text">{{ label }}</span>
-        <input type="text" class="form-control" value="{{ url }}" readonly aria-label="{{ label }} calendar URL" onfocus="this.select()">
-        <button type="button" class="btn btn-outline-secondary" data-copy="{{ url }}" title="Copy URL">
-            <i class="fas fa-copy"></i><span class="d-none d-md-inline"> Copy</span>
+        <input type="text" class="form-control" value="{{ url }}" readonly aria-label="{{ '{label} calendar URL'|trans({label: label}) }}" onfocus="this.select()">
+        <button type="button" class="btn btn-outline-secondary" data-copy="{{ url }}" title="{{ 'Copy URL'|trans }}">
+            <i class="fas fa-copy"></i><span class="d-none d-md-inline"> {{ 'Copy'|trans }}</span>
         </button>
-        <a class="btn btn-outline-primary" href="{{ webcal }}" title="Subscribe in your calendar app">
-            <i class="fas fa-calendar-plus"></i><span class="d-none d-md-inline"> Subscribe</span>
+        <a class="btn btn-outline-primary" href="{{ webcal }}" title="{{ 'Subscribe in your calendar app'|trans }}">
+            <i class="fas fa-calendar-plus"></i><span class="d-none d-md-inline"> {{ 'Subscribe'|trans }}</span>
         </a>
         <a class="btn btn-outline-primary" href="https://calendar.google.com/calendar/render?cid={{ webcal|url_encode }}"
-           target="_blank" rel="noopener" title="Add to Google Calendar">
+           target="_blank" rel="noopener" title="{{ 'Add to Google Calendar'|trans }}">
             <i class="fab fa-google"></i>
         </a>
     </div>
 {% endmacro %}
 
 {% block actions %}
-    <a class="btn btn-sm btn-outline-primary" href="{{ path('event_event_index') }}">Back to events</a>
+    <a class="btn btn-sm btn-outline-primary" href="{{ path('event_event_index') }}">{{ 'Back to events'|trans }}</a>
 {% endblock %}
 
 {% block body %}
     <p class="text-muted small mb-3">
-        Subscribe to a calendar to see Durf events in your own calendar app. It updates automatically,
-        including changes and cancellations.
+        {{ 'Subscribe to a calendar to see Durf events in your own calendar app. It updates automatically, including changes and cancellations.'|trans }}
     </p>
 
-    <h5>General</h5>
-    {{ _self.feed('All events', url('event_calendar_all')) }}
+    <h5>{{ 'General'|trans }}</h5>
+    {{ _self.feed('All events'|trans, url('event_calendar_all')) }}
     {% if app.user %}
-        {{ _self.feed('Your events', url('event_calendar_user', {user: app.user.id})) }}
-        <p class="text-muted small">Your events: the events you subscribed to. Keep this link to yourself.</p>
+        {{ _self.feed('Your events'|trans, url('event_calendar_user', {user: app.user.id})) }}
+        <p class="text-muted small">{{ 'Your events: the events you subscribed to. Keep this link to yourself.'|trans }}</p>
     {% endif %}
 
     {% if tags is not empty %}
-        <h5 class="mt-3">By tag</h5>
+        <h5 class="mt-3">{{ 'By tag'|trans }}</h5>
         {% for tag in tags %}
             {{ _self.feed(tag, url('event_calendar_tag', {tag: tag.id})) }}
         {% endfor %}

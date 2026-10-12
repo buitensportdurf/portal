@@ -1,10 +1,10 @@
 {% extends 'email/base.html.twig' %}
 {% import 'email/_macros.html.twig' as email %}
 
-{% set title %}Subscribe to {{ event }}{% endset %}
+{% set title = 'Subscribe to {event}'|trans({event: event.name}) %}
 
 {% block body %}
-    <p>Use the button below to finish subscribing to <strong>{{ event }}</strong> as a guest.</p>
-    {{ email.button(loginUrl, 'Subscribe to ' ~ event.name) }}
-    <p>The link logs you in and works for two days; keep it to yourself. Need it again later? Just request a new one on the event page.</p>
+    <p>{{ 'Use the button below to finish subscribing to <strong>{event}</strong> as a guest.'|trans({event: event.name|e})|raw }}</p>
+    {{ email.button(loginUrl, 'Subscribe to {event}'|trans({event: event.name})) }}
+    <p>{{ 'The link logs you in and works for two days; keep it to yourself. Need it again later? Just request a new one on the event page.'|trans }}</p>
 {% endblock %}

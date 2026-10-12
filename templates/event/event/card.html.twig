@@ -2,7 +2,7 @@
 {% set subscription = event.subscription(app.user) %}
 <div class="card h-100{% if not event.published or event.cancelled %} opacity-50{% endif %}">
     {% if event.image %}
-        <img class="card-img-top" src="{{ vich_uploader_asset(event.image) }}" alt="{{ event.name }} image">
+        <img class="card-img-top" src="{{ vich_uploader_asset(event.image) }}" alt="{{ '{event} image'|trans({event: event.name}) }}">
     {% endif %}
 
     <div class="card-body">
@@ -11,10 +11,10 @@
         </h4>
         <p class="card-text text-muted small mb-2">
             {% if event.cancelled %}
-                <span class="badge bg-danger">Cancelled</span>
+                <span class="badge bg-danger">{{ 'Cancelled'|trans }}</span>
             {% endif %}
             {% if not event.published %}
-                <span class="badge bg-secondary">Draft</span>
+                <span class="badge bg-secondary">{{ 'Draft'|trans }}</span>
             {% endif %}
             {% for tag in event.tags %}
                 <span class="badge bg-primary">{{ tag }}</span>
@@ -25,7 +25,7 @@
             <li><i class="fas fa-clock fa-fw"></i> {{ event.duration ? event.duration|time_duration : '' }}</li>
             <li><i class="fas fa-map-marker-alt fa-fw"></i> {{ event.location }}</li>
             {% if event.amountOfSubscriptions > 0 %}
-                <li><i class="fas fa-users fa-fw"></i> {{ event.amountOfSubscriptions }} subscribed</li>
+                <li><i class="fas fa-users fa-fw"></i> {{ '{count} subscribed'|trans({count: event.amountOfSubscriptions}) }}</li>
             {% endif %}
         </ul>
         <p class="card-text small">{{ event.description|truncate(100)|markdown_to_html }}</p>
@@ -34,7 +34,7 @@
     {% if subscription %}
         <div class="card-footer bg-success-subtle">
             <div class="d-flex justify-content-between align-items-center">
-                <small>You are subscribed</small>
+                <small>{{ 'You are subscribed'|trans }}</small>
                 <span class="badge bg-success rounded-pill">{{ subscription.amount }}</span>
             </div>
         </div>
@@ -43,16 +43,16 @@
     <div class="card-footer bg-transparent position-relative" style="z-index: 2">
         {% if subscription and is_granted('unsubscribe', event) %}
             <a class="btn btn-sm btn-outline-danger w-100" data-bs-toggle="modal"
-               data-bs-target="#confirmUnsubscribe{{ event.id }}">Unsubscribe</a>
+               data-bs-target="#confirmUnsubscribe{{ event.id }}">{{ 'Unsubscribe'|trans }}</a>
         {% elseif is_granted('subscribe', event) or not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
             <a class="btn btn-sm btn-success w-100"
-               href="{{ path('event_subscription_subscribe', {'id': event.id}) }}">Subscribe</a>
+               href="{{ path('event_subscription_subscribe', {'id': event.id}) }}">{{ 'Subscribe'|trans }}</a>
         {% elseif event.subscriptionOpenDate and not event.isPastSubscriptionOpenDate %}
-            <small class="text-muted"><i class="fas fa-clock fa-fw"></i> Subscriptions open {{ event.subscriptionOpenDate|fdate_time }}</small>
+            <small class="text-muted"><i class="fas fa-clock fa-fw"></i> {{ 'Subscriptions open {date}'|trans({date: event.subscriptionOpenDate|fdate_time}) }}</small>
         {% else %}
             {% set reason = event.getSubscriptionUnavailableReason(app.user) %}
             {% if reason %}
-                <small class="text-muted"><i class="fas fa-info-circle fa-fw"></i> {{ reason }}</small>
+                <small class="text-muted"><i class="fas fa-info-circle fa-fw"></i> {{ reason|trans }}</small>
             {% endif %}
         {% endif %}
     </div>
@@ -60,11 +60,11 @@
 {% if subscription and is_granted('unsubscribe', event) %}
     {{ include('components/_confirm_modal.html.twig', {
         id: 'confirmUnsubscribe' ~ event.id,
-        title: 'Unsubscribe from ' ~ event,
-        message: 'Are you sure you want to unsubscribe from "' ~ event ~ '"?',
+        title: 'Unsubscribe from {event}'|trans({event: event}),
+        message: 'Are you sure you want to unsubscribe from "{event}"?'|trans({event: event}),
         action_url: path('event_subscription_unsubscribe', {id: subscription.id}),
         csrf_id: 'unsubscribe',
-        action_label: 'Unsubscribe',
+        action_label: 'Unsubscribe'|trans,
         action_class: 'btn-warning',
     }) }}
 {% endif %}

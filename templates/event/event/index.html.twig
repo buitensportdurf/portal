@@ -1,39 +1,39 @@
 {% extends 'base/single.column.html.twig' %}
 
-{% set title %}Upcoming events{% endset %}
+{% set title %}{{ 'Upcoming events'|trans }}{% endset %}
 
 {% block actions %}
     {% if is_granted('ROLE_EVENT_EDIT') %}
-        <a class="btn btn-sm btn-outline-success" href="{{ path('event_event_new') }}">Create new</a>
+        <a class="btn btn-sm btn-outline-success" href="{{ path('event_event_new') }}">{{ 'Create new'|trans }}</a>
     {% endif %}
 {% endblock %}
 
 {% block body %}
     <div class="mb-3">
-        <small class="text-muted d-block mb-1">Filter by tag</small>
+        <small class="text-muted d-block mb-1">{{ 'Filter by tag'|trans }}</small>
         {% for tagOption in tags %}
             {% if tagOption == tag %}
                 <a class="btn btn-sm btn-success" href="{{ path('event_event_index') }}"
-                   title="Showing only '{{ tagOption }}' events — click to clear filter">{{ tagOption }}</a>
+                   title="{{ 'Showing only “{tag}” events — click to clear filter'|trans({tag: tagOption}) }}">{{ tagOption }}</a>
             {% else %}
                 <a class="btn btn-sm btn-{% if tagOption.defaultHide %}outline-danger{% else %}outline-primary{% endif %}"
                    href="{{ path('event_event_index', {tag: tagOption.name}) }}"
-                   title="{% if tagOption.defaultHide %}Hidden by default — click to show only '{{ tagOption }}' events{% else %}Click to show only '{{ tagOption }}' events{% endif %}">{{ tagOption }}</a>
+                   title="{% if tagOption.defaultHide %}{{ 'Hidden by default — click to show only “{tag}” events'|trans({tag: tagOption}) }}{% else %}{{ 'Click to show only “{tag}” events'|trans({tag: tagOption}) }}{% endif %}">{{ tagOption }}</a>
             {% endif %}
         {% endfor %}
     </div>
 
     {% if events is empty %}
         <div class="text-center py-5 text-muted">
-            <p class="fs-5">No upcoming events</p>
+            <p class="fs-5">{{ 'No upcoming events'|trans }}</p>
             {% if not app.user %}
-                <p><a href="{{ path('register') }}">Register</a> or <a href="{{ path('login') }}">login</a> to subscribe to events.</p>
+                <p>{{ '<a href="{register_url}">Register</a> or <a href="{login_url}">login</a> to subscribe to events.'|trans({register_url: path('register'), login_url: path('login')})|raw }}</p>
             {% endif %}
         </div>
     {% else %}
         {% if not app.user %}
             <p class="text-muted small mb-3">
-                <a href="{{ path('register') }}">Register</a> or <a href="{{ path('login') }}">login</a> to subscribe to events.
+                {{ '<a href="{register_url}">Register</a> or <a href="{login_url}">login</a> to subscribe to events.'|trans({register_url: path('register'), login_url: path('login')})|raw }}
             </p>
         {% endif %}
         <div class="row row-cols-1 row-cols-md-3 g-3">

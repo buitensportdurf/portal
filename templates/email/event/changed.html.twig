@@ -2,19 +2,19 @@
 {% import 'email/_macros.html.twig' as email %}
 
 {% block body %}
-    <p><strong>{{ event }}</strong>, which you subscribed to, has changed:</p>
+    <p>{{ '<strong>{event}</strong>, which you subscribed to, has changed:'|trans({event: event.name|e})|raw }}</p>
     <table role="presentation" cellpadding="6" cellspacing="0" style="border-collapse: collapse; margin: 0 0 12px;">
         {% for change in changes %}
             <tr>
-                <th align="left" style="padding: 6px 12px 6px 0; vertical-align: top;">{{ change.field.label }}</th>
-                <td style="padding: 6px 8px 6px 0; color: #6c757d;"><s>{{ change.oldText }}</s></td>
+                <th align="left" style="padding: 6px 12px 6px 0; vertical-align: top;">{{ change.field.label|trans }}</th>
+                <td style="padding: 6px 8px 6px 0; color: #6c757d;"><s>{{ change.oldText|trans }}</s></td>
                 <td style="padding: 6px 8px 6px 0; color: #6c757d;">→</td>
-                <td style="padding: 6px 0;"><strong>{{ change.newText }}</strong></td>
+                <td style="padding: 6px 0;"><strong>{{ change.newText|trans }}</strong></td>
             </tr>
         {% endfor %}
     </table>
-    <p>Your subscription still stands. Can't make it anymore? You can unsubscribe on the event page.</p>
-    {{ email.button(url('event_event_show', {id: event.id}), 'View event') }}
+    <p>{{ "Your subscription still stands. Can't make it anymore? You can unsubscribe on the event page."|trans }}</p>
+    {{ email.button(url('event_event_show', {id: event.id}), 'View event'|trans) }}
 {% endblock %}
 
 {% block footer %}{{ include('email/event/_footer.html.twig') }}{% endblock %}

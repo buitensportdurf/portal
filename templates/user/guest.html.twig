@@ -1,11 +1,11 @@
 {% extends 'base/single.column.html.twig' %}
 
-{% set title %}Subscribe as a guest{% endset %}
+{% set title %}{{ 'Subscribe as a guest'|trans }}{% endset %}
 
 {% block body %}
     <p>
-        Subscribe to <strong>{{ event }}</strong> without an account. Enter your name and email and we send you a link
-        to finish subscribing. Already a member? <a href="{{ path('login', {_target_path: path('event_subscription_subscribe', {id: event.id})}) }}">Log in</a> instead.
+        {{ 'Subscribe to <strong>{event}</strong> without an account. Enter your name and email and we send you a link to finish subscribing.'|trans({event: event|e})|raw }}
+        {{ 'Already a member? <a href="{url}">Log in</a> instead.'|trans({url: path('login', {_target_path: path('event_subscription_subscribe', {id: event.id})})|e})|raw }}
     </p>
     {{ form(form) }}
 {% endblock %}

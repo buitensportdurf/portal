@@ -1,18 +1,18 @@
 {% extends 'base/single.column.html.twig' %}
 
-{% set title %}Recurring events{% endset %}
+{% set title %}{{ 'Recurring events'|trans }}{% endset %}
 
 {% block actions %}
     <div class="btn-group btn-group-sm">
-        <a class="btn btn-outline-primary" href="{{ path('event_event_index') }}">Back to events</a>
-        <a class="btn btn-outline-success" href="{{ path('event_recurring_event_new') }}">Create new</a>
+        <a class="btn btn-outline-primary" href="{{ path('event_event_index') }}">{{ 'Back to events'|trans }}</a>
+        <a class="btn btn-outline-success" href="{{ path('event_recurring_event_new') }}">{{ 'Create new'|trans }}</a>
     </div>
 {% endblock %}
 
 {% block body %}
     {% if recurringEvents is empty %}
         <div class="text-center py-5 text-muted">
-            <p class="fs-5">No recurring events</p>
+            <p class="fs-5">{{ 'No recurring events'|trans }}</p>
         </div>
     {% else %}
         <div class="list-group">
@@ -22,13 +22,13 @@
                    href="{{ path('event_recurring_event_show', {id: recurringEvent.id}) }}">
                     <div>
                         <strong>{{ recurringEvent }}</strong>
-                        {% if not recurringEvent.published %}<span class="badge bg-secondary">Draft</span>{% endif %}
+                        {% if not recurringEvent.published %}<span class="badge bg-secondary">{{ 'Draft'|trans }}</span>{% endif %}
                         <div class="small text-muted">
-                            {{ recurringEvent|recurrence_text(true) }}, {{ recurringEvent.startDate|date('H:i') }}
+                            {{ recurringEvent|recurrence_text(true)|trans }}, {{ recurringEvent.startDate|date('H:i') }}
                         </div>
                     </div>
                     <span class="small text-muted text-end">
-                        {% if next %}Next: {{ next|date('D j M Y') }}{% else %}Ended{% endif %}
+                        {% if next %}{{ 'Next: {date}'|trans({date: next|date('D j M Y')}) }}{% else %}{{ 'Ended'|trans }}{% endif %}
                     </span>
                 </a>
             {% endfor %}

@@ -2,10 +2,10 @@
 {% import 'email/_macros.html.twig' as email %}
 
 {% block body %}
-    <p>You are subscribed to <strong>{{ event }}</strong>.</p>
+    <p>{{ 'You are subscribed to <strong>{event}</strong>.'|trans({event: event.name|e})|raw }}</p>
     {{ include('email/event/_details.html.twig') }}
-    <p>The attached calendar file adds it to your agenda. Plans changed? You can change or cancel your subscription on the event page.</p>
-    {{ email.button(url('event_event_show', {id: event.id}), 'View event') }}
+    <p>{{ 'The attached calendar file adds it to your agenda. Plans changed? You can change or cancel your subscription on the event page.'|trans }}</p>
+    {{ email.button(url('event_event_show', {id: event.id}), 'View event'|trans) }}
 {% endblock %}
 
 {% block footer %}{{ include('email/event/_footer.html.twig') }}{% endblock %}
