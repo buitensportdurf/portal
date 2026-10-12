@@ -2,17 +2,23 @@
 
 namespace App\Entity\Event;
 
+use App\Recurrence\OccurrenceCalculator;
 use App\Repository\Event\RecurringEventRepository;
-use App\Service\TimeIntervalService;
-use DateInterval;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Order;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Exception;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
+/**
+ * A series of events: the template every occurrence copies, plus an RFC 5545 recurrence rule.
+ *
+ * startDate/endDate are the first occurrence (DTSTART) and so also define the time of day and the
+ * duration of every occurrence. Subscription dates are offsets before each occurrence's start.
+ */
 #[ORM\Entity(repositoryClass: RecurringEventRepository::class)]
 class RecurringEvent extends BaseEvent
 {
@@ -20,11 +26,38 @@ class RecurringEvent extends BaseEvent
     private Collection $tags;
 
     #[ORM\OneToMany(mappedBy: 'recurringEvent', targetEntity: Event::class)]
+    #[ORM\OrderBy(['startDate' => Order::Ascending->value])]
     private Collection $events;
 
-    #[ORM\Column]
-    #[Assert\Callback(callback: [self::class, 'validateRecurrenceRule'])]
-    public ?string $recurrenceRule = null;
+    /**
+     * RRULE without DTSTART, e.g. "FREQ=MONTHLY;BYDAY=1SA".
+     */
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    public ?string $rrule = null;
+
+    /**
+     * Dates (Y-m-d) on which the rule should not produce an occurrence, because an admin deleted or
+     * detached it. Keeps generation from bringing them back.
+     *
+     * @var list<string>
+     */
+    #[ORM\Column(type: Types::JSON)]
+    public array $exceptionDates = [];
+
+    /**
+     * Minutes before each occurrence's start that subscriptions open, null for "immediately".
+     */
+    #[ORM\Column(nullable: true)]
+    #[Assert\PositiveOrZero]
+    public ?int $subscriptionOpenOffset = null;
+
+    /**
+     * Minutes before each occurrence's start that subscriptions close, null for "at the start".
+     */
+    #[ORM\Column(nullable: true)]
+    #[Assert\PositiveOrZero]
+    public ?int $subscriptionDeadlineOffset = null;
 
     public function __construct()
     {
@@ -33,49 +66,80 @@ class RecurringEvent extends BaseEvent
         $this->events = new ArrayCollection();
     }
 
-    public function getRecurringDate(int $index, ?DateTimeImmutable $date = null): \DateTimeInterface
+    /**
+     * A detached copy used as the edit target, so the original survives until the changes are applied.
+     */
+    public function __clone()
     {
-        $date ??= $this->startDate;
+        parent::__clone();
+        $this->tags = new ArrayCollection($this->tags->toArray());
+        $this->events = new ArrayCollection();
+    }
 
-        try {
-            return TimeIntervalService::addIntervalsNTimes(
-                $date, $this->getRecurrenceIntervals(), $index
-            );
-        } catch (Exception) {
-            return $date;
+    #[Assert\Callback]
+    public function validateRule(ExecutionContextInterface $context): void
+    {
+        if ($this->rrule === null || $this->startDate === null) {
+            return;
+        }
+        $error = OccurrenceCalculator::validate($this);
+        if ($error !== null) {
+            $context->buildViolation('Invalid recurrence rule: ' . $error)
+                    ->atPath('rrule')
+                    ->addViolation()
+            ;
         }
     }
 
-    public function createNextEvent(): Event
+    /**
+     * Copies the template, the rule and the offsets of $other onto this series.
+     */
+    public function copyTemplateFrom(self $other): void
     {
-        $previousEvent = $this->getEvents()->last();
-        $previousDate = $previousEvent ? $previousEvent->startDate : $this->startDate;
-
-        $event = new Event();
-        $event->copyFrom($this);
-        $duration = $this->getDuration();
-        $event->startDate = TimeIntervalService::addIntervalsNTimes(
-            $previousDate, $this->getRecurrenceIntervals()
-        );
-        $event->endDate = $duration ? $event->startDate->add($duration) : $event->startDate;
-        $this->addEvent($event);
-
-        return $event;
+        $this->name = $other->name;
+        $this->description = $other->description;
+        $this->location = $other->location;
+        $this->image = $other->image;
+        $this->setTags(new ArrayCollection($other->getTags()->toArray()));
+        $this->startDate = $other->startDate;
+        $this->endDate = $other->endDate;
+        $this->subscriberLimit = $other->subscriberLimit;
+        $this->setMemberPrice($other->getMemberPrice());
+        $this->setGuestPrice($other->getGuestPrice());
+        $this->guestsAllowed = $other->guestsAllowed;
+        $this->published = $other->published;
+        $this->rrule = $other->rrule;
+        $this->subscriptionOpenOffset = $other->subscriptionOpenOffset;
+        $this->subscriptionDeadlineOffset = $other->subscriptionDeadlineOffset;
     }
 
-    public static function validateRecurrenceRule(
-        mixed                     $value,
-        ExecutionContextInterface $context,
-        mixed                     $payload
-    ): void
+    public function endFor(DateTimeImmutable $start): DateTimeImmutable
     {
-        try {
-            $context->getObject()->getRecurrenceIntervals();
-        } catch (Exception) {
-            $context->buildViolation('Invalid recurrence rule')
-                    ->atPath('recurrenceRule')
-                    ->addViolation()
-            ;
+        $duration = $this->getDuration();
+
+        return $duration ? $start->add($duration) : $start;
+    }
+
+    public function subscriptionOpenFor(DateTimeImmutable $start): ?DateTimeImmutable
+    {
+        return $this->subscriptionOpenOffset === null ? null : $start->modify("-$this->subscriptionOpenOffset minutes");
+    }
+
+    public function subscriptionDeadlineFor(DateTimeImmutable $start): ?DateTimeImmutable
+    {
+        return $this->subscriptionDeadlineOffset === null ? null : $start->modify("-$this->subscriptionDeadlineOffset minutes");
+    }
+
+    public function isExcluded(DateTimeImmutable $slot): bool
+    {
+        return in_array($slot->format('Y-m-d'), $this->exceptionDates, true);
+    }
+
+    public function exclude(DateTimeImmutable $slot): void
+    {
+        if (!$this->isExcluded($slot)) {
+            $this->exceptionDates[] = $slot->format('Y-m-d');
+            sort($this->exceptionDates);
         }
     }
 
@@ -142,26 +206,20 @@ class RecurringEvent extends BaseEvent
     /**
      * @return Collection<int, Event>
      */
-    public function getFutureEvents(): Collection
+    public function getFutureEvents(?DateTimeImmutable $now = null): Collection
     {
-        $now = new DateTimeImmutable();
-        return $this->getEvents()->filter(fn(Event $event) => $event->startDate > $now);
-    }
+        $now ??= new DateTimeImmutable();
 
-    public function getPastEvents(): Collection
-    {
-        $now = new DateTimeImmutable();
-        return $this->getEvents()->filter(fn(Event $event) => $event->startDate < $now);
+        return $this->getEvents()->filter(fn(Event $event) => $event->startDate >= $now);
     }
 
     /**
-     * @return DateInterval[]
+     * @return Collection<int, Event>
      */
-    public function getRecurrenceIntervals(): array
+    public function getPastEvents(?DateTimeImmutable $now = null): Collection
     {
-        return array_map(
-            fn(string $string) => DateInterval::createFromDateString($string),
-            explode(';', $this->recurrenceRule)
-        );
+        $now ??= new DateTimeImmutable();
+
+        return $this->getEvents()->filter(fn(Event $event) => $event->startDate < $now);
     }
 }

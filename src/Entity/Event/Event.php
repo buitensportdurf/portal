@@ -3,12 +3,16 @@
 namespace App\Entity\Event;
 
 use App\Entity\User;
+use App\Recurrence\SeriesField;
 use App\Repository\Event\EventRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
+#[ORM\UniqueConstraint(name: 'event_occurrence', columns: ['recurring_event_id', 'occurrence_start'])]
 class Event extends BaseEvent
 {
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: EventSubscription::class, orphanRemoval: true)]
@@ -19,7 +23,33 @@ class Event extends BaseEvent
     private Collection $tags;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     public ?RecurringEvent $recurringEvent = null;
+
+    /**
+     * The slot the series rule generated this occurrence for. Stays put when the occurrence itself
+     * is rescheduled, so the series can still recognise it.
+     */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    public ?DateTimeImmutable $occurrenceStart = null;
+
+    /**
+     * Fields (SeriesField values) that were changed on this occurrence and so are left alone by
+     * series edits.
+     *
+     * @var list<string>
+     */
+    #[ORM\Column(type: Types::JSON)]
+    public array $overriddenFields = [];
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    public ?DateTimeImmutable $cancelledAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    public ?DateTimeImmutable $subscriptionDeadline = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    public ?DateTimeImmutable $subscriptionOpenDate = null;
 
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: Question::class, orphanRemoval: true)]
     /** @var ?Collection<Question> $questions */
@@ -31,6 +61,32 @@ class Event extends BaseEvent
         $this->eventSubscriptions = new ArrayCollection();
         $this->tags = new ArrayCollection();
         $this->questions = new ArrayCollection();
+    }
+
+    public function isCancelled(): bool
+    {
+        return $this->cancelledAt !== null;
+    }
+
+    public function isOverridden(SeriesField $field): bool
+    {
+        return in_array($field->value, $this->overriddenFields, true);
+    }
+
+    public function markOverridden(SeriesField ...$fields): void
+    {
+        $this->overriddenFields = SeriesField::values(
+            ...array_map(SeriesField::from(...), $this->overriddenFields),
+            ...$fields,
+        );
+    }
+
+    /**
+     * @return list<SeriesField>
+     */
+    public function getOverriddenFields(): array
+    {
+        return array_map(SeriesField::from(...), $this->overriddenFields);
     }
 
     public function isPastSubscriptionOpenDate(?\DateTime $date = null): bool
@@ -71,6 +127,9 @@ class Event extends BaseEvent
      */
     public function getSubscriptionUnavailableReason(?User $user): ?string
     {
+        if ($this->isCancelled()) {
+            return 'This event has been cancelled.';
+        }
         if (!$this->published) {
             return 'This event is not published yet.';
         }

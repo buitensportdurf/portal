@@ -32,12 +32,6 @@ abstract class BaseEvent
         set(?string $value) { $this->description = $value; }
     }
 
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    public ?DateTimeImmutable $subscriptionDeadline = null;
-
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    public ?DateTimeImmutable $subscriptionOpenDate = null;
-
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     public ?string $location = null;
@@ -96,25 +90,9 @@ abstract class BaseEvent
         return $this->name;
     }
 
-    public function copyFrom(self $event): void
+    public function __clone()
     {
-        $this->name = $event->name;
-        $this->description = $event->description;
-        $this->subscriptionDeadline = $event->subscriptionDeadline;
-        $this->subscriberLimit = $event->subscriberLimit;
-        $this->location = $event->location;
-        $this->image = $event->image;
-        $this->setTags($event->getTags());
-        $this->startDate = $this->startDate->setTime(
-            (int) $event->startDate->format('H'),
-            (int) $event->startDate->format('i')
-        );
-        $duration = $event->getDuration();
-        $this->endDate = $duration ? $this->startDate->add($duration) : $this->startDate;
-        $this->setMemberPrice($event->getMemberPrice());
-        $this->setGuestPrice($event->getGuestPrice());
-        $this->guestsAllowed = $event->guestsAllowed;
-        $this->published = $event->published;
+        $this->id = null;
     }
 
     public abstract function getTags(): Collection;

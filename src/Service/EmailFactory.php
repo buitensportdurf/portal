@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Event\Event;
 use App\Entity\User;
+use App\Recurrence\Plan\FieldChange;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mime\Email;
 
@@ -44,6 +45,23 @@ class EmailFactory
     {
         return self::createEmailBase($user, 'Account enabled')
                    ->htmlTemplate('email/user/enabled.html.twig')
+        ;
+    }
+
+    /**
+     * @param list<FieldChange> $changes
+     */
+    public static function eventChanged(User $user, Event $event, array $changes): Email
+    {
+        return self::createEmailBase($user, 'Event changed: ' . $event->name, ['event' => $event, 'changes' => $changes])
+                   ->htmlTemplate('email/event/changed.html.twig')
+        ;
+    }
+
+    public static function eventCancelled(User $user, Event $event): Email
+    {
+        return self::createEmailBase($user, 'Event cancelled: ' . $event->name, ['event' => $event])
+                   ->htmlTemplate('email/event/cancelled.html.twig')
         ;
     }
 

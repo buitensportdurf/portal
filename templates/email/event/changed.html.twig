@@ -1,0 +1,20 @@
+{% extends 'email/base.html.twig' %}
+
+{% block body %}
+    <p>
+        <strong>{{ event }}</strong>, which you subscribed to, has changed:
+    </p>
+    <table class="table table-sm">
+        {% for change in changes %}
+            <tr>
+                <th>{{ change.field.label }}</th>
+                <td><s>{{ change.oldText }}</s></td>
+                <td><strong>{{ change.newText }}</strong></td>
+            </tr>
+        {% endfor %}
+    </table>
+    <p>
+        Your subscription still stands. Can't make it anymore? You can unsubscribe
+        <a class="btn btn-primary btn-sm" href="{{ url('event_event_show', {id: event.id}) }}">Here</a>
+    </p>
+{% endblock %}
