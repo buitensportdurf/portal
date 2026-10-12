@@ -1,1 +1,443 @@
-# Dutch translations. Keys are the English texts (ICU message format).
+# Dutch translations; the keys are the English texts (ICU message format).
+'(customised on the event itself)': '(aangepast op de activiteit zelf)'
+'(guest: € {price})': '(gast: € {price})'
+'(no subscribers)': '(geen aanmeldingen)'
+'(they have subscribers, so they stay visible as cancelled)': '(daar zijn aanmeldingen voor, dus ze blijven zichtbaar als geannuleerd)'
+'<a href="{register_url}">Register</a> or <a href="{login_url}">login</a> to subscribe to events.': '<a href="{register_url}">Registreer</a> of <a href="{login_url}">log in</a> om je aan te melden voor activiteiten.'
+'<strong>Cancels {count, plural, one {# upcoming event} other {# upcoming events}}</strong> that have subscribers:': '<strong>Annuleert {count, plural, one {# komende activiteit} other {# komende activiteiten}}</strong> met aanmeldingen:'
+'<strong>Deletes {count, plural, one {# upcoming event} other {# upcoming events}}</strong> without subscribers.': '<strong>Verwijdert {count, plural, one {# komende activiteit} other {# komende activiteiten}}</strong> zonder aanmeldingen.'
+'<strong>{event}</strong>, which you subscribed to, has changed:': '<strong>{event}</strong>, waarvoor je je hebt aangemeld, is gewijzigd:'
+'A new address has to be confirmed via a link we send to it': 'Een nieuw adres moet je bevestigen via een link die we ernaartoe sturen'
+'A new guest user has registered on the Durf portal.': 'Er heeft zich een nieuwe gast aangemeld op het Durf-portaal.'
+'A new user has registered on the Durf portal.': 'Er heeft zich een nieuwe gebruiker geregistreerd op het Durf-portaal.'
+'A reminder: <strong>{event}</strong> is coming up and you are subscribed.': 'Een herinnering: <strong>{event}</strong> komt eraan en je bent aangemeld.'
+'A weekday of the month': 'Een weekdag van de maand'
+Access: Toegang
+'Account activated': 'Account geactiveerd'
+'Account created': 'Account aangemaakt'
+'Add question': 'Vraag toevoegen'
+'Add them now': 'Nu toevoegen'
+'Add to Google Calendar': 'Toevoegen aan Google Agenda'
+'Added question "{question}" to event "{event}"': 'Vraag "{question}" toegevoegd aan activiteit "{event}"'
+Admin: Beheer
+'After a number of occurrences': 'Na een aantal keer'
+'After this, the committee activates your account; you will get an email when you can log in.': 'Daarna activeert de commissie je account; je krijgt een e-mail zodra je kunt inloggen.'
+'All events': 'Alle activiteiten'
+'All upcoming events': 'Alle komende activiteiten'
+'Already a member? <a href="{url}">Log in</a> instead.': 'Al lid? <a href="{url}">Log dan in</a>.'
+'Also sets the time of every occurrence': 'Bepaalt ook de tijd van elke activiteit in de reeks'
+Amount: Aantal
+'and {count} more': 'en nog {count}'
+Apply: Toepassen
+'Apply changes to': 'Wijzigingen toepassen op'
+'Are you sure you want to delete event "{event}"?': 'Weet je zeker dat je activiteit "{event}" wilt verwijderen?'
+'Are you sure you want to unsubscribe "{name}" from "{event}"?': 'Weet je zeker dat je "{name}" wilt afmelden voor "{event}"?'
+'Are you sure you want to unsubscribe from "{event}"?': 'Weet je zeker dat je je wilt afmelden voor "{event}"?'
+'at the start': 'bij de start'
+Back: Terug
+'Back to event': 'Terug naar activiteit'
+'Back to events': 'Terug naar activiteiten'
+'Back to list': 'Terug naar overzicht'
+'Back to {event}': 'Terug naar {event}'
+'Branch:': 'Branch:'
+'Button not working? Copy this link: <a href="{url}" style="color: #6c757d; word-break: break-all;">{url}</a>': 'Werkt de knop niet? Kopieer deze link: <a href="{url}" style="color: #6c757d; word-break: break-all;">{url}</a>'
+'By tag': 'Per tag'
+Calendars: "Agenda's"
+"Can't make it anymore? Please unsubscribe on the event page, so the organisers know.": 'Kun je toch niet? Meld je dan af op de pagina van de activiteit, zodat de organisatie het weet.'
+Cancel: Annuleren
+'Cancel event': 'Activiteit annuleren'
+Cancelled: Geannuleerd
+'Cancelled: {name}': 'Geannuleerd: {name}'
+'Change profile': 'Profiel wijzigen'
+'Change which emails you get': 'Kies welke e-mails je krijgt'
+'Changes to the date, time or location, and cancellations': 'Wijzigingen van datum, tijd of locatie, en annuleringen'
+'Check your email': 'Check je e-mail'
+'Choose a new password': 'Kies een nieuw wachtwoord'
+'Choose a username and password': 'Kies een gebruikersnaam en wachtwoord'
+'Choose a username and password for <strong>{email}</strong>. Your guest subscriptions stay.': 'Kies een gebruikersnaam en wachtwoord voor <strong>{email}</strong>. Je aanmeldingen als gast blijven staan.'
+'Choose which emails we send to <strong>{email}</strong> about events you subscribed to.': 'Kies welke e-mails we naar <strong>{email}</strong> sturen over activiteiten waarvoor je bent aangemeld.'
+'Click the link in it to finish subscribing to <strong>{event}</strong>.': 'Klik op de link in de e-mail om je aanmelding voor <strong>{event}</strong> af te ronden.'
+'Click the link in it to finish subscribing.': 'Klik op de link in de e-mail om je aanmelding af te ronden.'
+'Click to show only “{tag}” events': 'Klik om alleen “{tag}”-activiteiten te tonen'
+Close: Sluiten
+'Commit date:': 'Commitdatum:'
+Confirm: Bevestigen
+'Confirm this address': 'Dit adres bevestigen'
+'Confirm your new email address': 'Bevestig je nieuwe e-mailadres'
+'Confirmation when I subscribe, with a calendar file': 'Bevestiging als ik me aanmeld, met een agendabestand'
+Copy: Kopiëren
+'Copy URL': 'URL kopiëren'
+'Could not load the preview.': 'Het voorbeeld kon niet worden geladen.'
+'Create account': 'Account aanmaken'
+'Create an account for the Buitensport Durf member portal. Already have one? <a href="{url}">Log in</a>.': 'Maak een account aan voor het ledenportaal van Buitensport Durf. Heb je er al een? <a href="{url}">Log in</a>.'
+'Create Event': 'Activiteit aanmaken'
+'Create new': 'Nieuwe aanmaken'
+'Create Question {question}': 'Vraag aanmaken {question}'
+'Create series': 'Reeks aanmaken'
+'Create your member account': 'Maak je ledenaccount aan'
+'Created "{name}" with {count, plural, one {# event} other {# events}}': '"{name}" aangemaakt met {count, plural, one {# activiteit} other {# activiteiten}}'
+'Created {count, plural, one {# event} other {# events}}': '{count, plural, one {# activiteit} other {# activiteiten}} aangemaakt'
+'Current password': 'Huidig wachtwoord'
+'Customised here, so series changes leave these alone: {fields}': 'Hier aangepast, dus wijzigingen in de reeks laten deze ongemoeid: {fields}'
+'Customised: {fields}': 'Aangepast: {fields}'
+Daily: Dagelijks
+'Date and time': 'Datum en tijd'
+'Date:': 'Datum:'
+days: dagen
+'days before the start': 'dagen voor de start'
+'deadline {when}': 'deadline {when}'
+'Dear {name},': 'Beste {name},'
+Delete: Verwijderen
+'Delete event': 'Activiteit verwijderen'
+'Delete question': 'Vraag verwijderen'
+'Delete series': 'Reeks verwijderen'
+'Delete the question "{question}" and all answers to it?': 'De vraag "{question}" en alle antwoorden erop verwijderen?'
+'Delete {name}': '{name} verwijderen'
+'Deleted "{name}".': '"{name}" verwijderd.'
+'Deleted event "{event}"': 'Activiteit "{event}" verwijderd'
+'Deleted question "{question}" from event "{event}"': 'Vraag "{question}" verwijderd uit activiteit "{event}"'
+'Deleting the series:': 'De reeks verwijderen:'
+Description: Beschrijving
+Detach: Loskoppelen
+'Detach from series': 'Loskoppelen van reeks'
+Details: Details
+disabled: uitgeschakeld
+'Do you really want to enable "{name}" with email "{email}"?': 'Wil je "{name}" met e-mailadres "{email}" echt activeren?'
+Draft: Concept
+'Durf member portal': 'Durf ledenportaal'
+'e.g. 2 for every other week': 'bijv. 2 voor om de week'
+Edit: Bewerken
+'Edit Question {question}': 'Vraag bewerken {question}'
+'Edit series': 'Reeks bewerken'
+'Edit subscription of {name} to {event}': 'Aanmelding van {name} voor {event} bewerken'
+'Edit this and following': 'Deze en volgende bewerken'
+'Edit {event}': '{event} bewerken'
+'Edit {name}': '{name} bewerken'
+Email: E-mail
+'Email language': 'Taal van e-mails'
+'Email me about events I subscribed to': 'Mail me over activiteiten waarvoor ik ben aangemeld'
+'Email settings': E-mailinstellingen
+'Email subscribers about moved or cancelled events': 'Aangemelde deelnemers mailen over verplaatste of geannuleerde activiteiten'
+'Email the {count, plural, one {# subscriber} other {# subscribers}} about the cancellation': '{count, plural, one {De # aangemelde deelnemer} other {De # aangemelde deelnemers}} mailen over de annulering'
+'Email: <strong>{email}</strong>': 'E-mail: <strong>{email}</strong>'
+'Emails about your account, like a changed password, are always sent.': 'E-mails over je account, zoals een gewijzigd wachtwoord, krijg je altijd.'
+Enable: Activeren
+'Enable {name}': '{name} activeren'
+'End date': Einddatum
+Ended: Afgelopen
+Ends: Eindigt
+'Enter your email address, and we will send you a link to reset your password.': 'Vul je e-mailadres in, dan sturen we je een link om je wachtwoord opnieuw in te stellen.'
+'Event "{event}" follows its series again.': 'Activiteit "{event}" volgt de reeks weer.'
+'Event "{event}" has been cancelled.': 'Activiteit "{event}" is geannuleerd.'
+'Event "{event}" has been moved to draft.': 'Activiteit "{event}" is teruggezet naar concept.'
+'Event "{event}" has been published.': 'Activiteit "{event}" is gepubliceerd.'
+'Event "{event}" is no longer cancelled.': 'Activiteit "{event}" is niet meer geannuleerd.'
+'Event "{event}" is now separate from "{series}".': 'Activiteit "{event}" staat nu los van "{series}".'
+'Event calendars': "Activiteitenagenda's"
+'Event cancelled: {event}': 'Activiteit geannuleerd: {event}'
+'Event changed: {event}': 'Activiteit gewijzigd: {event}'
+Events: Activiteiten
+Every: Elke
+'Exit impersonation': 'Stop met meekijken'
+'Fill in the form; we send you an email to confirm it arrived.': 'Vul het formulier in; we sturen je een e-mail om te bevestigen dat het is aangekomen.'
+'Filter by tag': 'Filteren op tag'
+'Filter by year': 'Filteren op jaar'
+'Finish your registration': 'Rond je registratie af'
+First: Eerste
+'First occurrence': 'Eerste keer'
+'First occurrence ends': 'Eerste keer eindigt'
+'First occurrence starts': 'Eerste keer begint'
+'Fix the form to see the changes': 'Verbeter het formulier om de wijzigingen te zien'
+'Fix the form to see the changes.': 'Verbeter het formulier om de wijzigingen te zien.'
+'Fix the form to see the preview.': 'Verbeter het formulier om het voorbeeld te zien.'
+'For the website and the emails we send you': 'Voor de website en de e-mails die we je sturen'
+'Forgot password?': 'Wachtwoord vergeten?'
+'Forgot your password? <a href="{url}" style="color: #32373c;">Reset it here</a>.': 'Wachtwoord vergeten? <a href="{url}" style="color: #32373c;">Stel het hier opnieuw in</a>.'
+Fourth: Vierde
+Free: Gratis
+Friday: Vrijdag
+'From {date} onwards': 'Vanaf {date}'
+'Full name': 'Volledige naam'
+'Full name (first and last name)': 'Volledige naam (voor- en achternaam)'
+General: Algemeen
+Guest: Gast
+guest: gast
+'Guest price': 'Prijs voor gasten'
+'Guests allowed': 'Gasten welkom'
+'Hash long:': 'Hash lang:'
+'Hash short:': 'Hash kort:'
+'Hidden by default — click to show only “{tag}” events': 'Standaard verborgen — klik om alleen “{tag}”-activiteiten te tonen'
+'hours before the start': 'uur voor de start'
+'I agree to the privacy statement found below': 'Ik ga akkoord met de privacyverklaring hieronder'
+'Id:': 'Id:'
+"If <strong>{email}</strong> belongs to an account, we've sent it a link to choose a new password.": 'Als <strong>{email}</strong> bij een account hoort, hebben we er een link naartoe gestuurd om een nieuw wachtwoord te kiezen.'
+Image: Afbeelding
+'It explains the next steps. New accounts are activated by the committee, usually within a few days; you will get an email when that has happened.': 'Daarin staan de volgende stappen. Nieuwe accounts worden door de commissie geactiveerd, meestal binnen een paar dagen; je krijgt een e-mail zodra dat is gebeurd.'
+'Keeps {count, plural, one {# past event} other {# past events}} as standalone events.': 'Houdt {count, plural, one {# eerdere activiteit} other {# eerdere activiteiten}} als losse activiteiten.'
+'Kind regards,<br>The Durf Portal Team': 'Groeten,<br>Het team van het Durf-portaal'
+Language: Taal
+Last: Laatste
+'Last date': 'Laatste datum'
+'Latest release stats': 'Gegevens laatste release'
+'Leave empty to allow subscribing until the start': 'Laat leeg om aanmelden tot de start toe te staan'
+'Leave empty to keep your current password': 'Laat leeg om je huidige wachtwoord te houden'
+'Leave empty to open subscriptions right away': 'Laat leeg om aanmelden direct open te zetten'
+Location: Locatie
+'Log in': Inloggen
+Login: Inloggen
+Logo: Logo
+Logout: Uitloggen
+'Member price': 'Prijs voor leden'
+'Members only': 'Alleen voor leden'
+Monday: Maandag
+Monthly: Maandelijks
+months: maanden
+'Move to draft': 'Terugzetten naar concept'
+'My events': 'Mijn activiteiten'
+Name: Naam
+'Name: <strong>{name}</strong>': 'Naam: <strong>{name}</strong>'
+'Needed for activation, password resets and event updates': 'Nodig voor activatie, wachtwoordherstel en updates over activiteiten'
+'Needed to change your email or password': 'Nodig om je e-mailadres of wachtwoord te wijzigen'
+Never: Nooit
+'New password': 'Nieuw wachtwoord'
+'New recurring event': 'Nieuwe terugkerende activiteit'
+'New user registered': 'Nieuwe gebruiker geregistreerd'
+'New user registered: {name}': 'Nieuwe gebruiker geregistreerd: {name}'
+'Next: {date}': 'Volgende: {date}'
+'No': Nee
+'No changes yet. As you edit the form, this list shows exactly what saving will do to the upcoming events.': 'Nog geen wijzigingen. Terwijl je het formulier aanpast, toont deze lijst precies wat opslaan met de komende activiteiten doet.'
+'No past events': 'Geen eerdere activiteiten'
+'No past events in {year}': 'Geen activiteiten in {year}'
+'No questions configured.': 'Geen vragen ingesteld.'
+'No recurring events': 'Geen terugkerende activiteiten'
+'No subscribers yet.': 'Nog geen aanmeldingen.'
+'No upcoming events': 'Geen komende activiteiten'
+'No upcoming events.': 'Geen komende activiteiten.'
+'No users pending activation': 'Geen gebruikers die op activatie wachten'
+'None of the upcoming events change.': 'Geen van de komende activiteiten verandert.'
+'None selected: the weekday of the first occurrence': 'Niets gekozen: de weekdag van de eerste keer'
+'Not logged in': 'Niet ingelogd'
+Note: Opmerking
+'Nothing arrived after a few minutes? Check your spam folder or <a href="{url}">try again</a>.': 'Na een paar minuten nog niets ontvangen? Kijk in je spammap of <a href="{url}">probeer het opnieuw</a>.'
+'Nothing arrived after a few minutes? Check your spam folder, or make sure the address is right and try again.': 'Na een paar minuten nog niets ontvangen? Kijk in je spammap, of controleer het adres en probeer het opnieuw.'
+'Nothing changed': 'Niets gewijzigd'
+'Now impersonating {name}': 'Je kijkt nu mee als {name}'
+'Number of occurrences': 'Aantal keer'
+'of the month': 'van de maand'
+'On': Op
+'On a date': 'Op een datum'
+'Only want to join one event? Many events also let you subscribe as a guest, without an account.': 'Wil je maar aan één activiteit meedoen? Voor veel activiteiten kun je je ook als gast aanmelden, zonder account.'
+Open: Open
+'Open for guests': 'Open voor gasten'
+'Part of <a href="{url}">{series}</a>': 'Onderdeel van <a href="{url}">{series}</a>'
+Password: Wachtwoord
+'Past events': 'Eerdere activiteiten'
+'Past events ({count})': 'Eerdere activiteiten ({count})'
+People: Personen
+'Picking a date splits the series: earlier events keep the current settings': 'Een datum kiezen splitst de reeks: eerdere activiteiten houden de huidige instellingen'
+Preview: Voorbeeld
+Price: Prijs
+Profile: Profiel
+'Profile updated.': 'Profiel bijgewerkt.'
+Publish: Publiceren
+'Publish event': 'Activiteit publiceren'
+Published: Gepubliceerd
+Question: Vraag
+Questions: Vragen
+'recalculated, e.g. <s class="text-muted">{old}</s> → {new}': 'herberekend, bijv. <s class="text-muted">{old}</s> → {new}'
+Recurring: Terugkerend
+'Recurring events': 'Terugkerende activiteiten'
+Register: Registreren
+Reject: Afwijzen
+'Reject the registration of "{name}" ({email})? The account is removed (or turned back into a guest when it has event subscriptions). They are not emailed.': 'De registratie van "{name}" ({email}) afwijzen? Het account wordt verwijderd (of weer een gastaccount als er aanmeldingen voor activiteiten zijn). Er gaat geen e-mail naar deze persoon.'
+'Reject {name}': '{name} afwijzen'
+'Rejected and removed the registration of {name}': 'Registratie van {name} afgewezen en verwijderd'
+'Rejected {name}; they keep their event subscriptions as a guest': '{name} afgewezen; de aanmeldingen voor activiteiten blijven staan als gast'
+'Remember me': 'Onthoud mij'
+'Reminder two days before an event': 'Herinnering twee dagen voor een activiteit'
+'Reminder: {event}': 'Herinnering: {event}'
+'Repeat new password': 'Herhaal nieuw wachtwoord'
+'Repeat Password': 'Herhaal wachtwoord'
+Repeats: Herhaalt
+'Repeats {rule}': 'Herhaalt {rule}'
+Required: Verplicht
+Reset: Herstellen
+'Reset my password': 'Mijn wachtwoord herstellen'
+'Reset password': 'Wachtwoord herstellen'
+'Reset to series': 'Terugzetten naar reeks'
+'Reset your password': 'Herstel je wachtwoord'
+Restore: Herstellen
+'Restore event': 'Activiteit herstellen'
+'Review pending accounts': 'Wachtende accounts bekijken'
+'right away': direct
+Saturday: Zaterdag
+Save: Opslaan
+'Save changes': 'Wijzigingen opslaan'
+'Saved question "{question}" to event "{event}"': 'Vraag "{question}" opgeslagen bij activiteit "{event}"'
+'Saved. {count, plural, one {# subscriber was} other {# subscribers were}} emailed about the change.': 'Opgeslagen. {count, plural, one {# aangemelde deelnemer is} other {# aangemelde deelnemers zijn}} gemaild over de wijziging.'
+'Saving creates <strong>{count, plural, one {# event} other {# events}}</strong> (12 months ahead, more are added automatically):': 'Opslaan maakt <strong>{count, plural, one {# activiteit} other {# activiteiten}}</strong> aan (12 maanden vooruit, latere worden automatisch toegevoegd):'
+Schedule: Planning
+Second: Tweede
+'Send me the link': 'Stuur me de link'
+'Send password reset email': 'Stuur e-mail om wachtwoord te herstellen'
+Series: Reeks
+'Series updated, no events affected.': 'Reeks bijgewerkt, geen activiteiten geraakt.'
+'Sets the duration of every occurrence': 'Bepaalt de duur van elke activiteit in de reeks'
+'Showing only “{tag}” events — click to clear filter': 'Alleen “{tag}”-activiteiten — klik om het filter te wissen'
+'skipped: {dates}': 'overgeslagen: {dates}'
+'Someone (hopefully you) asked to reset the password of your account <strong>{username}</strong>.': 'Iemand (hopelijk jij) heeft gevraagd het wachtwoord van je account <strong>{username}</strong> te herstellen.'
+'Someone (hopefully you) registered on the Buitensport Durf member portal with this email address. You already have a guest account with it, so we will turn that into a member account; your event subscriptions stay.': 'Iemand (hopelijk jij) heeft zich met dit e-mailadres geregistreerd op het ledenportaal van Buitensport Durf. Je hebt er al een gastaccount mee, dus dat maken we een ledenaccount; je aanmeldingen voor activiteiten blijven staan.'
+'Someone (hopefully you) tried to sign up on the Buitensport Durf member portal with this email address, but you already have an account: <strong>{username}</strong>.': 'Iemand (hopelijk jij) probeerde zich met dit e-mailadres te registreren op het ledenportaal van Buitensport Durf, maar je hebt al een account: <strong>{username}</strong>.'
+'Splits the series: events before <strong>{date}</strong> keep the current settings, a new series takes over from that date.': 'Splitst de reeks: activiteiten voor <strong>{date}</strong> houden de huidige instellingen, vanaf die datum neemt een nieuwe reeks het over.'
+'Start date': Startdatum
+'Statutes, regulations and privacy statement': 'Statuten, reglementen en privacyverklaring'
+Subscribe: Aanmelden
+'Subscribe as a guest': 'Aanmelden als gast'
+'Subscribe as guest to {event}': 'Als gast aanmelden voor {event}'
+'Subscribe in your calendar app': 'Abonneren in je agenda-app'
+'Subscribe to <strong>{event}</strong> without an account. Enter your name and email and we send you a link to finish subscribing.': 'Meld je zonder account aan voor <strong>{event}</strong>. Vul je naam en e-mailadres in, dan sturen we je een link om je aanmelding af te ronden.'
+'Subscribe to a calendar to see Durf events in your own calendar app. It updates automatically, including changes and cancellations.': 'Abonneer je op een agenda om Durf-activiteiten in je eigen agenda-app te zien. Die werkt zichzelf bij, ook bij wijzigingen en annuleringen.'
+'Subscribe to {event}': 'Aanmelden voor {event}'
+'Subscribed to {event}': 'Aangemeld voor {event}'
+'Subscriber emails': 'E-mails aan aangemelde deelnemers'
+'Subscriber limit': 'Maximum aantal aanmeldingen'
+Subscribers: Aanmeldingen
+'Subscription deadline': 'Aanmelden kan tot'
+'Subscription open date': 'Aanmelden opent op'
+Subscriptions: Aanmeldingen
+'Subscriptions open': 'Aanmelden opent'
+'Subscriptions open {date}': 'Aanmelden opent {date}'
+'Subscriptions open {when}': 'Aanmelden opent {when}'
+Sunday: Zondag
+Tags: Tags
+'The account is disabled and needs to be activated by an admin.': 'Het account is uitgeschakeld en moet door een beheerder worden geactiveerd.'
+'The attached calendar file adds it to your agenda. Plans changed? You can change or cancel your subscription on the event page.': 'Met het bijgevoegde agendabestand zet je het in je agenda. Plannen veranderd? Je kunt je aanmelding wijzigen of annuleren op de pagina van de activiteit.'
+'The committee activates your account, usually within a few days.': 'De commissie activeert je account, meestal binnen een paar dagen.'
+'The email address of your account <strong>{username}</strong> was changed to <strong>{email}</strong>. We send this to your old address so you know.': 'Het e-mailadres van je account <strong>{username}</strong> is gewijzigd in <strong>{email}</strong>. We sturen dit naar je oude adres, zodat je het weet.'
+'The event becomes a standalone event and series changes no longer reach it. The series will not create a new event on this date.': 'De activiteit wordt een losse activiteit en wijzigingen in de reeks komen er niet meer bij. De reeks maakt op deze datum geen nieuwe activiteit aan.'
+'The event stays visible as cancelled and nobody can subscribe anymore.': 'De activiteit blijft zichtbaar als geannuleerd en niemand kan zich nog aanmelden.'
+'The event stays visible as cancelled and nobody can subscribe anymore. {count, plural, one {The # subscriber gets} other {The # subscribers get}} an email.': 'De activiteit blijft zichtbaar als geannuleerd en niemand kan zich nog aanmelden. {count, plural, one {De # aangemelde deelnemer krijgt} other {De # aangemelde deelnemers krijgen}} een e-mail.'
+"The link expires in a day. Didn't ask for this? Then you can ignore this email; nothing changes.": 'De link verloopt na een dag. Heb je hier niet om gevraagd? Dan kun je deze e-mail negeren; er verandert niets.'
+'The link logs you in and works for two days; keep it to yourself. Need it again later? Just request a new one on the event page.': 'Met de link log je in en hij werkt twee dagen; houd hem voor jezelf. Later weer nodig? Vraag dan een nieuwe aan op de pagina van de activiteit.'
+'The link works for two days.': 'De link werkt twee dagen.'
+"The link works for two days. Didn't register? Then you can ignore this email; nothing changes.": 'De link werkt twee dagen. Heb je je niet geregistreerd? Dan kun je deze e-mail negeren; er verandert niets.'
+'The link works once and expires in an hour.': 'De link werkt één keer en verloopt na een uur.'
+"The link works once and expires in an hour. Didn't ask for this? Then you can ignore this email.": 'De link werkt één keer en verloopt na een uur. Heb je hier niet om gevraagd? Dan kun je deze e-mail negeren.'
+'The password of your account <strong>{username}</strong> was just changed.': 'Het wachtwoord van je account <strong>{username}</strong> is zojuist gewijzigd.'
+'The same day of the month as the first occurrence': 'Dezelfde dag van de maand als de eerste keer'
+'The subscription deadline has passed.': 'De deadline voor aanmelden is verstreken.'
+'They stay visible as cancelled.': 'Ze blijven zichtbaar als geannuleerd.'
+Third: Derde
+'This confirmation link is invalid or has expired. Change your email again to get a new one.': 'Deze bevestigingslink is ongeldig of verlopen. Wijzig je e-mailadres opnieuw om een nieuwe te krijgen.'
+'This email address is already in use by another account.': 'Dit e-mailadres wordt al door een ander account gebruikt.'
+'This event has already taken place.': 'Deze activiteit heeft al plaatsgevonden.'
+'This event has been cancelled.': 'Deze activiteit is geannuleerd.'
+'This event is a draft and not visible to regular users.': 'Deze activiteit is een concept en niet zichtbaar voor gewone gebruikers.'
+'This event is for members only.': 'Deze activiteit is alleen voor leden.'
+'This event is not published yet.': 'Deze activiteit is nog niet gepubliceerd.'
+'This event is part of <strong>{series}</strong>. Changes here only apply to this event, and the fields you change stop following the series.': 'Deze activiteit hoort bij <strong>{series}</strong>. Wijzigingen hier gelden alleen voor deze activiteit, en de velden die je wijzigt volgen de reeks niet meer.'
+'This link is no longer valid. Enter your email again and we will send you a new one.': 'Deze link is niet meer geldig. Vul je e-mailadres opnieuw in, dan sturen we je een nieuwe.'
+'This overwrites {fields} with the series values, and the event follows series changes again.': 'Dit overschrijft {fields} met de waarden van de reeks, en de activiteit volgt wijzigingen in de reeks weer.'
+'This reset link is invalid or has expired. Request a new one below.': 'Deze herstellink is ongeldig of verlopen. Vraag hieronder een nieuwe aan.'
+'This rule produces no events in the next 12 months.': 'Deze regel levert de komende 12 maanden geen activiteiten op.'
+'This takes back the cancellation of "{event}". Subscribers are not emailed about this.': 'Dit draait de annulering van "{event}" terug. Aangemelde deelnemers krijgen hierover geen e-mail.'
+'This will hide "{event}" from regular users. Events with subscribers cannot be unpublished.': 'Dit verbergt "{event}" voor gewone gebruikers. Activiteiten met aanmeldingen kun je niet depubliceren.'
+'This will make "{event}" visible to all users and allow subscriptions.': 'Dit maakt "{event}" zichtbaar voor alle gebruikers en opent het aanmelden.'
+Thursday: Donderdag
+'To change more events, edit <a href="{following_url}">this and following events</a> or <a href="{series_url}">the whole series</a>.': 'Wil je meer activiteiten wijzigen? Bewerk dan <a href="{following_url}">deze en volgende activiteiten</a> of <a href="{series_url}">de hele reeks</a>.'
+'To subscribe user': 'Aan te melden gebruiker'
+'Toggle navigation': 'Navigatie tonen/verbergen'
+'Too many registrations from your network, please try again later.': 'Te veel registraties vanaf je netwerk, probeer het later opnieuw.'
+'Too many requests from your network, please try again later.': 'Te veel verzoeken vanaf je netwerk, probeer het later opnieuw.'
+Tuesday: Dinsdag
+Type: Type
+'Unfortunately <strong>{event}</strong> on {date}, which you subscribed to, has been cancelled.': 'Helaas is <strong>{event}</strong> op {date}, waarvoor je je had aangemeld, geannuleerd.'
+Unpublish: Depubliceren
+Unsubscribe: Afmelden
+'Unsubscribe from {event}': 'Afmelden voor {event}'
+'Unsubscribe {name}': '{name} afmelden'
+'Upcoming events': 'Komende activiteiten'
+'Updated subscription to {event}': 'Aanmelding voor {event} bijgewerkt'
+'Use the button below to finish subscribing to <strong>{event}</strong> as a guest.': 'Gebruik de knop hieronder om je aanmelding als gast voor <strong>{event}</strong> af te ronden.'
+'User activation': 'Gebruikers activeren'
+Username: Gebruikersnaam
+'Username (for login)': 'Gebruikersnaam (om in te loggen)'
+'Username or email': 'Gebruikersnaam of e-mailadres'
+'Username:': 'Gebruikersnaam:'
+'Username: <strong>{username}</strong>': 'Gebruikersnaam: <strong>{username}</strong>'
+vich_uploader.form_label.delete_confirm: 'Verwijderen?'
+vich_uploader.link.download: Downloaden
+'View event': 'Bekijk activiteit'
+'Want it to just stop at some point instead? Edit the series and set an end date.': 'Moet hij gewoon ergens stoppen? Bewerk dan de reeks en stel een einddatum in.'
+"Was this you? Then you don't need to do anything. If it wasn't, contact the committee right away.": 'Was jij dit? Dan hoef je niets te doen. Zo niet, neem dan meteen contact op met de commissie.'
+"Was this you? Then you don't need to do anything. If it wasn't, reset your password right away and let the committee know.": 'Was jij dit? Dan hoef je niets te doen. Zo niet, herstel dan meteen je wachtwoord en laat het de commissie weten.'
+'We email you a link to finish subscribing': 'We mailen je een link om je aanmelding af te ronden'
+'We sent a confirmation link to {email}. Your email changes once you click it.': 'We hebben een bevestigingslink naar {email} gestuurd. Je e-mailadres verandert zodra je erop klikt.'
+"We've sent an email to <strong>{email}</strong>.": 'We hebben een e-mail gestuurd naar <strong>{email}</strong>.'
+Website: Website
+Wednesday: Woensdag
+Weekly: Wekelijks
+weeks: weken
+'weeks before the start': 'weken voor de start'
+'What saving will do': 'Wat opslaan doet'
+When: Wanneer
+Where: Waar
+Yearly: Jaarlijks
+years: jaar
+'Yes': Ja
+'You already have an account': 'Je hebt al een account'
+'You are already logged in as {name}, <a href="{url}">Logout</a>': 'Je bent al ingelogd als {name}, <a href="{url}">Uitloggen</a>'
+'You are already logged in, redirected you to the homepage': 'Je bent al ingelogd, je bent doorgestuurd naar de homepage'
+'You are already subscribed.': 'Je bent al aangemeld.'
+'You are subscribed': 'Je bent aangemeld'
+'You are subscribed to <strong>{event}</strong>.': 'Je bent aangemeld voor <strong>{event}</strong>.'
+'You asked to change the email address of your account <strong>{username}</strong> to <strong>{email}</strong>. Confirm it with the button below (you may have to log in first).': 'Je hebt gevraagd het e-mailadres van je account <strong>{username}</strong> te wijzigen in <strong>{email}</strong>. Bevestig dat met de knop hieronder (misschien moet je eerst inloggen).'
+'You can log in with that username or this email address.': 'Je kunt inloggen met die gebruikersnaam of met dit e-mailadres.'
+'You can log in with your username <strong>{username}</strong> or your email address, and subscribe to events.': 'Je kunt inloggen met je gebruikersnaam <strong>{username}</strong> of je e-mailadres, en je aanmelden voor activiteiten.'
+'You can only subscribe to your own events': 'Je kunt alleen jezelf aanmelden'
+'You cannot subscribe to this event': 'Je kunt je niet aanmelden voor deze activiteit'
+'You get an email, and can log in and subscribe to events.': 'Je krijgt een e-mail, en kunt dan inloggen en je aanmelden voor activiteiten.'
+'You get this email because you subscribed to this event.': 'Je krijgt deze e-mail omdat je je voor deze activiteit hebt aangemeld.'
+'You have signed up to the Buitensport Durf member portal with the username <strong>{username}</strong>.': 'Je hebt je geregistreerd op het ledenportaal van Buitensport Durf met de gebruikersnaam <strong>{username}</strong>.'
+'You have subscribed to {event}. We sent a confirmation by email.': 'Je bent aangemeld voor {event}. We hebben je een bevestiging gemaild.'
+'You have unsubscribed from {event}': 'Je bent afgemeld voor {event}'
+'You tried to subscribe to {event}, but you first need to be logged in': 'Je probeerde je aan te melden voor {event}, maar daarvoor moet je eerst inloggen'
+'Your account has been created. You can log in once the committee has activated it.': 'Je account is aangemaakt. Je kunt inloggen zodra de commissie het heeft geactiveerd.'
+'Your account on the Buitensport Durf member portal is now active.': 'Je account op het ledenportaal van Buitensport Durf is nu actief.'
+'Your account still has to be activated by the committee. You will get an email as soon as that has happened, usually within a few days.': 'Je account moet nog door de commissie worden geactiveerd. Je krijgt een e-mail zodra dat is gebeurd, meestal binnen een paar dagen.'
+'Your email address is now {email}.': 'Je e-mailadres is nu {email}.'
+'Your email address was changed': 'Je e-mailadres is gewijzigd'
+'Your email settings have been saved.': 'Je e-mailinstellingen zijn opgeslagen.'
+'Your events': 'Jouw activiteiten'
+'Your events: the events you subscribed to. Keep this link to yourself.': 'Jouw activiteiten: de activiteiten waarvoor je bent aangemeld. Houd deze link voor jezelf.'
+'Your password has been changed.': 'Je wachtwoord is gewijzigd.'
+'Your password has been changed. You can now log in.': 'Je wachtwoord is gewijzigd. Je kunt nu inloggen.'
+'Your password was changed': 'Je wachtwoord is gewijzigd'
+"Your subscription still stands. Can't make it anymore? You can unsubscribe on the event page.": 'Je aanmelding blijft staan. Kun je toch niet? Dan kun je je afmelden op de pagina van de activiteit.'
+'{count, plural, one {# day} other {# days}} before the start': '{count, plural, one {# dag} other {# dagen}} voor de start'
+'{count, plural, one {# event} other {# events}} cancelled.': '{count, plural, one {# activiteit} other {# activiteiten}} geannuleerd.'
+'{count, plural, one {# event} other {# events}} created.': '{count, plural, one {# activiteit} other {# activiteiten}} aangemaakt.'
+'{count, plural, one {# event} other {# events}} deleted.': '{count, plural, one {# activiteit} other {# activiteiten}} verwijderd.'
+'{count, plural, one {# event} other {# events}} moved.': '{count, plural, one {# activiteit} other {# activiteiten}} verplaatst.'
+'{count, plural, one {# event} other {# events}} updated.': '{count, plural, one {# activiteit} other {# activiteiten}} bijgewerkt.'
+'{count, plural, one {# event} other {# events}} will be added in the nightly run.': '{count, plural, one {# activiteit wordt} other {# activiteiten worden}} vannacht toegevoegd.'
+'{count, plural, one {# hour} other {# hours}} before the start': '{count} uur voor de start'
+'{count, plural, one {# keeps its own settings} other {# keep their own settings}}': '{count, plural, one {# houdt eigen instellingen} other {# houden eigen instellingen}}'
+'{count, plural, one {# minute} other {# minutes}} before the start': '{count, plural, one {# minuut} other {# minuten}} voor de start'
+'{count, plural, one {# other upcoming event stays as it is.} other {# other upcoming events stay as they are.}}': '{count, plural, one {# andere komende activiteit blijft zoals hij is.} other {# andere komende activiteiten blijven zoals ze zijn.}}'
+'{count, plural, one {# subscriber gets} other {# subscribers get}} an email when you change the date, time or location.': '{count, plural, one {# aangemelde deelnemer krijgt} other {# aangemelde deelnemers krijgen}} een e-mail als je de datum, tijd of locatie wijzigt.'
+'{count, plural, one {# subscriber} other {# subscribers}} notified.': '{count, plural, one {# aangemelde deelnemer} other {# aangemelde deelnemers}} gemaild.'
+'{count, plural, one {# week} other {# weeks}} before the start': '{count, plural, one {# week} other {# weken}} voor de start'
+'{count} cancelled': '{count} geannuleerd'
+'{count} customised': '{count} aangepast'
+'{count} deleted': '{count} verwijderd'
+'{count} moved': '{count} verplaatst'
+'{count} new': '{count} nieuw'
+'{count} subscribed': '{count} aangemeld'
+'{count} updated': '{count} bijgewerkt'
+'{event} image': 'Afbeelding van {event}'
+'{label} calendar URL': 'Agenda-URL {label}'
+'{name} is already active': '{name} is al actief'
+'{name} is now enabled': '{name} is nu geactiveerd'
+'{name} profile': 'Profiel van {name}'
+'{subscribers, plural, one {# subscriber} other {# subscribers}} of {events, plural, one {# event} other {# events}} get an email about the change (unless you switch that off below).': '{subscribers, plural, one {# aangemelde deelnemer} other {# aangemelde deelnemers}} van {events, plural, one {# activiteit} other {# activiteiten}} krijgen een e-mail over de wijziging (tenzij je dat hieronder uitzet).'

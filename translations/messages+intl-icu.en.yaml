@@ -1,1 +1,443 @@
-# English texts are the keys; this file only exists for the ICU plural and placeholder formats.
+# English texts are the keys; this file exists so ICU placeholders and plurals are formatted.
+'(customised on the event itself)': '(customised on the event itself)'
+'(guest: € {price})': '(guest: € {price})'
+'(no subscribers)': '(no subscribers)'
+'(they have subscribers, so they stay visible as cancelled)': '(they have subscribers, so they stay visible as cancelled)'
+'<a href="{register_url}">Register</a> or <a href="{login_url}">login</a> to subscribe to events.': '<a href="{register_url}">Register</a> or <a href="{login_url}">login</a> to subscribe to events.'
+'<strong>Cancels {count, plural, one {# upcoming event} other {# upcoming events}}</strong> that have subscribers:': '<strong>Cancels {count, plural, one {# upcoming event} other {# upcoming events}}</strong> that have subscribers:'
+'<strong>Deletes {count, plural, one {# upcoming event} other {# upcoming events}}</strong> without subscribers.': '<strong>Deletes {count, plural, one {# upcoming event} other {# upcoming events}}</strong> without subscribers.'
+'<strong>{event}</strong>, which you subscribed to, has changed:': '<strong>{event}</strong>, which you subscribed to, has changed:'
+'A new address has to be confirmed via a link we send to it': 'A new address has to be confirmed via a link we send to it'
+'A new guest user has registered on the Durf portal.': 'A new guest user has registered on the Durf portal.'
+'A new user has registered on the Durf portal.': 'A new user has registered on the Durf portal.'
+'A reminder: <strong>{event}</strong> is coming up and you are subscribed.': 'A reminder: <strong>{event}</strong> is coming up and you are subscribed.'
+'A weekday of the month': 'A weekday of the month'
+Access: Access
+'Account activated': 'Account activated'
+'Account created': 'Account created'
+'Add question': 'Add question'
+'Add them now': 'Add them now'
+'Add to Google Calendar': 'Add to Google Calendar'
+'Added question "{question}" to event "{event}"': 'Added question "{question}" to event "{event}"'
+Admin: Admin
+'After a number of occurrences': 'After a number of occurrences'
+'After this, the committee activates your account; you will get an email when you can log in.': 'After this, the committee activates your account; you will get an email when you can log in.'
+'All events': 'All events'
+'All upcoming events': 'All upcoming events'
+'Already a member? <a href="{url}">Log in</a> instead.': 'Already a member? <a href="{url}">Log in</a> instead.'
+'Also sets the time of every occurrence': 'Also sets the time of every occurrence'
+Amount: Amount
+'and {count} more': 'and {count} more'
+Apply: Apply
+'Apply changes to': 'Apply changes to'
+'Are you sure you want to delete event "{event}"?': 'Are you sure you want to delete event "{event}"?'
+'Are you sure you want to unsubscribe "{name}" from "{event}"?': 'Are you sure you want to unsubscribe "{name}" from "{event}"?'
+'Are you sure you want to unsubscribe from "{event}"?': 'Are you sure you want to unsubscribe from "{event}"?'
+'at the start': 'at the start'
+Back: Back
+'Back to event': 'Back to event'
+'Back to events': 'Back to events'
+'Back to list': 'Back to list'
+'Back to {event}': 'Back to {event}'
+'Branch:': 'Branch:'
+'Button not working? Copy this link: <a href="{url}" style="color: #6c757d; word-break: break-all;">{url}</a>': 'Button not working? Copy this link: <a href="{url}" style="color: #6c757d; word-break: break-all;">{url}</a>'
+'By tag': 'By tag'
+Calendars: Calendars
+"Can't make it anymore? Please unsubscribe on the event page, so the organisers know.": "Can't make it anymore? Please unsubscribe on the event page, so the organisers know."
+Cancel: Cancel
+'Cancel event': 'Cancel event'
+Cancelled: Cancelled
+'Cancelled: {name}': 'Cancelled: {name}'
+'Change profile': 'Change profile'
+'Change which emails you get': 'Change which emails you get'
+'Changes to the date, time or location, and cancellations': 'Changes to the date, time or location, and cancellations'
+'Check your email': 'Check your email'
+'Choose a new password': 'Choose a new password'
+'Choose a username and password': 'Choose a username and password'
+'Choose a username and password for <strong>{email}</strong>. Your guest subscriptions stay.': 'Choose a username and password for <strong>{email}</strong>. Your guest subscriptions stay.'
+'Choose which emails we send to <strong>{email}</strong> about events you subscribed to.': 'Choose which emails we send to <strong>{email}</strong> about events you subscribed to.'
+'Click the link in it to finish subscribing to <strong>{event}</strong>.': 'Click the link in it to finish subscribing to <strong>{event}</strong>.'
+'Click the link in it to finish subscribing.': 'Click the link in it to finish subscribing.'
+'Click to show only “{tag}” events': 'Click to show only “{tag}” events'
+Close: Close
+'Commit date:': 'Commit date:'
+Confirm: Confirm
+'Confirm this address': 'Confirm this address'
+'Confirm your new email address': 'Confirm your new email address'
+'Confirmation when I subscribe, with a calendar file': 'Confirmation when I subscribe, with a calendar file'
+Copy: Copy
+'Copy URL': 'Copy URL'
+'Could not load the preview.': 'Could not load the preview.'
+'Create account': 'Create account'
+'Create an account for the Buitensport Durf member portal. Already have one? <a href="{url}">Log in</a>.': 'Create an account for the Buitensport Durf member portal. Already have one? <a href="{url}">Log in</a>.'
+'Create Event': 'Create Event'
+'Create new': 'Create new'
+'Create Question {question}': 'Create Question {question}'
+'Create series': 'Create series'
+'Create your member account': 'Create your member account'
+'Created "{name}" with {count, plural, one {# event} other {# events}}': 'Created "{name}" with {count, plural, one {# event} other {# events}}'
+'Created {count, plural, one {# event} other {# events}}': 'Created {count, plural, one {# event} other {# events}}'
+'Current password': 'Current password'
+'Customised here, so series changes leave these alone: {fields}': 'Customised here, so series changes leave these alone: {fields}'
+'Customised: {fields}': 'Customised: {fields}'
+Daily: Daily
+'Date and time': 'Date and time'
+'Date:': 'Date:'
+days: days
+'days before the start': 'days before the start'
+'deadline {when}': 'deadline {when}'
+'Dear {name},': 'Dear {name},'
+Delete: Delete
+'Delete event': 'Delete event'
+'Delete question': 'Delete question'
+'Delete series': 'Delete series'
+'Delete the question "{question}" and all answers to it?': 'Delete the question "{question}" and all answers to it?'
+'Delete {name}': 'Delete {name}'
+'Deleted "{name}".': 'Deleted "{name}".'
+'Deleted event "{event}"': 'Deleted event "{event}"'
+'Deleted question "{question}" from event "{event}"': 'Deleted question "{question}" from event "{event}"'
+'Deleting the series:': 'Deleting the series:'
+Description: Description
+Detach: Detach
+'Detach from series': 'Detach from series'
+Details: Details
+disabled: disabled
+'Do you really want to enable "{name}" with email "{email}"?': 'Do you really want to enable "{name}" with email "{email}"?'
+Draft: Draft
+'Durf member portal': 'Durf member portal'
+'e.g. 2 for every other week': 'e.g. 2 for every other week'
+Edit: Edit
+'Edit Question {question}': 'Edit Question {question}'
+'Edit series': 'Edit series'
+'Edit subscription of {name} to {event}': 'Edit subscription of {name} to {event}'
+'Edit this and following': 'Edit this and following'
+'Edit {event}': 'Edit {event}'
+'Edit {name}': 'Edit {name}'
+Email: Email
+'Email language': 'Email language'
+'Email me about events I subscribed to': 'Email me about events I subscribed to'
+'Email settings': 'Email settings'
+'Email subscribers about moved or cancelled events': 'Email subscribers about moved or cancelled events'
+'Email the {count, plural, one {# subscriber} other {# subscribers}} about the cancellation': 'Email the {count, plural, one {# subscriber} other {# subscribers}} about the cancellation'
+'Email: <strong>{email}</strong>': 'Email: <strong>{email}</strong>'
+'Emails about your account, like a changed password, are always sent.': 'Emails about your account, like a changed password, are always sent.'
+Enable: Enable
+'Enable {name}': 'Enable {name}'
+'End date': 'End date'
+Ended: Ended
+Ends: Ends
+'Enter your email address, and we will send you a link to reset your password.': 'Enter your email address, and we will send you a link to reset your password.'
+'Event "{event}" follows its series again.': 'Event "{event}" follows its series again.'
+'Event "{event}" has been cancelled.': 'Event "{event}" has been cancelled.'
+'Event "{event}" has been moved to draft.': 'Event "{event}" has been moved to draft.'
+'Event "{event}" has been published.': 'Event "{event}" has been published.'
+'Event "{event}" is no longer cancelled.': 'Event "{event}" is no longer cancelled.'
+'Event "{event}" is now separate from "{series}".': 'Event "{event}" is now separate from "{series}".'
+'Event calendars': 'Event calendars'
+'Event cancelled: {event}': 'Event cancelled: {event}'
+'Event changed: {event}': 'Event changed: {event}'
+Events: Events
+Every: Every
+'Exit impersonation': 'Exit impersonation'
+'Fill in the form; we send you an email to confirm it arrived.': 'Fill in the form; we send you an email to confirm it arrived.'
+'Filter by tag': 'Filter by tag'
+'Filter by year': 'Filter by year'
+'Finish your registration': 'Finish your registration'
+First: First
+'First occurrence': 'First occurrence'
+'First occurrence ends': 'First occurrence ends'
+'First occurrence starts': 'First occurrence starts'
+'Fix the form to see the changes': 'Fix the form to see the changes'
+'Fix the form to see the changes.': 'Fix the form to see the changes.'
+'Fix the form to see the preview.': 'Fix the form to see the preview.'
+'For the website and the emails we send you': 'For the website and the emails we send you'
+'Forgot password?': 'Forgot password?'
+'Forgot your password? <a href="{url}" style="color: #32373c;">Reset it here</a>.': 'Forgot your password? <a href="{url}" style="color: #32373c;">Reset it here</a>.'
+Fourth: Fourth
+Free: Free
+Friday: Friday
+'From {date} onwards': 'From {date} onwards'
+'Full name': 'Full name'
+'Full name (first and last name)': 'Full name (first and last name)'
+General: General
+Guest: Guest
+guest: guest
+'Guest price': 'Guest price'
+'Guests allowed': 'Guests allowed'
+'Hash long:': 'Hash long:'
+'Hash short:': 'Hash short:'
+'Hidden by default — click to show only “{tag}” events': 'Hidden by default — click to show only “{tag}” events'
+'hours before the start': 'hours before the start'
+'I agree to the privacy statement found below': 'I agree to the privacy statement found below'
+'Id:': 'Id:'
+"If <strong>{email}</strong> belongs to an account, we've sent it a link to choose a new password.": "If <strong>{email}</strong> belongs to an account, we've sent it a link to choose a new password."
+Image: Image
+'It explains the next steps. New accounts are activated by the committee, usually within a few days; you will get an email when that has happened.': 'It explains the next steps. New accounts are activated by the committee, usually within a few days; you will get an email when that has happened.'
+'Keeps {count, plural, one {# past event} other {# past events}} as standalone events.': 'Keeps {count, plural, one {# past event} other {# past events}} as standalone events.'
+'Kind regards,<br>The Durf Portal Team': 'Kind regards,<br>The Durf Portal Team'
+Language: Language
+Last: Last
+'Last date': 'Last date'
+'Latest release stats': 'Latest release stats'
+'Leave empty to allow subscribing until the start': 'Leave empty to allow subscribing until the start'
+'Leave empty to keep your current password': 'Leave empty to keep your current password'
+'Leave empty to open subscriptions right away': 'Leave empty to open subscriptions right away'
+Location: Location
+'Log in': 'Log in'
+Login: Login
+Logo: Logo
+Logout: Logout
+'Member price': 'Member price'
+'Members only': 'Members only'
+Monday: Monday
+Monthly: Monthly
+months: months
+'Move to draft': 'Move to draft'
+'My events': 'My events'
+Name: Name
+'Name: <strong>{name}</strong>': 'Name: <strong>{name}</strong>'
+'Needed for activation, password resets and event updates': 'Needed for activation, password resets and event updates'
+'Needed to change your email or password': 'Needed to change your email or password'
+Never: Never
+'New password': 'New password'
+'New recurring event': 'New recurring event'
+'New user registered': 'New user registered'
+'New user registered: {name}': 'New user registered: {name}'
+'Next: {date}': 'Next: {date}'
+'No': 'No'
+'No changes yet. As you edit the form, this list shows exactly what saving will do to the upcoming events.': 'No changes yet. As you edit the form, this list shows exactly what saving will do to the upcoming events.'
+'No past events': 'No past events'
+'No past events in {year}': 'No past events in {year}'
+'No questions configured.': 'No questions configured.'
+'No recurring events': 'No recurring events'
+'No subscribers yet.': 'No subscribers yet.'
+'No upcoming events': 'No upcoming events'
+'No upcoming events.': 'No upcoming events.'
+'No users pending activation': 'No users pending activation'
+'None of the upcoming events change.': 'None of the upcoming events change.'
+'None selected: the weekday of the first occurrence': 'None selected: the weekday of the first occurrence'
+'Not logged in': 'Not logged in'
+Note: Note
+'Nothing arrived after a few minutes? Check your spam folder or <a href="{url}">try again</a>.': 'Nothing arrived after a few minutes? Check your spam folder or <a href="{url}">try again</a>.'
+'Nothing arrived after a few minutes? Check your spam folder, or make sure the address is right and try again.': 'Nothing arrived after a few minutes? Check your spam folder, or make sure the address is right and try again.'
+'Nothing changed': 'Nothing changed'
+'Now impersonating {name}': 'Now impersonating {name}'
+'Number of occurrences': 'Number of occurrences'
+'of the month': 'of the month'
+'On': 'On'
+'On a date': 'On a date'
+'Only want to join one event? Many events also let you subscribe as a guest, without an account.': 'Only want to join one event? Many events also let you subscribe as a guest, without an account.'
+Open: Open
+'Open for guests': 'Open for guests'
+'Part of <a href="{url}">{series}</a>': 'Part of <a href="{url}">{series}</a>'
+Password: Password
+'Past events': 'Past events'
+'Past events ({count})': 'Past events ({count})'
+People: People
+'Picking a date splits the series: earlier events keep the current settings': 'Picking a date splits the series: earlier events keep the current settings'
+Preview: Preview
+Price: Price
+Profile: Profile
+'Profile updated.': 'Profile updated.'
+Publish: Publish
+'Publish event': 'Publish event'
+Published: Published
+Question: Question
+Questions: Questions
+'recalculated, e.g. <s class="text-muted">{old}</s> → {new}': 'recalculated, e.g. <s class="text-muted">{old}</s> → {new}'
+Recurring: Recurring
+'Recurring events': 'Recurring events'
+Register: Register
+Reject: Reject
+'Reject the registration of "{name}" ({email})? The account is removed (or turned back into a guest when it has event subscriptions). They are not emailed.': 'Reject the registration of "{name}" ({email})? The account is removed (or turned back into a guest when it has event subscriptions). They are not emailed.'
+'Reject {name}': 'Reject {name}'
+'Rejected and removed the registration of {name}': 'Rejected and removed the registration of {name}'
+'Rejected {name}; they keep their event subscriptions as a guest': 'Rejected {name}; they keep their event subscriptions as a guest'
+'Remember me': 'Remember me'
+'Reminder two days before an event': 'Reminder two days before an event'
+'Reminder: {event}': 'Reminder: {event}'
+'Repeat new password': 'Repeat new password'
+'Repeat Password': 'Repeat Password'
+Repeats: Repeats
+'Repeats {rule}': 'Repeats {rule}'
+Required: Required
+Reset: Reset
+'Reset my password': 'Reset my password'
+'Reset password': 'Reset password'
+'Reset to series': 'Reset to series'
+'Reset your password': 'Reset your password'
+Restore: Restore
+'Restore event': 'Restore event'
+'Review pending accounts': 'Review pending accounts'
+'right away': 'right away'
+Saturday: Saturday
+Save: Save
+'Save changes': 'Save changes'
+'Saved question "{question}" to event "{event}"': 'Saved question "{question}" to event "{event}"'
+'Saved. {count, plural, one {# subscriber was} other {# subscribers were}} emailed about the change.': 'Saved. {count, plural, one {# subscriber was} other {# subscribers were}} emailed about the change.'
+'Saving creates <strong>{count, plural, one {# event} other {# events}}</strong> (12 months ahead, more are added automatically):': 'Saving creates <strong>{count, plural, one {# event} other {# events}}</strong> (12 months ahead, more are added automatically):'
+Schedule: Schedule
+Second: Second
+'Send me the link': 'Send me the link'
+'Send password reset email': 'Send password reset email'
+Series: Series
+'Series updated, no events affected.': 'Series updated, no events affected.'
+'Sets the duration of every occurrence': 'Sets the duration of every occurrence'
+'Showing only “{tag}” events — click to clear filter': 'Showing only “{tag}” events — click to clear filter'
+'skipped: {dates}': 'skipped: {dates}'
+'Someone (hopefully you) asked to reset the password of your account <strong>{username}</strong>.': 'Someone (hopefully you) asked to reset the password of your account <strong>{username}</strong>.'
+'Someone (hopefully you) registered on the Buitensport Durf member portal with this email address. You already have a guest account with it, so we will turn that into a member account; your event subscriptions stay.': 'Someone (hopefully you) registered on the Buitensport Durf member portal with this email address. You already have a guest account with it, so we will turn that into a member account; your event subscriptions stay.'
+'Someone (hopefully you) tried to sign up on the Buitensport Durf member portal with this email address, but you already have an account: <strong>{username}</strong>.': 'Someone (hopefully you) tried to sign up on the Buitensport Durf member portal with this email address, but you already have an account: <strong>{username}</strong>.'
+'Splits the series: events before <strong>{date}</strong> keep the current settings, a new series takes over from that date.': 'Splits the series: events before <strong>{date}</strong> keep the current settings, a new series takes over from that date.'
+'Start date': 'Start date'
+'Statutes, regulations and privacy statement': 'Statutes, regulations and privacy statement'
+Subscribe: Subscribe
+'Subscribe as a guest': 'Subscribe as a guest'
+'Subscribe as guest to {event}': 'Subscribe as guest to {event}'
+'Subscribe in your calendar app': 'Subscribe in your calendar app'
+'Subscribe to <strong>{event}</strong> without an account. Enter your name and email and we send you a link to finish subscribing.': 'Subscribe to <strong>{event}</strong> without an account. Enter your name and email and we send you a link to finish subscribing.'
+'Subscribe to a calendar to see Durf events in your own calendar app. It updates automatically, including changes and cancellations.': 'Subscribe to a calendar to see Durf events in your own calendar app. It updates automatically, including changes and cancellations.'
+'Subscribe to {event}': 'Subscribe to {event}'
+'Subscribed to {event}': 'Subscribed to {event}'
+'Subscriber emails': 'Subscriber emails'
+'Subscriber limit': 'Subscriber limit'
+Subscribers: Subscribers
+'Subscription deadline': 'Subscription deadline'
+'Subscription open date': 'Subscription open date'
+Subscriptions: Subscriptions
+'Subscriptions open': 'Subscriptions open'
+'Subscriptions open {date}': 'Subscriptions open {date}'
+'Subscriptions open {when}': 'Subscriptions open {when}'
+Sunday: Sunday
+Tags: Tags
+'The account is disabled and needs to be activated by an admin.': 'The account is disabled and needs to be activated by an admin.'
+'The attached calendar file adds it to your agenda. Plans changed? You can change or cancel your subscription on the event page.': 'The attached calendar file adds it to your agenda. Plans changed? You can change or cancel your subscription on the event page.'
+'The committee activates your account, usually within a few days.': 'The committee activates your account, usually within a few days.'
+'The email address of your account <strong>{username}</strong> was changed to <strong>{email}</strong>. We send this to your old address so you know.': 'The email address of your account <strong>{username}</strong> was changed to <strong>{email}</strong>. We send this to your old address so you know.'
+'The event becomes a standalone event and series changes no longer reach it. The series will not create a new event on this date.': 'The event becomes a standalone event and series changes no longer reach it. The series will not create a new event on this date.'
+'The event stays visible as cancelled and nobody can subscribe anymore.': 'The event stays visible as cancelled and nobody can subscribe anymore.'
+'The event stays visible as cancelled and nobody can subscribe anymore. {count, plural, one {The # subscriber gets} other {The # subscribers get}} an email.': 'The event stays visible as cancelled and nobody can subscribe anymore. {count, plural, one {The # subscriber gets} other {The # subscribers get}} an email.'
+"The link expires in a day. Didn't ask for this? Then you can ignore this email; nothing changes.": "The link expires in a day. Didn't ask for this? Then you can ignore this email; nothing changes."
+'The link logs you in and works for two days; keep it to yourself. Need it again later? Just request a new one on the event page.': 'The link logs you in and works for two days; keep it to yourself. Need it again later? Just request a new one on the event page.'
+'The link works for two days.': 'The link works for two days.'
+"The link works for two days. Didn't register? Then you can ignore this email; nothing changes.": "The link works for two days. Didn't register? Then you can ignore this email; nothing changes."
+'The link works once and expires in an hour.': 'The link works once and expires in an hour.'
+"The link works once and expires in an hour. Didn't ask for this? Then you can ignore this email.": "The link works once and expires in an hour. Didn't ask for this? Then you can ignore this email."
+'The password of your account <strong>{username}</strong> was just changed.': 'The password of your account <strong>{username}</strong> was just changed.'
+'The same day of the month as the first occurrence': 'The same day of the month as the first occurrence'
+'The subscription deadline has passed.': 'The subscription deadline has passed.'
+'They stay visible as cancelled.': 'They stay visible as cancelled.'
+Third: Third
+'This confirmation link is invalid or has expired. Change your email again to get a new one.': 'This confirmation link is invalid or has expired. Change your email again to get a new one.'
+'This email address is already in use by another account.': 'This email address is already in use by another account.'
+'This event has already taken place.': 'This event has already taken place.'
+'This event has been cancelled.': 'This event has been cancelled.'
+'This event is a draft and not visible to regular users.': 'This event is a draft and not visible to regular users.'
+'This event is for members only.': 'This event is for members only.'
+'This event is not published yet.': 'This event is not published yet.'
+'This event is part of <strong>{series}</strong>. Changes here only apply to this event, and the fields you change stop following the series.': 'This event is part of <strong>{series}</strong>. Changes here only apply to this event, and the fields you change stop following the series.'
+'This link is no longer valid. Enter your email again and we will send you a new one.': 'This link is no longer valid. Enter your email again and we will send you a new one.'
+'This overwrites {fields} with the series values, and the event follows series changes again.': 'This overwrites {fields} with the series values, and the event follows series changes again.'
+'This reset link is invalid or has expired. Request a new one below.': 'This reset link is invalid or has expired. Request a new one below.'
+'This rule produces no events in the next 12 months.': 'This rule produces no events in the next 12 months.'
+'This takes back the cancellation of "{event}". Subscribers are not emailed about this.': 'This takes back the cancellation of "{event}". Subscribers are not emailed about this.'
+'This will hide "{event}" from regular users. Events with subscribers cannot be unpublished.': 'This will hide "{event}" from regular users. Events with subscribers cannot be unpublished.'
+'This will make "{event}" visible to all users and allow subscriptions.': 'This will make "{event}" visible to all users and allow subscriptions.'
+Thursday: Thursday
+'To change more events, edit <a href="{following_url}">this and following events</a> or <a href="{series_url}">the whole series</a>.': 'To change more events, edit <a href="{following_url}">this and following events</a> or <a href="{series_url}">the whole series</a>.'
+'To subscribe user': 'To subscribe user'
+'Toggle navigation': 'Toggle navigation'
+'Too many registrations from your network, please try again later.': 'Too many registrations from your network, please try again later.'
+'Too many requests from your network, please try again later.': 'Too many requests from your network, please try again later.'
+Tuesday: Tuesday
+Type: Type
+'Unfortunately <strong>{event}</strong> on {date}, which you subscribed to, has been cancelled.': 'Unfortunately <strong>{event}</strong> on {date}, which you subscribed to, has been cancelled.'
+Unpublish: Unpublish
+Unsubscribe: Unsubscribe
+'Unsubscribe from {event}': 'Unsubscribe from {event}'
+'Unsubscribe {name}': 'Unsubscribe {name}'
+'Upcoming events': 'Upcoming events'
+'Updated subscription to {event}': 'Updated subscription to {event}'
+'Use the button below to finish subscribing to <strong>{event}</strong> as a guest.': 'Use the button below to finish subscribing to <strong>{event}</strong> as a guest.'
+'User activation': 'User activation'
+Username: Username
+'Username (for login)': 'Username (for login)'
+'Username or email': 'Username or email'
+'Username:': 'Username:'
+'Username: <strong>{username}</strong>': 'Username: <strong>{username}</strong>'
+vich_uploader.form_label.delete_confirm: vich_uploader.form_label.delete_confirm
+vich_uploader.link.download: vich_uploader.link.download
+'View event': 'View event'
+'Want it to just stop at some point instead? Edit the series and set an end date.': 'Want it to just stop at some point instead? Edit the series and set an end date.'
+"Was this you? Then you don't need to do anything. If it wasn't, contact the committee right away.": "Was this you? Then you don't need to do anything. If it wasn't, contact the committee right away."
+"Was this you? Then you don't need to do anything. If it wasn't, reset your password right away and let the committee know.": "Was this you? Then you don't need to do anything. If it wasn't, reset your password right away and let the committee know."
+'We email you a link to finish subscribing': 'We email you a link to finish subscribing'
+'We sent a confirmation link to {email}. Your email changes once you click it.': 'We sent a confirmation link to {email}. Your email changes once you click it.'
+"We've sent an email to <strong>{email}</strong>.": "We've sent an email to <strong>{email}</strong>."
+Website: Website
+Wednesday: Wednesday
+Weekly: Weekly
+weeks: weeks
+'weeks before the start': 'weeks before the start'
+'What saving will do': 'What saving will do'
+When: When
+Where: Where
+Yearly: Yearly
+years: years
+'Yes': 'Yes'
+'You already have an account': 'You already have an account'
+'You are already logged in as {name}, <a href="{url}">Logout</a>': 'You are already logged in as {name}, <a href="{url}">Logout</a>'
+'You are already logged in, redirected you to the homepage': 'You are already logged in, redirected you to the homepage'
+'You are already subscribed.': 'You are already subscribed.'
+'You are subscribed': 'You are subscribed'
+'You are subscribed to <strong>{event}</strong>.': 'You are subscribed to <strong>{event}</strong>.'
+'You asked to change the email address of your account <strong>{username}</strong> to <strong>{email}</strong>. Confirm it with the button below (you may have to log in first).': 'You asked to change the email address of your account <strong>{username}</strong> to <strong>{email}</strong>. Confirm it with the button below (you may have to log in first).'
+'You can log in with that username or this email address.': 'You can log in with that username or this email address.'
+'You can log in with your username <strong>{username}</strong> or your email address, and subscribe to events.': 'You can log in with your username <strong>{username}</strong> or your email address, and subscribe to events.'
+'You can only subscribe to your own events': 'You can only subscribe to your own events'
+'You cannot subscribe to this event': 'You cannot subscribe to this event'
+'You get an email, and can log in and subscribe to events.': 'You get an email, and can log in and subscribe to events.'
+'You get this email because you subscribed to this event.': 'You get this email because you subscribed to this event.'
+'You have signed up to the Buitensport Durf member portal with the username <strong>{username}</strong>.': 'You have signed up to the Buitensport Durf member portal with the username <strong>{username}</strong>.'
+'You have subscribed to {event}. We sent a confirmation by email.': 'You have subscribed to {event}. We sent a confirmation by email.'
+'You have unsubscribed from {event}': 'You have unsubscribed from {event}'
+'You tried to subscribe to {event}, but you first need to be logged in': 'You tried to subscribe to {event}, but you first need to be logged in'
+'Your account has been created. You can log in once the committee has activated it.': 'Your account has been created. You can log in once the committee has activated it.'
+'Your account on the Buitensport Durf member portal is now active.': 'Your account on the Buitensport Durf member portal is now active.'
+'Your account still has to be activated by the committee. You will get an email as soon as that has happened, usually within a few days.': 'Your account still has to be activated by the committee. You will get an email as soon as that has happened, usually within a few days.'
+'Your email address is now {email}.': 'Your email address is now {email}.'
+'Your email address was changed': 'Your email address was changed'
+'Your email settings have been saved.': 'Your email settings have been saved.'
+'Your events': 'Your events'
+'Your events: the events you subscribed to. Keep this link to yourself.': 'Your events: the events you subscribed to. Keep this link to yourself.'
+'Your password has been changed.': 'Your password has been changed.'
+'Your password has been changed. You can now log in.': 'Your password has been changed. You can now log in.'
+'Your password was changed': 'Your password was changed'
+"Your subscription still stands. Can't make it anymore? You can unsubscribe on the event page.": "Your subscription still stands. Can't make it anymore? You can unsubscribe on the event page."
+'{count, plural, one {# day} other {# days}} before the start': '{count, plural, one {# day} other {# days}} before the start'
+'{count, plural, one {# event} other {# events}} cancelled.': '{count, plural, one {# event} other {# events}} cancelled.'
+'{count, plural, one {# event} other {# events}} created.': '{count, plural, one {# event} other {# events}} created.'
+'{count, plural, one {# event} other {# events}} deleted.': '{count, plural, one {# event} other {# events}} deleted.'
+'{count, plural, one {# event} other {# events}} moved.': '{count, plural, one {# event} other {# events}} moved.'
+'{count, plural, one {# event} other {# events}} updated.': '{count, plural, one {# event} other {# events}} updated.'
+'{count, plural, one {# event} other {# events}} will be added in the nightly run.': '{count, plural, one {# event} other {# events}} will be added in the nightly run.'
+'{count, plural, one {# hour} other {# hours}} before the start': '{count, plural, one {# hour} other {# hours}} before the start'
+'{count, plural, one {# keeps its own settings} other {# keep their own settings}}': '{count, plural, one {# keeps its own settings} other {# keep their own settings}}'
+'{count, plural, one {# minute} other {# minutes}} before the start': '{count, plural, one {# minute} other {# minutes}} before the start'
+'{count, plural, one {# other upcoming event stays as it is.} other {# other upcoming events stay as they are.}}': '{count, plural, one {# other upcoming event stays as it is.} other {# other upcoming events stay as they are.}}'
+'{count, plural, one {# subscriber gets} other {# subscribers get}} an email when you change the date, time or location.': '{count, plural, one {# subscriber gets} other {# subscribers get}} an email when you change the date, time or location.'
+'{count, plural, one {# subscriber} other {# subscribers}} notified.': '{count, plural, one {# subscriber} other {# subscribers}} notified.'
+'{count, plural, one {# week} other {# weeks}} before the start': '{count, plural, one {# week} other {# weeks}} before the start'
+'{count} cancelled': '{count} cancelled'
+'{count} customised': '{count} customised'
+'{count} deleted': '{count} deleted'
+'{count} moved': '{count} moved'
+'{count} new': '{count} new'
+'{count} subscribed': '{count} subscribed'
+'{count} updated': '{count} updated'
+'{event} image': '{event} image'
+'{label} calendar URL': '{label} calendar URL'
+'{name} is already active': '{name} is already active'
+'{name} is now enabled': '{name} is now enabled'
+'{name} profile': '{name} profile'
+'{subscribers, plural, one {# subscriber} other {# subscribers}} of {events, plural, one {# event} other {# events}} get an email about the change (unless you switch that off below).': '{subscribers, plural, one {# subscriber} other {# subscribers}} of {events, plural, one {# event} other {# events}} get an email about the change (unless you switch that off below).'

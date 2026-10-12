@@ -1,0 +1,2 @@
+# Our own login messages; Symfony's standard ones come with the bundle
+'This account is not active yet. The committee activates new accounts, usually within a few days; you will get an email when that has happened.': 'Dit account is nog niet actief. De commissie activeert nieuwe accounts, meestal binnen een paar dagen; je krijgt een e-mail zodra dat is gebeurd.'
