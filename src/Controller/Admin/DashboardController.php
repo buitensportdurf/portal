@@ -17,6 +17,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Response;
 
+use function Symfony\Component\Translation\t;
+
 #[AdminDashboard(routePath: '/admin', routeName: 'admin')]
 class DashboardController extends AbstractDashboardController
 {
@@ -45,21 +47,21 @@ class DashboardController extends AbstractDashboardController
 
     public function configureDashboard(): Dashboard
     {
-        return Dashboard::new()->setTitle('Durf Portal Admin Page');
+        return Dashboard::new()->setTitle(t('Durf Portal Admin Page'));
     }
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::linktoRoute('Back to home', 'fas fa-home', 'home');
+        yield MenuItem::linktoRoute(t('Back to home'), 'fas fa-home', 'home');
 
-        yield MenuItem::section('Administration', 'fas fa-folder-open');
-        yield MenuItem::linkTo(UserCrudController::class, 'Users', 'fas fa-list');
-        yield MenuItem::linkTo(GroupCrudController::class, 'Groups', 'fas fa-list');
+        yield MenuItem::section(t('Administration'), 'fas fa-folder-open');
+        yield MenuItem::linkTo(UserCrudController::class, t('Users'), 'fas fa-list');
+        yield MenuItem::linkTo(GroupCrudController::class, t('Groups'), 'fas fa-list');
 
-        yield MenuItem::section('Events', 'fas fa-folder-open');
-        yield MenuItem::linkTo(EventCrudController::class, 'Events', 'fas fa-list');
-        yield MenuItem::linkTo(EventSubscriptionCrudController::class, 'Event subscriptions', 'fas fa-list');
-        yield MenuItem::linkTo(TagCrudController::class, 'Tags', 'fas fa-list');
+        yield MenuItem::section(t('Events'), 'fas fa-folder-open');
+        yield MenuItem::linkTo(EventCrudController::class, t('Events'), 'fas fa-list');
+        yield MenuItem::linkTo(EventSubscriptionCrudController::class, t('Event subscriptions'), 'fas fa-list');
+        yield MenuItem::linkTo(TagCrudController::class, t('Tags'), 'fas fa-list');
     }
 
     public function configureCrud(): Crud
@@ -79,7 +81,7 @@ class DashboardController extends AbstractDashboardController
                      ->add(Crud::PAGE_EDIT, AdminAction::DELETE)
                      ->add(Crud::PAGE_EDIT, AdminAction::DETAIL)
                      ->update(Crud::PAGE_EDIT, AdminAction::DETAIL, function (AdminAction $action) {
-                         return $action->setIcon('fa fa-info')->setLabel('Details');
+                         return $action->setIcon('fa fa-info')->setLabel(t('Details'));
                      })
                      ->update(Crud::PAGE_DETAIL, AdminAction::EDIT, function (AdminAction $action) {
                          return $action->setIcon('fa fa-edit');
@@ -94,7 +96,7 @@ class DashboardController extends AbstractDashboardController
                          return $action->setIcon('fa fa-plus');
                      })
                      ->update(Crud::PAGE_INDEX, AdminAction::DETAIL, function (AdminAction $action) {
-                         return $action->setIcon('fa fa-info')->setLabel('Details');
+                         return $action->setIcon('fa fa-info')->setLabel(t('Details'));
                      })
                      ->update(Crud::PAGE_INDEX, AdminAction::DELETE, function (AdminAction $action) {
                          return $action->setIcon('fa fa-trash');

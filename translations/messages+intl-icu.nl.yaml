@@ -20,6 +20,7 @@ Access: Toegang
 'Add to Google Calendar': 'Toevoegen aan Google Agenda'
 'Added question "{question}" to event "{event}"': 'Vraag "{question}" toegevoegd aan activiteit "{event}"'
 Admin: Beheer
+Administration: Beheer
 'After a number of occurrences': 'Na een aantal keer'
 'After this, the committee activates your account; you will get an email when you can log in.': 'Daarna activeert de commissie je account; je krijgt een e-mail zodra je kunt inloggen.'
 'All events': 'Alle activiteiten'
@@ -37,6 +38,7 @@ Apply: Toepassen
 Back: Terug
 'Back to event': 'Terug naar activiteit'
 'Back to events': 'Terug naar activiteiten'
+'Back to home': 'Terug naar de site'
 'Back to list': 'Terug naar overzicht'
 'Back to {event}': 'Terug naar {event}'
 'Branch:': 'Branch:'
@@ -105,6 +107,7 @@ disabled: uitgeschakeld
 'Do you really want to enable "{name}" with email "{email}"?': 'Wil je "{name}" met e-mailadres "{email}" echt activeren?'
 Draft: Concept
 'Durf member portal': 'Durf ledenportaal'
+'Durf Portal Admin Page': 'Beheer Durf-portaal'
 'e.g. 2 for every other week': 'bijv. 2 voor om de week'
 Edit: Bewerken
 'Edit Question {question}': 'Vraag bewerken {question}'
@@ -136,6 +139,7 @@ Ends: Eindigt
 'Event calendars': "Activiteitenagenda's"
 'Event cancelled: {event}': 'Activiteit geannuleerd: {event}'
 'Event changed: {event}': 'Activiteit gewijzigd: {event}'
+'Event subscriptions': Aanmeldingen
 Events: Activiteiten
 Every: Elke
 'Exit impersonation': 'Stop met meekijken'
@@ -160,6 +164,7 @@ Friday: Vrijdag
 'Full name': 'Volledige naam'
 'Full name (first and last name)': 'Volledige naam (voor- en achternaam)'
 General: Algemeen
+Groups: Groepen
 Guest: Gast
 guest: gast
 'Guest price': 'Prijs voor gasten'
@@ -365,6 +370,7 @@ Username: Gebruikersnaam
 'Username or email': 'Gebruikersnaam of e-mailadres'
 'Username:': 'Gebruikersnaam:'
 'Username: <strong>{username}</strong>': 'Gebruikersnaam: <strong>{username}</strong>'
+Users: Gebruikers
 vich_uploader.form_label.delete_confirm: 'Verwijderen?'
 vich_uploader.link.download: Downloaden
 'View event': 'Bekijk activiteit'
