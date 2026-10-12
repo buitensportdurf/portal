@@ -29,7 +29,7 @@ class DateFormatExtensionTest extends TestCase
     {
         $names = array_map(fn ($f) => $f->getName(), $this->ext->getFilters());
 
-        self::assertSame(['time_duration', 'fdate_time', 'fdate', 'fdate_short', 'fday_month'], $names);
+        self::assertSame(['time_duration', 'fdate_time', 'fdate', 'fdate_short', 'fday_month', 'fdate_long', 'fday_month_long'], $names);
     }
 
     public function testTimeDurationSingularAndPluralUnits(): void

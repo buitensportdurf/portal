@@ -23,6 +23,7 @@ class LocalDateTest extends TestCase
 
         self::assertSame('za 14 mrt 2026, 09:05', LocalDate::format($date, LocalDate::DATE_TIME, 'nl'));
         self::assertSame('14 mrt 2026', LocalDate::format($date, LocalDate::SHORT_DATE, 'nl'));
+        self::assertSame('zaterdag 14 maart 2026, 09:05', LocalDate::format($date, LocalDate::LONG_DATE_TIME, 'nl'));
     }
 
     public function testFollowsTheDefaultLocale(): void

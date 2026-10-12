@@ -302,6 +302,7 @@ Subscribe: Subscribe
 'Subscribe in your calendar app': 'Subscribe in your calendar app'
 'Subscribe to <strong>{event}</strong> without an account. Enter your name and email and we send you a link to finish subscribing.': 'Subscribe to <strong>{event}</strong> without an account. Enter your name and email and we send you a link to finish subscribing.'
 'Subscribe to a calendar to see Durf events in your own calendar app. It updates automatically, including changes and cancellations.': 'Subscribe to a calendar to see Durf events in your own calendar app. It updates automatically, including changes and cancellations.'
+'Subscribe to calendar': 'Subscribe to calendar'
 'Subscribe to {event}': 'Subscribe to {event}'
 'Subscribed to {event}': 'Subscribed to {event}'
 'Subscriber emails': 'Subscriber emails'

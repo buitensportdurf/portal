@@ -22,6 +22,8 @@ class DateFormatExtension extends AbstractExtension
             new TwigFilter('fdate', fn(DateTimeInterface $date) => LocalDate::format($date, LocalDate::DATE)),
             new TwigFilter('fdate_short', fn(DateTimeInterface $date) => LocalDate::format($date, LocalDate::SHORT_DATE)),
             new TwigFilter('fday_month', fn(DateTimeInterface $date) => LocalDate::format($date, LocalDate::DAY_MONTH)),
+            new TwigFilter('fdate_long', fn(DateTimeInterface $date) => LocalDate::format($date, LocalDate::LONG_DATE_TIME)),
+            new TwigFilter('fday_month_long', fn(DateTimeInterface $date) => LocalDate::format($date, LocalDate::LONG_DAY_MONTH_TIME)),
         ];
     }
 
