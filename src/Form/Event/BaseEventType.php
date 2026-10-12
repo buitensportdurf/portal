@@ -28,6 +28,7 @@ class BaseEventType extends AbstractType
                 'class' => Tag::class,
                 'multiple' => true,
                 'expanded' => true,
+                'block_prefix' => 'tag_pills',
             ])
             ->add('startDate')
             ->add('endDate')

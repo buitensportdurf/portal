@@ -62,7 +62,8 @@
     color: var(--durf-dark) !important;
     border-color: var(--durf-dark) !important;
 }
-.btn-outline-primary:hover {
+.btn-outline-primary:hover,
+.btn-check:checked + .btn-outline-primary {
     background-color: var(--durf-dark) !important;
     color: #fff !important;
 }
