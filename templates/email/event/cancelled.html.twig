@@ -1,0 +1,12 @@
+{% extends 'email/base.html.twig' %}
+
+{% block body %}
+    <p>
+        Unfortunately <strong>{{ event }}</strong> on {{ event.startDate|fdate_time }}, which you subscribed to,
+        has been cancelled.
+    </p>
+    <p>
+        See the event
+        <a class="btn btn-primary btn-sm" href="{{ url('event_event_show', {id: event.id}) }}">Here</a>
+    </p>
+{% endblock %}
