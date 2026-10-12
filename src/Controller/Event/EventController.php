@@ -6,6 +6,7 @@ use App\Entity\Event\Event;
 use App\Entity\User;
 use App\Form\Event\EventType;
 use App\Recurrence\Plan\ChangeType;
+use App\Recurrence\Plan\FieldChange;
 use App\Recurrence\Plan\OccurrenceChange;
 use App\Recurrence\SeriesField;
 use App\Recurrence\SeriesSynchronizer;
@@ -94,7 +95,12 @@ class EventController extends AbstractController
 
     #[Route('/{id}/edit', name: '_edit')]
     #[IsGranted('ROLE_EVENT_EDIT')]
-    public function edit(Request $request, Event $event, EntityManagerInterface $entityManager): Response
+    public function edit(
+        Request                $request,
+        Event                  $event,
+        EntityManagerInterface $entityManager,
+        SubscriberNotifier     $notifier,
+    ): Response
     {
         $before = self::snapshot($event);
         $form = $this->createForm(EventType::class, $event);
@@ -118,6 +124,19 @@ class EventController extends AbstractController
                 }
             }
             $entityManager->flush();
+
+            // Subscribers hear about a new date, time or location, as they do for series edits
+            $changes = [];
+            foreach (SeriesField::cases() as $field) {
+                if ($field->concernsSubscribers() && $field->read($event) !== $before[$field->value]) {
+                    $changes[] = new FieldChange($field, $before[$field->value], $field->read($event));
+                }
+            }
+            $change = new OccurrenceChange(ChangeType::Update, $event, $event->occurrenceStart ?? $event->startDate, $changes);
+            if (!$event->isCancelled() && $event->isNotPastStartDate() && $change->notifiesSubscribers()) {
+                $notifier->notify($change);
+                $this->addFlash('success', sprintf('Saved. %d subscriber(s) were emailed about the change.', $event->getEventSubscriptions()->count()));
+            }
 
             return $this->redirectToRoute('event_event_show', ['id' => $event->id], Response::HTTP_SEE_OTHER);
         }
