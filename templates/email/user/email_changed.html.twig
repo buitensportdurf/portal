@@ -1,0 +1,12 @@
+{% extends 'email/base.html.twig' %}
+{% import 'email/_macros.html.twig' as email %}
+
+{% set title %}Your email address was changed{% endset %}
+
+{% block body %}
+    <p>
+        The email address of your account <strong>{{ user.username }}</strong> was changed to
+        <strong>{{ user.email }}</strong>. We send this to your old address so you know.
+    </p>
+    <p>Was this you? Then you don't need to do anything. If it wasn't, contact the committee right away.</p>
+{% endblock %}

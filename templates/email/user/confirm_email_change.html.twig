@@ -1,0 +1,13 @@
+{% extends 'email/base.html.twig' %}
+{% import 'email/_macros.html.twig' as email %}
+
+{% set title %}Confirm your new email address{% endset %}
+
+{% block body %}
+    <p>
+        You asked to change the email address of your account <strong>{{ user.username }}</strong> to
+        <strong>{{ newEmail }}</strong>. Confirm it with the button below (you may have to log in first).
+    </p>
+    {{ email.button(confirmUrl, 'Confirm this address') }}
+    <p>The link expires in a day. Didn't ask for this? Then you can ignore this email; nothing changes.</p>
+{% endblock %}

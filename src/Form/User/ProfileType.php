@@ -4,37 +4,50 @@ namespace App\Form\User;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
+/**
+ * The email is not mapped: a new address only takes effect once it is confirmed.
+ */
 class ProfileType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email')
-            ->add('name')
-            ->add('plainPassword', PasswordType::class, [
-                'required' => false,
+            ->add('name', TextType::class, ['label' => 'Full name'])
+            ->add('newEmail', EmailType::class, [
+                'label' => 'Email',
                 'mapped' => false,
-                'attr' => ['autocomplete' => 'new-password'],
-                'label' => 'Password',
+                'data' => $options['current_email'],
+                'help' => 'A new address has to be confirmed via a link we send to it',
+                'constraints' => [new NotBlank(), new Email()],
+            ])
+            ->add('plainPassword', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'mapped' => false,
+                'required' => false,
+                'invalid_message' => 'The password fields must match.',
+                'first_options' => ['label' => 'New password', 'attr' => ['autocomplete' => 'new-password'], 'help' => 'Leave empty to keep your current password'],
+                'second_options' => ['label' => 'Repeat new password', 'attr' => ['autocomplete' => 'new-password']],
                 'constraints' => [
-                    new Length(
-                        min: 8,
-                        minMessage: 'Your password should be at least {{ limit }} characters',
-                        max: 4096,
-                    ),
+                    new Length(min: 8, max: 4096, minMessage: 'Your password should be at least {{ limit }} characters'),
                 ],
             ])
-            ->add('plainPasswordRepeated', PasswordType::class, [
-                'required' => false,
+            ->add('currentPassword', PasswordType::class, [
+                'label' => 'Current password',
                 'mapped' => false,
-                'attr' => ['autocomplete' => 'new-password'],
-                'label' => 'Password repeated',
+                'required' => false,
+                'attr' => ['autocomplete' => 'current-password'],
+                'help' => 'Needed to change your email or password',
             ])
             ->add('save', SubmitType::class)
         ;
@@ -44,6 +57,7 @@ class ProfileType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'current_email' => null,
         ]);
     }
 }
