@@ -1,0 +1,158 @@
+{# @var plan App\Recurrence\Plan\SeriesPlan #}
+{% set Type = enum('App\\Recurrence\\Plan\\ChangeType') %}
+{% set Field = enum('App\\Recurrence\\SeriesField') %}
+{% macro subscribers(change) %}
+    {% if change.subscriberCount > 0 %}
+        <span class="badge bg-warning text-dark ms-1" title="Subscribers"><i class="fas fa-users"></i> {{ change.subscriberCount }}</span>
+    {% endif %}
+{% endmacro %}
+
+{% macro date_list(changes, limit = 6) %}
+    {% for change in changes|slice(0, limit) %}
+        <li>{{ change.slot|date('D j M Y') }}{{ _self.subscribers(change) }}</li>
+    {% endfor %}
+    {% if changes|length > limit %}
+        <li class="text-muted">and {{ changes|length - limit }} more</li>
+    {% endif %}
+{% endmacro %}
+
+{% if errors %}
+    <div class="alert alert-warning mb-0">
+        <strong>Fix the form to see the changes</strong>
+        <ul class="mb-0 small">
+            {% for error in errors %}<li>{{ error }}</li>{% endfor %}
+        </ul>
+    </div>
+{% elseif isNew %}
+    {% set creates = plan.ofType(Type.Create) %}
+    <p class="mb-2"><strong>Repeats {{ plan.target|recurrence_text }}</strong></p>
+    {% if creates is empty %}
+        <p class="text-muted mb-0">This rule produces no events in the next 12 months.</p>
+    {% else %}
+        <p class="mb-1">Saving creates <strong>{{ creates|length }} events</strong> (12 months ahead, more are added automatically):</p>
+        <ul class="small mb-0">{{ _self.date_list(creates, 8) }}</ul>
+    {% endif %}
+{% elseif plan.isEmpty %}
+    <p class="text-muted mb-0">
+        No changes yet. As you edit the form, this list shows exactly what saving will do to the upcoming events.
+    </p>
+{% else %}
+    {% if plan.splitAt %}
+        <div class="alert alert-info small py-2">
+            <i class="fas fa-code-branch"></i>
+            Splits the series: events before <strong>{{ plan.splitAt|date('j M Y') }}</strong> keep the current settings,
+            a new series takes over from that date.
+        </div>
+    {% endif %}
+
+    {% if plan.seriesChanges %}
+        <h6>Series</h6>
+        <table class="table table-sm small">
+            {% for change in plan.seriesChanges %}
+                <tr>
+                    <th class="text-nowrap">{{ change.label }}</th>
+                    <td><s class="text-muted">{{ change.old }}</s><br>{{ change.new }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+
+    {% set notifications = plan.notifications %}
+    {% if notifications %}
+        <div class="alert alert-warning small py-2">
+            <i class="fas fa-envelope"></i>
+            {{ plan.notifiedSubscriberCount }} subscriber(s) of {{ notifications|length }} event(s) get an email about the change
+            (unless you switch that off below).
+        </div>
+    {% endif %}
+
+    <h6>Upcoming events</h6>
+    {% if not plan.hasOccurrenceChanges and plan.keptOverrides is empty %}
+        <p class="small text-muted">None of the upcoming events change.</p>
+    {% endif %}
+    <ul class="list-unstyled small">
+        {% set moves = plan.ofType(Type.Move) %}
+        {% if moves %}
+            <li class="mb-2">
+                <i class="fas fa-arrows-alt-h fa-fw text-primary"></i> <strong>{{ moves|length }} moved</strong>
+                <ul>
+                    {% for change in moves|slice(0, 6) %}
+                        {% set schedule = change.change(Field.Schedule) %}
+                        <li>
+                            <s class="text-muted">{{ schedule.oldText }}</s> → {{ schedule.newText }}{{ _self.subscribers(change) }}
+                        </li>
+                    {% endfor %}
+                    {% if moves|length > 6 %}<li class="text-muted">and {{ moves|length - 6 }} more</li>{% endif %}
+                </ul>
+            </li>
+        {% endif %}
+
+        {% for group in plan.groupedUpdates %}
+            <li class="mb-2">
+                <i class="fas fa-pen fa-fw text-primary"></i> <strong>{{ group.occurrences|length }} updated</strong>
+                <ul>
+                    {% for change in group.changes %}
+                        <li>
+                            {{ change.field.label }}:
+                            {% if change.field.relativeToStart %}
+                                recalculated, e.g. <s class="text-muted">{{ change.oldText }}</s> → {{ change.newText }}
+                            {% else %}
+                                <s class="text-muted">{{ change.oldText }}</s> → {{ change.newText }}
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                    <li class="text-muted">
+                        {% for change in group.occurrences|slice(0, 4) %}{{ change.slot|date('j M') }}{% if not loop.last %}, {% endif %}{% endfor %}{% if group.occurrences|length > 4 %} …{% endif %}
+                    </li>
+                </ul>
+            </li>
+        {% endfor %}
+
+        {% set creates = plan.ofType(Type.Create) %}
+        {% if creates %}
+            <li class="mb-2">
+                <i class="fas fa-plus fa-fw text-success"></i> <strong>{{ creates|length }} new</strong>
+                <ul>{{ _self.date_list(creates) }}</ul>
+            </li>
+        {% endif %}
+
+        {% set cancels = plan.ofType(Type.Cancel) %}
+        {% if cancels %}
+            <li class="mb-2">
+                <i class="fas fa-ban fa-fw text-danger"></i> <strong>{{ cancels|length }} cancelled</strong>
+                <span class="text-muted">(they have subscribers, so they stay visible as cancelled)</span>
+                <ul>{{ _self.date_list(cancels) }}</ul>
+            </li>
+        {% endif %}
+
+        {% set deletes = plan.ofType(Type.Delete) %}
+        {% if deletes %}
+            <li class="mb-2">
+                <i class="fas fa-trash fa-fw text-danger"></i> <strong>{{ deletes|length }} deleted</strong>
+                <span class="text-muted">(no subscribers)</span>
+                <ul>{{ _self.date_list(deletes) }}</ul>
+            </li>
+        {% endif %}
+
+        {% set kept = plan.keptOverrides %}
+        {% if kept %}
+            <li class="mb-2">
+                <i class="fas fa-lock fa-fw text-secondary"></i> <strong>{{ kept|length }} keep their own settings</strong>
+                <span class="text-muted">(customised on the event itself)</span>
+                <ul>
+                    {% for change in kept %}
+                        <li>
+                            {{ change.slot|date('D j M Y') }}:
+                            {{ change.keptOverrides|map(field => field.label)|join(', ') }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endif %}
+    </ul>
+
+    {% set unchanged = plan.count(Type.Unchanged) - plan.keptOverrides|filter(c => c.type == Type.Unchanged)|length %}
+    {% if unchanged > 0 %}
+        <p class="small text-muted mb-0">{{ unchanged }} other upcoming event(s) stay as they are.</p>
+    {% endif %}
+{% endif %}

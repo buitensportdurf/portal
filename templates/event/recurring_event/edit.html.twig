@@ -4,37 +4,33 @@
 
 {% block actions %}
     <div class="btn-group btn-group-sm">
-        <a class="btn btn-outline-primary" href="{{ path('event_recurring_event_index') }}">Back to list</a>
-        <a class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteRecurring">Delete</a>
-        {{ include('components/_confirm_modal.html.twig', {
-            id: 'confirmDeleteRecurring',
-            title: 'Delete recurring event',
-            message: 'Are you sure you want to delete recurring event "' ~ recurringEvent ~ '"?',
-            action_url: path('event_recurring_event_delete', {id: recurringEvent.id}),
-            action_label: 'Delete',
-        }) }}
+        <a class="btn btn-outline-primary" href="{{ path('event_recurring_event_show', {id: recurringEvent.id}) }}">Back</a>
+        <a class="btn btn-outline-danger" href="{{ path('event_recurring_event_delete', {id: recurringEvent.id}) }}">Delete series</a>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-lg-7">
+            {{ include('event/recurring_event/_form.html.twig', {preview_url: path('event_recurring_event_preview', {id: recurringEvent.id})}) }}
+        </div>
+        <div class="col-lg-5">
+            <div class="card sticky-top" style="top: 1rem; max-height: calc(100vh - 2rem); overflow-y: auto">
+                <div class="card-header">What saving will do</div>
+                <div class="card-body" id="recurring-preview">
+                    {% if plan %}
+                        {{ include('event/recurring_event/_preview.html.twig', {plan: plan, errors: [], isNew: false}) }}
+                    {% else %}
+                        <p class="text-muted mb-0">Fix the form to see the changes.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
 
 {% block js %}
     {{ parent() }}
     {{ include('event/_duration_sync.html.twig') }}
-{% endblock %}
-
-{% block body %}
-    <div class="row mt-3">
-        <div class="col-md-8">
-            {{ form(form) }}
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">Next recurring dates</div>
-                <ol class="list-group list-group-flush list-group-numbered">
-                    {% for i in 1..5 %}
-                        <li class="list-group-item">{{ recurringEvent.recurringDate(i)|date('l jS \\of F Y H:i') }}</li>
-                    {% endfor %}
-                </ol>
-            </div>
-        </div>
-    </div>
+    {{ include('event/recurring_event/_form_js.html.twig') }}
 {% endblock %}

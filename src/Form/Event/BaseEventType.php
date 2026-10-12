@@ -29,11 +29,6 @@ class BaseEventType extends AbstractType
             ])
             ->add('startDate')
             ->add('endDate')
-            ->add('subscriptionOpenDate', null, [
-                'required' => false,
-                'widget' => 'single_text',
-            ])
-            ->add('subscriptionDeadline')
             ->add('subscriberLimit')
             ->add('memberPrice', MoneyType::class)
             ->add('guestPrice', MoneyType::class, ['required' => false])

@@ -1,16 +1,33 @@
 {% extends 'base/single.column.html.twig' %}
 
-{% set title %}Create Recurring Event{% endset %}
+{% set title %}New recurring event{% endset %}
 
 {% block actions %}
     <a class="btn btn-sm btn-outline-primary" href="{{ path('event_recurring_event_index') }}">Back to list</a>
 {% endblock %}
 
 {% block body %}
-    {{ form(form) }}
+    <div class="row">
+        <div class="col-lg-7">
+            {{ include('event/recurring_event/_form.html.twig', {preview_url: path('event_recurring_event_new_preview')}) }}
+        </div>
+        <div class="col-lg-5">
+            <div class="card sticky-top" style="top: 1rem">
+                <div class="card-header">Preview</div>
+                <div class="card-body" id="recurring-preview">
+                    {% if plan %}
+                        {{ include('event/recurring_event/_preview.html.twig', {plan: plan, errors: [], isNew: true}) }}
+                    {% else %}
+                        <p class="text-muted mb-0">Fix the form to see the preview.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block js %}
     {{ parent() }}
     {{ include('event/_duration_sync.html.twig') }}
+    {{ include('event/recurring_event/_form_js.html.twig') }}
 {% endblock %}

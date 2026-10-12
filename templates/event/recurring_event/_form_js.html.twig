@@ -1,0 +1,50 @@
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('recurring-form');
+    const preview = document.getElementById('recurring-preview');
+    if (!form) return;
+
+    const field = (name) => form.querySelector(`[name$="[rrule][${name}]"]`);
+    const checked = (name) => form.querySelector(`[name$="[rrule][${name}]"]:checked`)?.value;
+    const units = {DAILY: 'days', WEEKLY: 'weeks', MONTHLY: 'months', YEARLY: 'years'};
+
+    // Show only the rule options that apply to the chosen frequency, mode and end
+    function toggle() {
+        const frequency = field('frequency').value;
+        const show = (selector, visible) => form.querySelectorAll(selector).forEach(el => el.hidden = !visible);
+        form.querySelectorAll('[data-show-frequency]').forEach(el => el.hidden = el.dataset.showFrequency !== frequency);
+        show('[data-show-monthly-mode="weekday"]', checked('monthlyMode') === 'weekday');
+        show('[data-show-end="until"]', checked('end') === 'until');
+        show('[data-show-end="count"]', checked('end') === 'count');
+        form.querySelector('[data-interval-unit]').textContent = units[frequency];
+    }
+
+    // Ask the server what saving the form as it is now would do
+    let timer = null;
+    let controller = null;
+    function refresh() {
+        clearTimeout(timer);
+        timer = setTimeout(async function () {
+            const data = new FormData(form);
+            for (const [key, value] of [...data]) {
+                if (value instanceof File) data.delete(key);
+            }
+            controller?.abort();
+            controller = new AbortController();
+            preview.classList.add('opacity-50');
+            try {
+                const response = await fetch(form.dataset.previewUrl, {method: 'POST', body: data, signal: controller.signal});
+                preview.innerHTML = await response.text();
+            } catch (e) {
+                if (e.name !== 'AbortError') preview.innerHTML = '<div class="alert alert-warning">Could not load the preview.</div>';
+            } finally {
+                preview.classList.remove('opacity-50');
+            }
+        }, 400);
+    }
+
+    form.addEventListener('change', () => { toggle(); refresh(); });
+    form.addEventListener('input', refresh);
+    toggle();
+});
+</script>
