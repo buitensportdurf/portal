@@ -4,8 +4,6 @@ namespace App\Controller;
 
 use App\Entity\ResetPasswordRequest;
 use App\Entity\User;
-use App\Exception\InvalidResetPasswordTokenException;
-use App\Exception\TooManyPasswordRequestsException;
 use App\Form\ChangePasswordFormType;
 use App\Form\ResetPasswordRequestFormType;
 use App\Repository\ResetPasswordRequestRepository;
@@ -13,65 +11,64 @@ use App\Repository\UserRepository;
 use App\Service\EmailFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/reset-password')]
 class ResetPasswordController extends AbstractController
 {
+    private const string LIFETIME = '+1 hour';
+    private const string THROTTLE = '-15 minutes';
+
     public function __construct(
         private readonly ResetPasswordRequestRepository $repository,
-        private readonly UserRepository                 $userRepository
+        private readonly UserRepository                 $userRepository,
+        private readonly EntityManagerInterface         $em,
+        private readonly MailerInterface                $mailer,
     ) {}
 
+    /**
+     * Always answers the same, so the form does not reveal which addresses have an account.
+     */
     #[Route('', name: 'forgot_password_request')]
     public function request(
-        Request                $request,
-        MailerInterface        $mailer,
-        EntityManagerInterface $em,
+        Request                     $request,
+        #[Target('password_reset')]
+        RateLimiterFactoryInterface $limiter,
     ): Response
     {
         $form = $this->createForm(ResetPasswordRequestFormType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $this->userRepository->findOneBy(['email' => $form->get('email')->getData()]);
-
-            if (!$user) {
-                $this->addFlash('error', 'No user found with this email address.');
-                return $this->redirectToRoute('login');
-            }
-            if ($user->guest) {
-                $this->addFlash('error', 'You cannot reset the password for a guest account.');
-                return $this->redirectToRoute('login');
-            }
-            $this->addFlash('success', 'An email has been sent with a reset password link.');
-
-            try {
-                $resetToken = $this->generateResetToken($user);
-                $em->persist($resetToken);
-                $em->flush();
-            } catch (TooManyPasswordRequestsException $e) {
-                // If you want to tell the user why a reset email was not sent, uncomment
-                // the lines below and change the redirect to 'forgot_password_request'.
-                // Caution: This may reveal if a user is registered or not.
-                //
-                // $this->addFlash('reset_password_error', sprintf(
-                //     '%s - %s',
-                //     $translator->trans(ResetPasswordExceptionInterface::MESSAGE_PROBLEM_HANDLE, [], 'ResetPasswordBundle'),
-                //     $translator->trans($e->getReason(), [], 'ResetPasswordBundle')
-                // ));
-
-                return $this->redirectToRoute('login');
+            if (!$limiter->create($request->getClientIp())->consume()->isAccepted()) {
+                $this->addFlash('error', 'Too many requests from your network, please try again later.');
+                return $this->redirectToRoute('forgot_password_request');
             }
 
-            $mailer->send(EmailFactory::resetPassword($user, $resetToken->token));
+            $user = $this->userRepository->findByEmail((string) $form->get('email')->getData());
+            if ($user !== null && !$user->guest && !$this->recentlyRequested($user)) {
+                $token = bin2hex(random_bytes(20));
+                $resetRequest = new ResetPasswordRequest();
+                $resetRequest->user = $user;
+                $resetRequest->token = ResetPasswordRequestRepository::hash($token);
+                $resetRequest->requestedAt = new \DateTimeImmutable();
+                $resetRequest->expiresAt = new \DateTimeImmutable(self::LIFETIME);
+                $this->repository->removeExpiredResetPasswordRequests();
+                $this->em->persist($resetRequest);
+                $this->em->flush();
 
-            return $this->redirectToRoute('login');
+                $this->mailer->send(EmailFactory::resetPassword($user, $token));
+            }
+
+            return $this->render('reset_password/check_email.html.twig', [
+                'email' => $form->get('email')->getData(),
+            ]);
         }
 
         return $this->render('reset_password/request.html.twig', [
@@ -83,40 +80,28 @@ class ResetPasswordController extends AbstractController
     public function reset(
         Request                     $request,
         UserPasswordHasherInterface $passwordHasher,
-        ?string                     $token = null
+        string                      $token,
     ): Response
     {
-        if (null === $token) {
-            throw $this->createNotFoundException('No reset password token found in the URL or in the session.');
-        }
-
-        try {
-            $user = $this->validateTokenAndFetchUser($token);
-        } catch (InvalidResetPasswordTokenException $e) {
-            $this->addFlash('error', sprintf(
-                'There was a problem validating your password reset request - %s',
-                $e->getReason()
-            ));
+        $resetRequest = $this->repository->findResetPasswordRequest($token);
+        if ($resetRequest === null || $resetRequest->isExpired()) {
+            $this->addFlash('error', 'This reset link is invalid or has expired. Request a new one below.');
 
             return $this->redirectToRoute('forgot_password_request');
         }
 
-        // The token is valid; allow the user to change their password.
         $form = $this->createForm(ChangePasswordFormType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // A password reset token should be used only once, remove it.
-            $this->repository->findResetPasswordRequest($token);
-
-            // Encode(hash) the plain password, and set it.
-            $encodedPassword = $passwordHasher->hashPassword(
-                $user,
-                $form->get('plainPassword')->getData()
-            );
-
-            $user->password = $encodedPassword;
+            $user = $resetRequest->user;
+            $user->password = $passwordHasher->hashPassword($user, $form->get('plainPassword')->getData());
+            // Links work once: drop every open request of this user
+            $this->repository->removeResetPasswordRequest($resetRequest);
             $this->userRepository->add($user);
+            $this->mailer->send(EmailFactory::passwordChanged($user));
+
+            $this->addFlash('success', 'Your password has been changed. You can now log in.');
 
             return $this->redirectToRoute('login');
         }
@@ -126,75 +111,10 @@ class ResetPasswordController extends AbstractController
         ]);
     }
 
-    private function processSendingPasswordResetEmail(
-        string                 $emailFormData,
-        MailerInterface        $mailer,
-        EntityManagerInterface $em,
-    ): RedirectResponse {}
-
-    private function validateTokenAndFetchUser(string $token): User
+    private function recentlyRequested(User $user): bool
     {
-//        $this->resetPasswordCleaner->handleGarbageCollection();
+        $last = $this->repository->getMostRecentNonExpiredRequestDate($user);
 
-        if (40 !== \strlen($token)) {
-            throw new InvalidResetPasswordTokenException();
-        }
-
-        $resetRequest = $this->repository->findResetPasswordRequest($token);
-
-        if (null === $resetRequest) {
-            throw new InvalidResetPasswordTokenException();
-        }
-
-        if ($resetRequest->isExpired()) {
-            throw new InvalidResetPasswordTokenException();
-        }
-
-        $user = $resetRequest->user;
-
-        if (false === hash_equals($resetRequest->token, $token)) {
-            throw new InvalidResetPasswordTokenException();
-        }
-
-        return $user;
-    }
-
-    private function generateResetToken(User $user): ResetPasswordRequest
-    {
-//        $this->resetPasswordCleaner->handleGarbageCollection();
-
-        if ($availableAt = $this->hasUserHitThrottling($user)) {
-            throw new TooManyPasswordRequestsException($availableAt);
-        }
-
-        $resetRequestLifetime = 2592000;
-        $expiresAt = new \DateTimeImmutable(sprintf('+%d seconds', $resetRequestLifetime));
-        $token = bin2hex(random_bytes(20));
-
-        $request = new ResetPasswordRequest();
-        $request->user = $user;
-        $request->expiresAt = $expiresAt;
-        $request->token = $token;
-        $request->requestedAt = new \DateTimeImmutable();
-
-        return $request;
-    }
-
-    private function hasUserHitThrottling(User $user): ?\DateTimeInterface
-    {
-        $requestThrottleTime = 3600; // 1 hour
-        $lastRequestDate = $this->repository->getMostRecentNonExpiredRequestDate($user);
-
-        if (null === $lastRequestDate) {
-            return null;
-        }
-
-        $availableAt = $lastRequestDate->modify("+{$requestThrottleTime} seconds");
-
-        if ($availableAt > new \DateTimeImmutable('now')) {
-            return $availableAt;
-        }
-
-        return null;
+        return $last !== null && $last > new \DateTimeImmutable(self::THROTTLE);
     }
 }
