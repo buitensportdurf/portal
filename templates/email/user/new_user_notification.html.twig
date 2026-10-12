@@ -1,19 +1,21 @@
 {% extends 'email/base.html.twig' %}
+{% import 'email/_macros.html.twig' as email %}
 
 {% set title %}New user registered{% endset %}
 
 {% block body %}
     <p>
-        A new {{ user.guest ? 'guest ' : '' }}user has registered on the Durf portal.
+        A new {{ newUser.guest ? 'guest ' : '' }}user has registered on the Durf portal.
     </p>
     <ul>
-        <li>Name: <strong>{{ user.name }}</strong></li>
-        <li>Email: <strong>{{ user.email }}</strong></li>
-        <li>Username: <strong>{{ user.username }}</strong></li>
+        <li>Name: <strong>{{ newUser.name }}</strong></li>
+        <li>Email: <strong>{{ newUser.email }}</strong></li>
+        <li>Username: <strong>{{ newUser.username }}</strong></li>
     </ul>
-    {% if not user.guest %}
+    {% if not newUser.guest %}
         <p>
             The account is disabled and needs to be activated by an admin.
         </p>
+        {{ email.button(url('admin2_user_index'), 'Review pending accounts') }}
     {% endif %}
 {% endblock %}

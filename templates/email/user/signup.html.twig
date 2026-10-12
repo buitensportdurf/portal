@@ -1,18 +1,14 @@
 {% extends 'email/base.html.twig' %}
+{% import 'email/_macros.html.twig' as email %}
 
-{% set title %}Welcome {{ user.name }}!{% endset %}
+{% set title %}Account created{% endset %}
 
 {% block body %}
     <p>
-        You have signed up to the Buitensport Durf vereniging member portal. Your account is disabled for now.
-        Please get in touch with the Activiteiten commissie or wait a few days to activate your account.
+        You have signed up to the Buitensport Durf member portal with the username <strong>{{ user.username }}</strong>.
     </p>
-    <p>You have used the username: <code>{{ user.username }}</code></p>
-    <p>And the following email: <code>{{ user.email }}</code></p>
-
     <p>
-        You can log in
-        <a class="btn btn-primary btn-sm" href="{{ url('login') }}">Here</a>
-        once your account is enabled
+        Your account still has to be activated by the committee. You will get an email as soon as that has happened,
+        usually within a few days.
     </p>
 {% endblock %}
