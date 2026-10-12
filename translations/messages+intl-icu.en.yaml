@@ -20,6 +20,7 @@ Access: Access
 'Add to Google Calendar': 'Add to Google Calendar'
 'Added question "{question}" to event "{event}"': 'Added question "{question}" to event "{event}"'
 Admin: Admin
+Administration: Administration
 'After a number of occurrences': 'After a number of occurrences'
 'After this, the committee activates your account; you will get an email when you can log in.': 'After this, the committee activates your account; you will get an email when you can log in.'
 'All events': 'All events'
@@ -37,6 +38,7 @@ Apply: Apply
 Back: Back
 'Back to event': 'Back to event'
 'Back to events': 'Back to events'
+'Back to home': 'Back to home'
 'Back to list': 'Back to list'
 'Back to {event}': 'Back to {event}'
 'Branch:': 'Branch:'
@@ -105,6 +107,7 @@ disabled: disabled
 'Do you really want to enable "{name}" with email "{email}"?': 'Do you really want to enable "{name}" with email "{email}"?'
 Draft: Draft
 'Durf member portal': 'Durf member portal'
+'Durf Portal Admin Page': 'Durf Portal Admin Page'
 'e.g. 2 for every other week': 'e.g. 2 for every other week'
 Edit: Edit
 'Edit Question {question}': 'Edit Question {question}'
@@ -136,6 +139,7 @@ Ends: Ends
 'Event calendars': 'Event calendars'
 'Event cancelled: {event}': 'Event cancelled: {event}'
 'Event changed: {event}': 'Event changed: {event}'
+'Event subscriptions': 'Event subscriptions'
 Events: Events
 Every: Every
 'Exit impersonation': 'Exit impersonation'
@@ -160,6 +164,7 @@ Friday: Friday
 'Full name': 'Full name'
 'Full name (first and last name)': 'Full name (first and last name)'
 General: General
+Groups: Groups
 Guest: Guest
 guest: guest
 'Guest price': 'Guest price'
@@ -365,6 +370,7 @@ Username: Username
 'Username or email': 'Username or email'
 'Username:': 'Username:'
 'Username: <strong>{username}</strong>': 'Username: <strong>{username}</strong>'
+Users: Users
 vich_uploader.form_label.delete_confirm: vich_uploader.form_label.delete_confirm
 vich_uploader.link.download: vich_uploader.link.download
 'View event': 'View event'

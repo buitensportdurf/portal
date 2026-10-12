@@ -11,6 +11,7 @@ use App\Service\CalendarBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Translation\LocaleSwitcher;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/event/calendar', name: 'event_calendar')]
@@ -36,10 +37,16 @@ class CalendarController extends AbstractController
         return $this->getCalendarResponse($this->eventRepository->findForCalendar(), 'Durf - ' . $this->translator->trans('All events'));
     }
 
+    /**
+     * Calendar apps send no useful language, so the personal feed uses the account's.
+     */
     #[Route('/user/{user}/cal.ics', name: '_user')]
-    public function user(User $user): Response
+    public function user(User $user, LocaleSwitcher $localeSwitcher): Response
     {
-        return $this->getCalendarResponse($this->eventRepository->findForCalendar(user: $user), 'Durf - ' . $this->translator->trans('My events'));
+        return $localeSwitcher->runWithLocale(
+            $user->locale ?? $localeSwitcher->getLocale(),
+            fn() => $this->getCalendarResponse($this->eventRepository->findForCalendar(user: $user), 'Durf - ' . $this->translator->trans('My events')),
+        );
     }
 
     #[Route('/tag/{tag}/cal.ics', name: '_tag')]
