@@ -17,6 +17,18 @@
 {% endblock %}
 
 {% block body %}
+    {% if event.recurringEvent %}
+        <div class="alert alert-info">
+            <i class="fas fa-redo"></i>
+            This event is part of <strong>{{ event.recurringEvent }}</strong>. Changes here only apply to this event,
+            and the fields you change stop following the series.
+            {% if is_granted('ROLE_EVENT_RECURRING') and event.occurrenceStart %}
+                To change more events, edit
+                <a href="{{ path('event_recurring_event_edit', {id: event.recurringEvent.id, from: event.occurrenceStart|date('Y-m-d')}) }}">this and following events</a>
+                or <a href="{{ path('event_recurring_event_edit', {id: event.recurringEvent.id}) }}">the whole series</a>.
+            {% endif %}
+        </div>
+    {% endif %}
     {{ form(form) }}
 {% endblock %}
 

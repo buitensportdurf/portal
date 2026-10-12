@@ -4,6 +4,7 @@ namespace App\Transformer;
 
 use App\Entity\Event\Event;
 use Eluceo\iCal\Domain\Entity\Event as IcalEvent;
+use Eluceo\iCal\Domain\Enum\EventStatus;
 use Eluceo\iCal\Domain\ValueObject\Date;
 use Eluceo\iCal\Domain\ValueObject\DateTime;
 use Eluceo\iCal\Domain\ValueObject\Location;
@@ -47,6 +48,9 @@ readonly class EventCalTransformer
             ->setDescription($event->description)
             ->setLocation(new Location($event->location))
         ;
+        if ($event->isCancelled()) {
+            $icalEvent->setStatus(EventStatus::CANCELLED());
+        }
 
         return $icalEvent;
     }

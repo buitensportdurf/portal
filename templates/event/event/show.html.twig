@@ -5,10 +5,6 @@
 {% block actions %}
     <div class="btn-group btn-group-sm">
         <a class="btn btn-outline-primary" href="{{ path('event_event_index') }}">Back to list</a>
-        {% if event.recurringEvent and is_granted('ROLE_EVENT_RECURRING') %}
-            <a class="btn btn-outline-info"
-               href="{{ path('event_recurring_event_show', {'id': event.recurringEvent.id}) }}">Recurring parent</a>
-        {% endif %}
         {% if is_granted('ROLE_EVENT_EDIT') %}
             <a class="btn btn-outline-warning" href="{{ path('event_event_edit', {'id': event.id}) }}">Edit</a>
             {% if is_granted('publish', event) %}
@@ -32,6 +28,29 @@
                     action_class: 'btn-secondary',
                 }) }}
             {% endif %}
+            {% if event.cancelled %}
+                <a class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#confirmRestore">Restore</a>
+                {{ include('components/_confirm_modal.html.twig', {
+                    id: 'confirmRestore',
+                    title: 'Restore event',
+                    message: 'This takes back the cancellation of "' ~ event ~ '". Subscribers are not emailed about this.',
+                    action_url: path('event_event_restore', {id: event.id}),
+                    action_label: 'Restore',
+                    action_class: 'btn-success',
+                    csrf_id: 'event-restore-' ~ event.id,
+                }) }}
+            {% elseif event.startDate > date() %}
+                <a class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmCancel">Cancel event</a>
+                {{ include('components/_confirm_modal.html.twig', {
+                    id: 'confirmCancel',
+                    title: 'Cancel event',
+                    message: 'The event stays visible as cancelled and nobody can subscribe anymore.'
+                        ~ (event.eventSubscriptions is empty ? '' : ' The ' ~ event.eventSubscriptions|length ~ ' subscriber(s) get an email.'),
+                    action_url: path('event_event_cancel', {id: event.id}),
+                    action_label: 'Cancel event',
+                    csrf_id: 'event-cancel-' ~ event.id,
+                }) }}
+            {% endif %}
             <a class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteEvent">Delete</a>
             {{ include('components/_confirm_modal.html.twig', {
                 id: 'confirmDeleteEvent',
@@ -45,6 +64,14 @@
 {% endblock %}
 
 {% block body %}
+    {% if event.cancelled %}
+        <div class="alert alert-danger">
+            <i class="fas fa-ban"></i> This event has been cancelled.
+        </div>
+    {% endif %}
+    {% if event.recurringEvent and is_granted('ROLE_EVENT_RECURRING') %}
+        {{ include('event/event/_series_panel.html.twig') }}
+    {% endif %}
     {% if not event.published %}
         <div class="alert alert-secondary">
             <i class="fas fa-eye-slash"></i> This event is a draft and not visible to regular users.
@@ -80,10 +107,10 @@
                                 <td>{{ event.subscriberLimit }}</td>
                             </tr>
                         {% endif %}
-                        {% if event.recurringEvent and is_granted('ROLE_EVENT_ADMIN') %}
+                        {% if event.recurringEvent %}
                             <tr>
-                                <th class="text-muted">Recurring every</th>
-                                <td>{{ event.recurringEvent.recurrenceRule }}</td>
+                                <th class="text-muted">Repeats</th>
+                                <td>{{ event.recurringEvent|recurrence_text }}</td>
                             </tr>
                         {% endif %}
                         <tr>

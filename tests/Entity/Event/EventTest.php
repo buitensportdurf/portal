@@ -5,6 +5,7 @@ namespace App\Tests\Entity\Event;
 use App\Entity\Event\Event;
 use App\Entity\Event\EventSubscription;
 use App\Entity\User;
+use App\Recurrence\SeriesField;
 use DateInterval;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
@@ -234,41 +235,6 @@ class EventTest extends TestCase
 
     // --- Copy From ---
 
-    public function testCopyFromCopiesProperties(): void
-    {
-        $source = $this->createEvent();
-        $source->name = 'Source Event';
-        $source->description = 'A description';
-        $source->location = 'Source Location';
-        $source->setMemberPrice(5.00);
-        $source->guestsAllowed = true;
-        $source->subscriberLimit = 20;
-        $source->subscriptionDeadline = new DateTimeImmutable('+3 days');
-
-        $target = new Event();
-        $target->copyFrom($source);
-
-        self::assertSame('Source Event', $target->name);
-        self::assertSame('A description', $target->description);
-        self::assertSame('Source Location', $target->location);
-        self::assertSame(5.00, $target->getMemberPrice());
-        self::assertTrue($target->guestsAllowed);
-        self::assertSame(20, $target->subscriberLimit);
-        self::assertNotNull($target->subscriptionDeadline);
-    }
-
-    public function testCopyFromCopiesStartTime(): void
-    {
-        $source = $this->createEvent();
-        $source->startDate = new DateTimeImmutable('2025-06-01 14:30:00');
-
-        $target = new Event();
-        $target->copyFrom($source);
-
-        self::assertSame('14', $target->startDate->format('H'));
-        self::assertSame('30', $target->startDate->format('i'));
-    }
-
     // --- Tags ---
 
     public function testTagsEmptyByDefault(): void
@@ -307,17 +273,6 @@ class EventTest extends TestCase
     {
         $event = new Event();
         self::assertTrue($event->published);
-    }
-
-    public function testCopyFromCopiesPublishedState(): void
-    {
-        $source = $this->createEvent();
-        $source->published = false;
-
-        $target = new Event();
-        $target->copyFrom($source);
-
-        self::assertFalse($target->published);
     }
 
     // --- Subscription unavailable reason ---
@@ -381,5 +336,32 @@ class EventTest extends TestCase
         $this->subscribeUser($event, $user);
 
         self::assertSame('You are already subscribed.', $event->getSubscriptionUnavailableReason($user));
+    }
+
+    // --- Series occurrences ---
+
+    public function testNotCancelledByDefault(): void
+    {
+        self::assertFalse($this->createEvent()->isCancelled());
+    }
+
+    public function testReasonWhenCancelled(): void
+    {
+        $event = $this->createEvent();
+        $event->cancelledAt = new DateTimeImmutable();
+
+        self::assertSame('This event has been cancelled.', $event->getSubscriptionUnavailableReason(null));
+    }
+
+    public function testMarkOverriddenKeepsFieldsUnique(): void
+    {
+        $event = $this->createEvent();
+        $event->markOverridden(SeriesField::Location);
+        $event->markOverridden(SeriesField::Schedule, SeriesField::Location);
+
+        self::assertSame(['location', 'schedule'], $event->overriddenFields);
+        self::assertTrue($event->isOverridden(SeriesField::Schedule));
+        self::assertFalse($event->isOverridden(SeriesField::Name));
+        self::assertSame([SeriesField::Location, SeriesField::Schedule], $event->getOverriddenFields());
     }
 }
