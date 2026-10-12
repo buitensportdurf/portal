@@ -3,6 +3,7 @@
 namespace App\Tests\Service;
 
 use App\Entity\Event\Event;
+use App\Entity\Event\EventSubscription;
 use App\Entity\User;
 use App\Service\EmailFactory;
 use DateInterval;
@@ -183,5 +184,56 @@ class EmailFactoryTest extends TestCase
         self::assertSame($user, $email->getContext()['newUser']);
         // The committee is not addressed as the new user
         self::assertNull($email->getContext()['user']);
+    }
+
+    // --- subscription emails ---
+
+    private function createSubscription(): EventSubscription
+    {
+        $subscription = new EventSubscription();
+        $subscription->amount = 1;
+        $subscription->createdUser = $this->createUser('member@example.com');
+        $subscription->event = $this->createEvent();
+
+        return $subscription;
+    }
+
+    public function testSubscriptionConfirmedAttachesTheCalendarFile(): void
+    {
+        $email = EmailFactory::subscriptionConfirmed($this->createSubscription(), "BEGIN:VCALENDAR\r\nEND:VCALENDAR");
+
+        self::assertSame('member@example.com', $email->getTo()[0]->getAddress());
+        self::assertCount(1, $email->getAttachments());
+        self::assertSame('event.ics', $email->getAttachments()[0]->getFilename());
+        self::assertStringStartsWith('text/calendar', $email->getAttachments()[0]->getContentType());
+    }
+
+    public function testEventReminderUsesTheReminderTemplate(): void
+    {
+        $email = EmailFactory::eventReminder($this->createSubscription());
+
+        self::assertStringStartsWith('Durf - Reminder: ', $email->getSubject());
+        self::assertSame('email/event/reminder.html.twig', $email->getHtmlTemplate());
+    }
+
+    // --- account security emails ---
+
+    public function testConfirmEmailChangeGoesToTheNewAddress(): void
+    {
+        $email = EmailFactory::confirmEmailChange($this->createUser('old@example.com'), 'new@example.com', 'https://example.test/confirm');
+
+        self::assertCount(1, $email->getTo());
+        self::assertSame('new@example.com', $email->getTo()[0]->getAddress());
+        self::assertSame('https://example.test/confirm', $email->getContext()['confirmUrl']);
+    }
+
+    public function testEmailChangedGoesToTheOldAddress(): void
+    {
+        $user = $this->createUser('new@example.com');
+
+        $email = EmailFactory::emailChanged($user, 'old@example.com');
+
+        self::assertCount(1, $email->getTo());
+        self::assertSame('old@example.com', $email->getTo()[0]->getAddress());
     }
 }
