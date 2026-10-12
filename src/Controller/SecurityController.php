@@ -8,6 +8,7 @@ use App\Form\User\GuestForm;
 use App\Form\User\GuestUpgradeType;
 use App\Form\User\RegistrationFormType;
 use App\Repository\UserRepository;
+use App\Security\LocalPath;
 use App\Service\CommissionMailer;
 use App\Service\EmailFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -46,7 +47,7 @@ class SecurityController extends AbstractController
         return $this->render('user/login.html.twig', [
             'last_username' => $authenticationUtils->getLastUsername(),
             'error' => $authenticationUtils->getLastAuthenticationError(),
-            'target_path' => self::localPath($request->query->get('_target_path')),
+            'target_path' => LocalPath::filter($request->query->get('_target_path')),
         ]);
     }
 
@@ -252,13 +253,5 @@ class SecurityController extends AbstractController
         $url = $this->loginLinkHandler->createLoginLink($user)->getUrl();
 
         return $url . '&_target_path=' . rawurlencode($this->generateUrl($route, $parameters));
-    }
-
-    /**
-     * Only same-site paths, so a crafted login URL cannot redirect elsewhere.
-     */
-    private static function localPath(mixed $path): ?string
-    {
-        return is_string($path) && preg_match('#^/(?![/\\\\])#', $path) ? $path : null;
     }
 }

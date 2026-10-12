@@ -3,6 +3,7 @@
 namespace App\Form\User;
 
 use App\Entity\User;
+use App\Form\LocaleType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -24,6 +25,7 @@ class ProfileType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, ['label' => 'Full name'])
+            ->add('locale', LocaleType::class, ['help' => 'For the website and the emails we send you'])
             ->add('newEmail', EmailType::class, [
                 'label' => 'Email',
                 'mapped' => false,

@@ -64,6 +64,14 @@
                     ) }}">Exit impersonation</a>
                 </li>
             {% endif %}
+            {% for locale in app.enabled_locales|filter(locale => locale != app.locale) %}
+                <li class="nav-item">
+                    <a class="nav-link" lang="{{ locale }}" hreflang="{{ locale }}"
+                       href="{{ path('locale_switch', {locale: locale, return: app.request.requestUri}) }}">
+                        <i class="fas fa-globe"></i> {{ locale|language_name(locale)|capitalize }}
+                    </a>
+                </li>
+            {% endfor %}
             {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
