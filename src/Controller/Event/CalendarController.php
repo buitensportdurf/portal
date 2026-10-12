@@ -12,6 +12,8 @@ use DateInterval;
 use DateTimeImmutable;
 use Eluceo\iCal\Domain\Entity\Calendar;
 use Eluceo\iCal\Domain\Entity\TimeZone;
+use Eluceo\iCal\Presentation\Component\Property;
+use Eluceo\iCal\Presentation\Component\Property\Value\TextValue;
 use Eluceo\iCal\Presentation\Factory\CalendarFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +22,8 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/event/calendar', name: 'event_calendar')]
 class CalendarController extends AbstractController
 {
+    private const string TIMEZONE = 'Europe/Amsterdam';
+
     public function __construct(
         private readonly EventRepository     $eventRepository,
         private readonly EventCalTransformer $eventCalTransformer,
@@ -36,47 +40,51 @@ class CalendarController extends AbstractController
     #[Route('/all/cal.ics', name: '_all')]
     public function cal(): Response
     {
-        return $this->getCalendarResponse($this->eventRepository->findAll(), 'all');
+        return $this->getCalendarResponse($this->eventRepository->findForCalendar(), 'Durf - All events');
     }
 
     #[Route('/user/{user}/cal.ics', name: '_user')]
     public function user(User $user): Response
     {
-        return $this->getCalendarResponse($this->eventRepository->findSubscribedByUser($user), 'user');
+        return $this->getCalendarResponse($this->eventRepository->findForCalendar(user: $user), 'Durf - My events');
     }
 
     #[Route('/tag/{tag}/cal.ics', name: '_tag')]
     public function tag(Tag $tag): Response
     {
-        return $this->getCalendarResponse($this->eventRepository->findByTag($tag), 'tag_' . $tag);
+        return $this->getCalendarResponse($this->eventRepository->findForCalendar($tag), 'Durf - ' . $tag);
     }
 
     /**
      * @param array<Event> $events
-     * @return Response
      */
     private function getCalendarResponse(array $events, string $name): Response
     {
-        $calendar = new Calendar();
-        $now = new DateTimeImmutable();
-        $timeZone = TimeZone::createFromPhpDateTimeZone(
-            new \DateTimeZone('Europe/Amsterdam'),
-            $now->sub(new DateInterval('P1Y')),
-            $now->add(new DateInterval('P3Y'))
-        );
-        $calendar->addTimeZone($timeZone);
+        $calendar = new Calendar(array_map($this->eventCalTransformer->transform(...), $events));
+
+        // Event times refer to this timezone, so its definition has to cover every event in the feed
+        $first = new DateTimeImmutable();
+        $last = $first;
         foreach ($events as $event) {
-            $calendar->addEvent($this->eventCalTransformer->transform($event));
+            $first = min($first, $event->startDate);
+            $last = max($last, $event->endDate);
         }
+        $calendar->addTimeZone(TimeZone::createFromPhpDateTimeZone(
+            new \DateTimeZone(self::TIMEZONE),
+            $first->sub(new DateInterval('P1D')),
+            $last->add(new DateInterval('P1D')),
+        ));
         $calendar
-            ->setProductIdentifier('buitensport_durf_events_' . $name)
+            ->setProductIdentifier('-//Buitensport Durf//Portal//EN')
             ->setPublishedTTL(new DateInterval('PT1H'))
         ;
 
-        $componentFactory = new CalendarFactory();
-        $calendarComponent = $componentFactory->createCalendar($calendar);
+        $component = new CalendarFactory()->createCalendar($calendar)
+            ->withProperty(new Property('X-WR-CALNAME', new TextValue($name)))
+            ->withProperty(new Property('X-WR-TIMEZONE', new TextValue(self::TIMEZONE)))
+        ;
 
-        return new Response($calendarComponent, 200, [
+        return new Response((string) $component, 200, [
             'Content-Type' => 'text/calendar; charset=utf-8',
             'Content-Disposition' => 'attachment; filename="cal.ics"',
         ]);
