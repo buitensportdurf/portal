@@ -52,6 +52,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public bool $guest = false;
 
     /**
+     * The language for the site and emails; null until the person picks one or logs in.
+     */
+    #[ORM\Column(length: 5, nullable: true)]
+    public ?string $locale = null;
+
+    /**
      * Stored as the switched-off emails, so a new kind of email is on by default.
      *
      * @var list<string>
