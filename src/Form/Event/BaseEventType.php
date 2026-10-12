@@ -7,9 +7,11 @@ use App\Form\ImageType;
 use App\Form\SwitchType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Event\PostSubmitEvent;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvents;
 
 class BaseEventType extends AbstractType
 {
@@ -34,5 +36,13 @@ class BaseEventType extends AbstractType
             ->add('guestPrice', MoneyType::class, ['required' => false])
             ->add('guestsAllowed', SwitchType::class)
             ->add('image', ImageType::class, ['required' => false]);
+
+        // An image whose file was deleted is gone, rather than an empty Image left on the event
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (PostSubmitEvent $event) {
+            $data = $event->getData();
+            if ($data?->image !== null && $data->image->imageName === null && $data->image->getImageFile() === null) {
+                $data->image = null;
+            }
+        });
     }
 }
