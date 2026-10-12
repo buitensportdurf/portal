@@ -49,6 +49,7 @@ class ProfileType extends AbstractType
                 'attr' => ['autocomplete' => 'current-password'],
                 'help' => 'Needed to change your email or password',
             ])
+            ->add('emailNotifications', EmailNotificationsType::class)
             ->add('save', SubmitType::class)
         ;
     }

@@ -107,6 +107,7 @@ class SeriesSynchronizerTest extends TestCase
         $subscription = new EventSubscription();
         $subscription->amount = 1;
         $subscription->createdUser = new User();
+        $subscription->createdUser->email = 'subscriber@example.com';
         $subscribed->addEventSubscription($subscription);
 
         $plan = $this->planner->planRemoval($series, $this->now);

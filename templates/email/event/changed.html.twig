@@ -16,3 +16,5 @@
     <p>Your subscription still stands. Can't make it anymore? You can unsubscribe on the event page.</p>
     {{ email.button(url('event_event_show', {id: event.id}), 'View event') }}
 {% endblock %}
+
+{% block footer %}{{ include('email/event/_footer.html.twig') }}{% endblock %}

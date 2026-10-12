@@ -27,8 +27,7 @@ readonly class SubscriberNotifier
             fn($fieldChange) => $fieldChange->field->concernsSubscribers(),
         ));
 
-        foreach ($event->getEventSubscriptions() as $subscription) {
-            $user = $subscription->createdUser;
+        foreach ($change->recipients() as $user) {
             $email = $change->type === ChangeType::Cancel
                 ? EmailFactory::eventCancelled($user, $event)
                 : EmailFactory::eventChanged($user, $event, $changes);

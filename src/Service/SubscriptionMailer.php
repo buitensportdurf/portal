@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\EmailNotification;
 use App\Entity\Event\EventSubscription;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
@@ -22,20 +23,30 @@ readonly class SubscriptionMailer
 
     public function sendConfirmation(EventSubscription $subscription): void
     {
+        if (!$this->wants($subscription, EmailNotification::SubscriptionConfirmed)) {
+            return;
+        }
         $ics = $this->calendarBuilder->build([$subscription->event], 'Durf - ' . $subscription->event->name);
         $this->send(EmailFactory::subscriptionConfirmed($subscription, $ics), $subscription);
     }
 
+    public function wants(EventSubscription $subscription, EmailNotification $notification): bool
+    {
+        $user = $subscription->createdUser;
+
+        return $user?->email !== null && $user->wantsEmail($notification);
+    }
+
     public function sendReminder(EventSubscription $subscription): void
     {
+        if (!$this->wants($subscription, EmailNotification::Reminder)) {
+            return;
+        }
         $this->send(EmailFactory::eventReminder($subscription), $subscription);
     }
 
     private function send(Email $email, EventSubscription $subscription): void
     {
-        if (!$subscription->createdUser?->email) {
-            return;
-        }
         try {
             $this->mailer->send($email);
         } catch (TransportExceptionInterface $e) {

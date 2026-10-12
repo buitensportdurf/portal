@@ -7,3 +7,5 @@
     <p>Can't make it anymore? Please unsubscribe on the event page, so the organisers know.</p>
     {{ email.button(url('event_event_show', {id: event.id}), 'View event') }}
 {% endblock %}
+
+{% block footer %}{{ include('email/event/_footer.html.twig') }}{% endblock %}
