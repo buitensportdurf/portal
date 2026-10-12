@@ -95,6 +95,7 @@ class SecurityController extends AbstractController
             } else {
                 $user->password = $userPasswordHasher->hashPassword($user, $form->get('plainPassword')->getData());
                 $user->enabled = false;
+                $user->locale = $request->getLocale();
                 $this->repository->add($user);
                 $this->cache->delete('pending_activation_count');
                 $this->mailer->send(EmailFactory::signupEmail($user));
@@ -151,6 +152,7 @@ class SecurityController extends AbstractController
                     // Guests log in by link only; this is no usable password
                     $user->password = '!guest';
                     $user->guest = true;
+                    $user->locale = $request->getLocale();
                     $this->repository->add($user);
                     $this->commissionMailer->send(EmailFactory::newUserNotification($user));
                 }
