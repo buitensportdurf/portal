@@ -2,6 +2,7 @@
 
 namespace App\Tests\Translation;
 
+use App\Tests\RestoresKernelSideEffects;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Translation\Extractor\ExtractorInterface;
 use Symfony\Component\Translation\MessageCatalogue;
@@ -14,6 +15,8 @@ use Symfony\Component\Yaml\Yaml;
  */
 class TranslationCompletenessTest extends KernelTestCase
 {
+    use RestoresKernelSideEffects;
+
     private const array DOMAINS = ['messages', 'validators'];
 
     public function testEveryTextHasADutchTranslation(): void
@@ -38,25 +41,6 @@ class TranslationCompletenessTest extends KernelTestCase
         }
 
         self::assertSame([], $missing, 'Texts without a Dutch translation');
-    }
-
-    private string $phpLocale;
-
-    protected function setUp(): void
-    {
-        $this->phpLocale = \Locale::getDefault();
-    }
-
-    protected function tearDown(): void
-    {
-        \Locale::setDefault($this->phpLocale);
-        $booted = static::$booted;
-        parent::tearDown();
-        if ($booted) {
-            // FrameworkBundle installs its error handlers when it boots
-            restore_error_handler();
-            restore_exception_handler();
-        }
     }
 
     public function testDutchTranslationsAreValidIcu(): void
