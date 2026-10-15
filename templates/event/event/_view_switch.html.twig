@@ -1,0 +1,10 @@
+{# Links to the current page in each view, keeping its filters #}
+<div class="btn-group btn-group-sm" role="group" aria-label="{{ 'View'|trans }}">
+    {% for option in views %}
+        <a class="btn {% if option == view %}btn-secondary active{% else %}btn-outline-secondary{% endif %}"
+           href="{{ path(app.current_route, app.current_route_parameters|merge(app.request.query.all)|merge({view: option.value})) }}"
+           title="{{ option.label|trans }}"{% if option == view %} aria-current="true"{% endif %}>
+            <i class="{{ option.icon }}"></i><span class="visually-hidden">{{ option.label|trans }}</span>
+        </a>
+    {% endfor %}
+</div>

@@ -5,27 +5,24 @@
 {% block actions %}{% endblock %}
 
 {% block body %}
-    {% if years is not empty %}
-        <div class="mb-3">
-            <small class="text-muted d-block mb-1">{{ 'Filter by year'|trans }}</small>
-            {% for y in years %}
-                <a class="btn btn-sm {% if y == year %}btn-primary{% else %}btn-outline-primary{% endif %}"
-                   href="{{ path('event_event_past', {year: y}) }}">{{ y }}</a>
-            {% endfor %}
+    <div class="mb-3 d-flex gap-3 align-items-end">
+        <div class="flex-grow-1">
+            {% if years is not empty %}
+                <small class="text-muted d-block mb-1">{{ 'Filter by year'|trans }}</small>
+                {% for y in years %}
+                    <a class="btn btn-sm {% if y == year %}btn-primary{% else %}btn-outline-primary{% endif %}"
+                       href="{{ path('event_event_past', {year: y}) }}">{{ y }}</a>
+                {% endfor %}
+            {% endif %}
         </div>
-    {% endif %}
+        {{ include('event/event/_view_switch.html.twig') }}
+    </div>
 
     {% if events is empty %}
         <div class="text-center py-5 text-muted">
             <p class="fs-5">{% if year %}{{ 'No past events in {year}'|trans({year: year ~ ''}) }}{% else %}{{ 'No past events'|trans }}{% endif %}</p>
         </div>
     {% else %}
-        <div class="row row-cols-1 row-cols-md-3 g-3">
-            {% for event in events %}
-                <div class="col">
-                    {{ include('event/event/card.html.twig', {event: event}) }}
-                </div>
-            {% endfor %}
-        </div>
+        {{ include(view.template, {events: events}) }}
     {% endif %}
 {% endblock %}

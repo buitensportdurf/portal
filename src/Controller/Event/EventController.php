@@ -39,7 +39,7 @@ class EventController extends AbstractController
 
         $includeUnpublished = $this->isGranted('ROLE_EVENT_EDIT');
 
-        return $this->render('event/event/index.html.twig', [
+        return $this->renderEvents($request, 'event/event/index.html.twig', [
             'events' => $eventRepository->findByTag($tag, $tagRepository->findIsDefaultHide(), $includeUnpublished),
             'tags' => $tagRepository->findAll(),
             'tag' => $tag,
@@ -53,11 +53,27 @@ class EventController extends AbstractController
         // Malformed input falls back to the latest year instead of failing
         $year = filter_var($request->query->get('year'), FILTER_VALIDATE_INT) ?: ($years[0] ?? null);
 
-        return $this->render('event/event/past.html.twig', [
+        return $this->renderEvents($request, 'event/event/past.html.twig', [
             'events' => $eventRepository->findPast($year, $this->isGranted('ROLE_EVENT_EDIT')),
             'years' => $years,
             'year' => $year,
         ]);
+    }
+
+    /**
+     * Renders a page listing events in the view the visitor picked, see EventView.
+     */
+    private function renderEvents(Request $request, string $template, array $parameters): Response
+    {
+        $response = $this->render($template, $parameters + [
+            'view' => EventView::fromRequest($request),
+            'views' => EventView::cases(),
+        ]);
+        if ($cookie = EventView::remember($request)) {
+            $response->headers->setCookie($cookie);
+        }
+
+        return $response;
     }
 
     #[Route('/new', name: '_new')]

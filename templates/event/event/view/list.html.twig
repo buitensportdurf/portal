@@ -1,0 +1,41 @@
+<div class="list-group">
+    {% for event in events %}
+        {# @var event App\Entity\Event\Event #}
+        {% set subscription = event.subscription(app.user) %}
+        <div class="list-group-item position-relative d-flex flex-column flex-md-row gap-2 align-items-md-center{% if subscription %} list-group-item-success{% endif %}{% if not event.published or event.cancelled %} opacity-50{% endif %}">
+            <div class="flex-grow-1">
+                <a class="fw-semibold text-decoration-none text-dark stretched-link" href="{{ path('event_event_show', {'id': event.id}) }}">{{ event }}</a>
+                {% if event.cancelled %}
+                    <span class="badge bg-danger">{{ 'Cancelled'|trans }}</span>
+                {% endif %}
+                {% if not event.published %}
+                    <span class="badge bg-secondary">{{ 'Draft'|trans }}</span>
+                {% endif %}
+                {% for tag in event.tags %}
+                    <span class="badge bg-primary">{{ tag }}</span>
+                {% endfor %}
+                <div class="small text-muted">
+                    <span class="text-nowrap me-2"><i class="fas fa-calendar fa-fw"></i> {{ event.startDate ? event.startDate|fdate_time : '' }}</span>
+                    {% if event.duration %}
+                        <span class="text-nowrap me-2"><i class="fas fa-clock fa-fw"></i> {{ event.duration|time_duration }}</span>
+                    {% endif %}
+                    {% if event.location %}
+                        <span class="d-inline-block me-2"><i class="fas fa-map-marker-alt fa-fw"></i> {{ event.location }}</span>
+                    {% endif %}
+                    {% if event.amountOfSubscriptions > 0 %}
+                        <span class="text-nowrap me-2"><i class="fas fa-users fa-fw"></i> {{ '{count} subscribed'|trans({count: event.amountOfSubscriptions}) }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="flex-shrink-0 position-relative" style="z-index: 2">
+                {% if subscription %}
+                    <span class="badge bg-success">{{ 'You are subscribed'|trans }}{% if subscription.amount > 1 %} ({{ subscription.amount }}){% endif %}</span>
+                {% elseif is_granted('subscribe', event) or not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                    <a class="btn btn-sm btn-success" href="{{ path('event_subscription_subscribe', {'id': event.id}) }}">{{ 'Subscribe'|trans }}</a>
+                {% elseif event.subscriptionOpenDate and not event.isPastSubscriptionOpenDate %}
+                    <small class="text-muted"><i class="fas fa-clock fa-fw"></i> {{ 'Subscriptions open {date}'|trans({date: event.subscriptionOpenDate|fdate_time}) }}</small>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
