@@ -2,9 +2,9 @@
 
 namespace App\EventListener;
 
+use App\Entity\Language;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -19,14 +19,7 @@ final readonly class LocaleListener
 {
     public const string SESSION_KEY = '_locale';
 
-    /**
-     * @param list<string> $locales
-     */
     public function __construct(
-        #[Autowire(param: 'kernel.enabled_locales')]
-        private array  $locales,
-        #[Autowire(param: 'kernel.default_locale')]
-        private string $defaultLocale,
         private EntityManagerInterface $em,
     ) {}
 
@@ -37,9 +30,8 @@ final readonly class LocaleListener
         $request = $event->getRequest();
         $chosen = $request->hasPreviousSession() ? $request->getSession()->get(self::SESSION_KEY) : null;
 
-        $request->setLocale(in_array($chosen, $this->locales, true)
-            ? $chosen
-            : $request->getPreferredLanguage([$this->defaultLocale, ...array_diff($this->locales, [$this->defaultLocale])]));
+        $request->setLocale(Language::tryFrom((string) $chosen)?->value
+            ?? $request->getPreferredLanguage([Language::DEFAULT->value, ...array_diff(Language::codes(), [Language::DEFAULT->value])]));
     }
 
     #[AsEventListener]
@@ -51,10 +43,10 @@ final readonly class LocaleListener
         }
         $request = $event->getRequest();
         if ($user->locale === null) {
-            $user->locale = $request->getLocale();
+            $user->locale = Language::fromRequest($request);
             $this->em->flush();
         }
-        $request->getSession()->set(self::SESSION_KEY, $user->locale);
-        $request->setLocale($user->locale);
+        $request->getSession()->set(self::SESSION_KEY, $user->locale->value);
+        $request->setLocale($user->locale->value);
     }
 }

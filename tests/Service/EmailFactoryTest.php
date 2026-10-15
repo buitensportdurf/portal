@@ -4,6 +4,7 @@ namespace App\Tests\Service;
 
 use App\Entity\Event\Event;
 use App\Entity\Event\EventSubscription;
+use App\Entity\Language;
 use App\Entity\User;
 use App\Service\EmailFactory;
 use DateInterval;
@@ -258,7 +259,7 @@ class EmailFactoryTest extends TestCase
     public function testEmailIsInTheLanguageOfTheRecipient(): void
     {
         $user = $this->createUser();
-        $user->locale = 'nl';
+        $user->locale = Language::Nl;
 
         $email = $this->factory()->signupEmail($user);
 
@@ -284,7 +285,7 @@ class EmailFactoryTest extends TestCase
     public function testNewUserNotificationIsInTheDefaultLanguage(): void
     {
         $user = $this->createUser();
-        $user->locale = 'nl';
+        $user->locale = Language::Nl;
 
         $email = $this->factory()->newUserNotification($user);
 

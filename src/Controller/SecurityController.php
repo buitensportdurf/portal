@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Event\Event;
+use App\Entity\Language;
 use App\Entity\User;
 use App\Form\User\GuestForm;
 use App\Form\User\GuestUpgradeType;
@@ -99,7 +100,7 @@ class SecurityController extends AbstractController
             } else {
                 $user->password = $userPasswordHasher->hashPassword($user, $form->get('plainPassword')->getData());
                 $user->enabled = false;
-                $user->locale = $request->getLocale();
+                $user->locale = Language::fromRequest($request);
                 $this->repository->add($user);
                 $this->cache->delete('pending_activation_count');
                 $this->mailer->send($this->emailFactory->signupEmail($user));
@@ -156,7 +157,7 @@ class SecurityController extends AbstractController
                     // Guests log in by link only; this is no usable password
                     $user->password = '!guest';
                     $user->guest = true;
-                    $user->locale = $request->getLocale();
+                    $user->locale = Language::fromRequest($request);
                     $this->repository->add($user);
                     $this->commissionMailer->send($this->emailFactory->newUserNotification($user));
                 }
