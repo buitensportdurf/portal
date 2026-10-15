@@ -454,3 +454,6 @@ years: jaar
 '{subscribers, plural, one {# subscriber} other {# subscribers}} of {events, plural, one {# event} other {# events}} get an email about the change (unless you switch that off below).': '{subscribers, plural, one {# aangemelde deelnemer} other {# aangemelde deelnemers}} van {events, plural, one {# activiteit} other {# activiteiten}} krijgen een e-mail over de wijziging (tenzij je dat hieronder uitzet).'
 'Guest {number}': 'Gast {number}'
 '{name} (+{extra})': '{name} (+{extra})'
+Cards: Kaarten
+List: Lijst
+View: Weergave

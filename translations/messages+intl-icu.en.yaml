@@ -454,3 +454,6 @@ years: years
 '{subscribers, plural, one {# subscriber} other {# subscribers}} of {events, plural, one {# event} other {# events}} get an email about the change (unless you switch that off below).': '{subscribers, plural, one {# subscriber} other {# subscribers}} of {events, plural, one {# event} other {# events}} get an email about the change (unless you switch that off below).'
 'Guest {number}': 'Guest {number}'
 '{name} (+{extra})': '{name} (+{extra})'
+Cards: Cards
+List: List
+View: View
