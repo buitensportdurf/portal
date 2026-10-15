@@ -17,6 +17,8 @@ class EventVoter extends Voter
     public const UNSUBSCRIBE = 'unsubscribe';
     public const PUBLISH = 'publish';
     public const UNPUBLISH = 'unpublish';
+    /** Whether to show a Subscribe button: to whoever may subscribe, and to visitors who could after logging in */
+    public const OFFER_SUBSCRIPTION = 'offer_subscription';
 
     public function __construct(
         private readonly Security $security,
@@ -24,26 +26,27 @@ class EventVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return in_array($attribute, [self::SUBSCRIBE, self::UNSUBSCRIBE, self::PUBLISH, self::UNPUBLISH])
+        return in_array($attribute, [self::SUBSCRIBE, self::UNSUBSCRIBE, self::PUBLISH, self::UNPUBLISH, self::OFFER_SUBSCRIPTION])
             && $subject instanceof Event;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
-        /** @var User $user */
-        $user = $token->getUser();
-        if (!$user instanceof UserInterface) {
-            return false;
-        }
         if (!$subject instanceof Event) {
             return false;
         }
         $event = $subject;
+        /** @var User $user */
+        $user = $token->getUser();
+        if (!$user instanceof UserInterface) {
+            return $attribute === self::OFFER_SUBSCRIPTION && $event->isOpenForSubscription();
+        }
 
         return match ($attribute) {
             self::PUBLISH => $this->canPublish($event),
             self::UNPUBLISH => $this->canUnpublish($event),
             self::SUBSCRIBE, self::UNSUBSCRIBE => $this->voteOnSubscription($attribute, $event, $user),
+            self::OFFER_SUBSCRIPTION => $this->voteOnSubscription(self::SUBSCRIBE, $event, $user),
         };
     }
 
