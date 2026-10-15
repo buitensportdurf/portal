@@ -1,5 +1,5 @@
 framework:
-    default_locale: en
+    default_locale: nl
     enabled_locales: ['en', 'nl']
     set_locale_from_accept_language: false
     translator:

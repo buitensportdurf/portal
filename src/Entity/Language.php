@@ -14,7 +14,7 @@ enum Language: string
     case En = 'en';
     case Nl = 'nl';
 
-    public const self DEFAULT = self::En;
+    public const self DEFAULT = self::Nl;
 
     /**
      * The language the request is shown in, which the LocaleListener already limited to ours.
