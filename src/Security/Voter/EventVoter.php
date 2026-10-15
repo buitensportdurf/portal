@@ -75,10 +75,7 @@ class EventVoter extends Voter
         }
 
         return match ($attribute) {
-            self::SUBSCRIBE => $event->isPastSubscriptionOpenDate()
-                && $event->isNotPastSubscriptionDeadline()
-                && $event->isNotPastStartDate()
-                && !$event->isSubscribed($user),
+            self::SUBSCRIBE => $event->isOpenForSubscription() && !$event->isSubscribed($user),
             self::UNSUBSCRIBE => $event->isSubscribed($user)
                 && $event->isNotPastStartDate(),
             default => false,
