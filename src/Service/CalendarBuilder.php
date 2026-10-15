@@ -25,10 +25,11 @@ readonly class CalendarBuilder
 
     /**
      * @param array<Event> $events
+     * @param bool $withAttendees only for a feed that nobody but its owner can open
      */
-    public function build(array $events, string $name): string
+    public function build(array $events, string $name, bool $withAttendees = false): string
     {
-        $calendar = new Calendar(array_map($this->transformer->transform(...), $events));
+        $calendar = new Calendar(array_map(fn(Event $event) => $this->transformer->transform($event, $withAttendees), $events));
 
         // Event times refer to this timezone, so its definition has to cover every event in it
         $first = new DateTimeImmutable();
