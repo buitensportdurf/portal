@@ -44,7 +44,7 @@
         {% if subscription and is_granted('unsubscribe', event) %}
             <a class="btn btn-sm btn-outline-danger w-100" data-bs-toggle="modal"
                data-bs-target="#confirmUnsubscribe{{ event.id }}">{{ 'Unsubscribe'|trans }}</a>
-        {% elseif is_granted('subscribe', event) or not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+        {% elseif is_granted('subscribe', event) or (not is_granted('IS_AUTHENTICATED_REMEMBERED') and event.openForSubscription) %}
             <a class="btn btn-sm btn-success w-100"
                href="{{ path('event_subscription_subscribe', {'id': event.id}) }}">{{ 'Subscribe'|trans }}</a>
         {% elseif event.subscriptionOpenDate and not event.isPastSubscriptionOpenDate %}

@@ -134,6 +134,19 @@ class Event extends BaseEvent
      * Mirrors the conditions in EventVoter::voteOnSubscription(). The "subscriptions open later"
      * case is intentionally left to the template, which shows the formatted open date.
      */
+    /**
+     * Whether subscribing is possible right now for someone who may; used to invite logged-out
+     * visitors, for whom the voter can't decide.
+     */
+    public function isOpenForSubscription(): bool
+    {
+        return $this->published
+            && !$this->isCancelled()
+            && $this->isPastSubscriptionOpenDate()
+            && $this->isNotPastSubscriptionDeadline()
+            && $this->isNotPastStartDate();
+    }
+
     public function getSubscriptionUnavailableReason(?User $user): ?TranslatableMessage
     {
         if ($this->isCancelled()) {

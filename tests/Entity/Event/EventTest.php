@@ -101,6 +101,33 @@ class EventTest extends TestCase
         self::assertFalse($event->isNotPastSubscriptionDeadline());
     }
 
+    // --- Open for subscription ---
+
+    public static function closedEvents(): iterable
+    {
+        yield 'draft' => [fn(Event $event) => $event->published = false];
+        yield 'cancelled' => [fn(Event $event) => $event->cancelledAt = new DateTimeImmutable()];
+        yield 'not open yet' => [fn(Event $event) => $event->subscriptionOpenDate = new DateTimeImmutable('+1 day')];
+        yield 'deadline passed' => [fn(Event $event) => $event->subscriptionDeadline = new DateTimeImmutable('-1 day')];
+        yield 'already started' => [fn(Event $event) => $event->startDate = new DateTimeImmutable('-1 day')];
+    }
+
+    public function testIsOpenForSubscription(): void
+    {
+        $event = $this->createEvent();
+        $event->published = true;
+        self::assertTrue($event->isOpenForSubscription());
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('closedEvents')]
+    public function testIsNotOpenForSubscription(\Closure $close): void
+    {
+        $event = $this->createEvent();
+        $event->published = true;
+        $close($event);
+        self::assertFalse($event->isOpenForSubscription());
+    }
+
     // --- Start Date ---
 
     public function testIsNotPastStartDateFutureEvent(): void
