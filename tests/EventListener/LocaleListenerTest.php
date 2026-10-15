@@ -2,6 +2,7 @@
 
 namespace App\Tests\EventListener;
 
+use App\Entity\Language;
 use App\Entity\User;
 use App\EventListener\LocaleListener;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,7 +36,7 @@ class LocaleListenerTest extends TestCase
 
     private function listener(?EntityManagerInterface $em = null): LocaleListener
     {
-        return new LocaleListener(['en', 'nl'], 'en', $em ?? $this->createStub(EntityManagerInterface::class));
+        return new LocaleListener($em ?? $this->createStub(EntityManagerInterface::class));
     }
 
     private function request(?string $acceptLanguage = null, ?string $sessionLocale = null): Request
@@ -91,7 +92,7 @@ class LocaleListenerTest extends TestCase
     public function testLoginLoadsTheAccountLanguage(): void
     {
         $user = new User();
-        $user->locale = 'nl';
+        $user->locale = Language::Nl;
         $request = $this->request('en');
 
         $this->listener()->onLogin($this->loginEvent($user, $request));
@@ -109,7 +110,7 @@ class LocaleListenerTest extends TestCase
 
         $this->listener($em)->onLogin($this->loginEvent($user, $request));
 
-        self::assertSame('nl', $user->locale);
+        self::assertSame(Language::Nl, $user->locale);
     }
 
     private function loginEvent(User $user, Request $request): LoginSuccessEvent

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Language;
 use App\Form\LocaleType;
 use App\Form\User\EmailNotificationsType;
 use App\Repository\UserRepository;
@@ -35,7 +36,7 @@ class EmailSettingsController extends AbstractController
             throw $this->createNotFoundException('This link is invalid.');
         }
 
-        $user->locale ??= $request->getLocale();
+        $user->locale ??= Language::fromRequest($request);
         $form = $this->createFormBuilder($user)
             ->add('locale', LocaleType::class, ['label' => t('Email language')])
             ->add('emailNotifications', EmailNotificationsType::class)

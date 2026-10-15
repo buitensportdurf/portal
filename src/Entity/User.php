@@ -54,8 +54,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * The language for the site and emails; null until the person picks one or logs in.
      */
-    #[ORM\Column(length: 5, nullable: true)]
-    public ?string $locale = null;
+    #[ORM\Column(length: 5, nullable: true, enumType: Language::class)]
+    public ?Language $locale = null;
 
     /**
      * Stored as the switched-off emails, so a new kind of email is on by default.

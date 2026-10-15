@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Language;
 use App\Entity\User;
 use App\EventListener\LocaleListener;
 use App\Form\User\ProfileType;
@@ -47,7 +48,7 @@ class UserController extends AbstractController
             throw $this->createAccessDeniedException('You cannot access this page with a guest account');
         }
 
-        $user->locale ??= $request->getLocale();
+        $user->locale ??= Language::fromRequest($request);
         $form = $this->createForm(ProfileType::class, $user, ['current_email' => $user->email]);
         $form->handleRequest($request);
 
@@ -69,7 +70,7 @@ class UserController extends AbstractController
                     $this->addFlash('success', t('Your password has been changed.'));
                 }
                 $this->em->flush();
-                $request->getSession()->set(LocaleListener::SESSION_KEY, $user->locale);
+                $request->getSession()->set(LocaleListener::SESSION_KEY, $user->locale->value);
 
                 if ($changesEmail) {
                     $this->mailer->send($this->emailFactory->confirmEmailChange($user, $newEmail, $this->confirmUrl($user, $newEmail)));

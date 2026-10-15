@@ -27,7 +27,7 @@ readonly class EmailFactory
 
     private function createEmailBase(User $user, TranslatableInterface $title, array $context = []): TemplatedEmail
     {
-        $locale = $user->locale ?? $this->defaultLocale;
+        $locale = $user->locale?->value ?? $this->defaultLocale;
         $title = 'Durf - ' . $title->trans($this->translator, $locale);
 
         return new TemplatedEmail()

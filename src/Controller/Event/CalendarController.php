@@ -45,7 +45,7 @@ class CalendarController extends AbstractController
     public function user(User $user, LocaleSwitcher $localeSwitcher): Response
     {
         return $localeSwitcher->runWithLocale(
-            $user->locale ?? $localeSwitcher->getLocale(),
+            $user->locale?->value ?? $localeSwitcher->getLocale(),
             fn() => $this->getCalendarResponse($this->eventRepository->findForCalendar(user: $user), 'Durf - ' . $this->translator->trans('My events'), withAttendees: true),
         );
     }
