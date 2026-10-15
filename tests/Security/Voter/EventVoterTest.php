@@ -27,7 +27,7 @@ class EventVoterTest extends TestCase
         return new EventVoter($security);
     }
 
-    private function createToken(User $user): TokenInterface
+    private function createToken(?User $user): TokenInterface
     {
         $token = $this->createStub(TokenInterface::class);
         $token->method('getUser')->willReturn($user);
@@ -79,7 +79,7 @@ class EventVoterTest extends TestCase
         $sub->event = $event;
     }
 
-    private function vote(EventVoter $voter, string $attribute, Event $event, User $user): bool
+    private function vote(EventVoter $voter, string $attribute, Event $event, ?User $user): bool
     {
         $method = new \ReflectionMethod(EventVoter::class, 'voteOnAttribute');
         return $method->invoke($voter, $attribute, $event, $this->createToken($user));
@@ -541,5 +541,45 @@ class EventVoterTest extends TestCase
         // Past open date but past deadline
         $event = $this->createEvent('+2 weeks', '-1 day', '-2 days');
         self::assertFalse($this->vote($voter, 'subscribe', $event, $user));
+    }
+
+    // ==========================================
+    // OFFER_SUBSCRIPTION
+    // ==========================================
+
+    public function testOfferToLoggedOutVisitorWhenOpen(): void
+    {
+        self::assertTrue($this->vote($this->createVoter(), 'offer_subscription', $this->createEvent(), null));
+    }
+
+    public function testNoOfferToLoggedOutVisitorForPastEvent(): void
+    {
+        self::assertFalse($this->vote($this->createVoter(), 'offer_subscription', $this->createEvent('-1 day'), null));
+    }
+
+    public function testNoOfferToLoggedOutVisitorBeforeOpenDate(): void
+    {
+        self::assertFalse($this->vote($this->createVoter(), 'offer_subscription', $this->createEvent(openDate: '+1 day'), null));
+    }
+
+    public function testLoggedOutVisitorCannotSubscribe(): void
+    {
+        self::assertFalse($this->vote($this->createVoter(), 'subscribe', $this->createEvent(), null));
+    }
+
+    public function testOfferToUserFollowsSubscribe(): void
+    {
+        $voter = $this->createVoter();
+        $user = $this->createUser();
+        $event = $this->createEvent();
+        self::assertTrue($this->vote($voter, 'offer_subscription', $event, $user));
+
+        $this->subscribeUser($event, $user);
+        self::assertFalse($this->vote($voter, 'offer_subscription', $event, $user));
+    }
+
+    public function testNoOfferToGuestForMembersOnlyEvent(): void
+    {
+        self::assertFalse($this->vote($this->createVoter(), 'offer_subscription', $this->createEvent(), $this->createUser(guest: true)));
     }
 }

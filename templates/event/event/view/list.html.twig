@@ -30,7 +30,7 @@
             <div class="flex-shrink-0 position-relative" style="z-index: 2">
                 {% if subscription %}
                     <span class="badge bg-success">{{ 'You are subscribed'|trans }}{% if subscription.amount > 1 %} ({{ subscription.amount }}){% endif %}</span>
-                {% elseif is_granted('subscribe', event) or (not is_granted('IS_AUTHENTICATED_REMEMBERED') and event.openForSubscription) %}
+                {% elseif is_granted('offer_subscription', event) %}
                     <a class="btn btn-sm btn-success" href="{{ path('event_subscription_subscribe', {'id': event.id}) }}">{{ 'Subscribe'|trans }}</a>
                 {% elseif event.subscriptionOpenDate and not event.isPastSubscriptionOpenDate %}
                     <small class="text-muted"><i class="fas fa-clock fa-fw"></i> {{ 'Subscriptions open {date}'|trans({date: event.subscriptionOpenDate|fdate_time}) }}</small>

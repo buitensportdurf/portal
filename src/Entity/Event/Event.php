@@ -135,8 +135,7 @@ class Event extends BaseEvent
      * case is intentionally left to the template, which shows the formatted open date.
      */
     /**
-     * Whether subscribing is possible right now for someone who may; used to invite logged-out
-     * visitors, for whom the voter can't decide.
+     * Whether subscribing is possible right now, apart from who is asking (see EventVoter).
      */
     public function isOpenForSubscription(): bool
     {
