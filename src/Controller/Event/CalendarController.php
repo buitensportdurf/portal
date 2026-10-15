@@ -38,14 +38,15 @@ class CalendarController extends AbstractController
     }
 
     /**
-     * Calendar apps send no useful language, so the personal feed uses the account's.
+     * Calendar apps send no useful language, so the personal feed uses the account's. Its URL holds the
+     * user's unguessable id, so it can list who else is coming, as the event page does for members.
      */
     #[Route('/user/{user}/cal.ics', name: '_user')]
     public function user(User $user, LocaleSwitcher $localeSwitcher): Response
     {
         return $localeSwitcher->runWithLocale(
             $user->locale ?? $localeSwitcher->getLocale(),
-            fn() => $this->getCalendarResponse($this->eventRepository->findForCalendar(user: $user), 'Durf - ' . $this->translator->trans('My events')),
+            fn() => $this->getCalendarResponse($this->eventRepository->findForCalendar(user: $user), 'Durf - ' . $this->translator->trans('My events'), withAttendees: true),
         );
     }
 
@@ -58,9 +59,9 @@ class CalendarController extends AbstractController
     /**
      * @param array<Event> $events
      */
-    private function getCalendarResponse(array $events, string $name): Response
+    private function getCalendarResponse(array $events, string $name, bool $withAttendees = false): Response
     {
-        return new Response($this->calendarBuilder->build($events, $name), 200, [
+        return new Response($this->calendarBuilder->build($events, $name, $withAttendees), 200, [
             'Content-Type' => 'text/calendar; charset=utf-8',
             'Content-Disposition' => 'attachment; filename="cal.ics"',
         ]);
