@@ -42,9 +42,8 @@ class LocaleListenerTest extends TestCase
     private function request(?string $acceptLanguage = null, ?string $sessionLocale = null): Request
     {
         $request = Request::create('/');
-        if ($acceptLanguage !== null) {
-            $request->headers->set('Accept-Language', $acceptLanguage);
-        }
+        // Request::create() sends an English Accept-Language unless told otherwise
+        $request->headers->set('Accept-Language', $acceptLanguage);
         $session = new Session(new MockArraySessionStorage());
         if ($sessionLocale !== null) {
             $session->set(LocaleListener::SESSION_KEY, $sessionLocale);
@@ -57,11 +56,11 @@ class LocaleListenerTest extends TestCase
 
     public static function browserLanguages(): iterable
     {
-        yield 'none' => [null, 'en'];
+        yield 'none' => [null, 'nl'];
         yield 'dutch' => ['nl-NL,nl;q=0.9,en;q=0.8', 'nl'];
         yield 'belgian dutch' => ['nl-BE', 'nl'];
         yield 'english' => ['en-GB,en;q=0.9', 'en'];
-        yield 'german falls back' => ['de-DE,de;q=0.9', 'en'];
+        yield 'german falls back' => ['de-DE,de;q=0.9', 'nl'];
     }
 
     #[DataProvider('browserLanguages')]
