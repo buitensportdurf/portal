@@ -177,4 +177,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
     }
+
+    /**
+     * The session keeps only what Symfony needs to reload the user on the next request: the id,
+     * the username to check it is still the same account, and a checksum of the password hash
+     * so changing the password logs out other sessions. Anything more goes stale, and breaks
+     * old sessions as soon as a property changes type.
+     */
+    public function __serialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'username' => $this->username,
+            'password' => $this->password === null ? null : hash('crc32c', $this->password),
+        ];
+    }
+
+    /**
+     * Also reads sessions from before __serialize(), which hold every property under these keys.
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->id = $data['id'] ?? null;
+        $this->username = $data['username'] ?? null;
+        $this->password = $data['password'] ?? null;
+        $this->groups = new ArrayCollection();
+    }
 }

@@ -4,8 +4,10 @@ namespace App\Tests\Entity;
 
 use App\Entity\EmailNotification;
 use App\Entity\Group;
+use App\Entity\Language;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Uid\Ulid;
 
 class UserTest extends TestCase
 {
@@ -221,5 +223,34 @@ class UserTest extends TestCase
         $user = $this->createUser();
         $user->eraseCredentials();
         $this->addToAssertionCount(1); // no-op, just ensure it doesn't throw
+    }
+
+    // --- Session serialization ---
+
+    public function testSessionKeepsOnlyIdUsernameAndPasswordChecksum(): void
+    {
+        $user = $this->createUser();
+        new \ReflectionProperty(User::class, 'id')->setValue($user, $id = new Ulid());
+        $user->locale = Language::Nl;
+
+        $restored = unserialize(serialize($user));
+
+        self::assertTrue($id->equals($restored->id));
+        self::assertSame('testuser', $restored->getUserIdentifier());
+        self::assertSame(hash('crc32c', 'hashed'), $restored->getPassword());
+        self::assertNull($restored->locale);
+        self::assertStringNotContainsString('hashed', serialize($user));
+    }
+
+    public function testReadsSessionsFromBeforeWithOutdatedProperties(): void
+    {
+        // A session written when locale was still a string, which can't be assigned to the enum now
+        $old = 'O:15:"App\\Entity\\User":4:{s:2:"id";N;s:8:"username";s:4:"anna";s:8:"password";s:6:"hashed";s:6:"locale";s:2:"nl";}';
+
+        $restored = unserialize($old);
+
+        self::assertSame('anna', $restored->getUserIdentifier());
+        self::assertSame('hashed', $restored->getPassword());
+        self::assertNull($restored->locale);
     }
 }
