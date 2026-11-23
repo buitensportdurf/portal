@@ -99,10 +99,12 @@ desc('Deploy project');
 task('deploy', [
     'deploy:prepare',
     'deploy:vendors',
+    // Before the cache is warmed: the container reads release.json when it
+    // is compiled, to tell Sentry which release is running.
+    'deployment:log',
     'cache:clear',
     'cache:warmup',
     'database:migrate',
-    'deployment:log',
     'deploy:symlink',
     'deploy:unlock',
     'deploy:cleanup',
